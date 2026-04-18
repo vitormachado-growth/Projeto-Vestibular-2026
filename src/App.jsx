@@ -35,6 +35,16 @@ function App() {
   });
 
   useEffect(() => {
+    const isOAuthCallback = new URLSearchParams(window.location.search).has('code')
+      || window.location.hash.includes('access_token');
+
+    if (!isOAuthCallback) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null);
+        setLoading(false);
+      });
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session) setShowLogin(false);
