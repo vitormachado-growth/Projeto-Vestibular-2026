@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from './lib/supabase';
 import LandingPage from './components/LandingPage';
 import LoginScreen from './components/LoginScreen';
 import SelectionScreen from './components/SelectionScreen';
@@ -16,6 +17,7 @@ import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
   const [focus, setFocus] = useState(null);
   const [course, setCourse] = useState(null);
@@ -30,12 +32,32 @@ function App() {
   });
 
   useEffect(() => {
+    // 1. Check current session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    // 2. Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session) setShowLogin(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
     localStorage.setItem('dark_mode', String(darkMode));
   }, [darkMode]);
 
-  const handleLogin = () => {
-    setUser({ name: 'Estudante', email: 'estudante@exemplo.com' });
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setCurrentView('inicio');
+    setFocus(null);
+    setCourse(null);
   };
 
   const handleSelectFocus = (selectedFocus) => {
@@ -97,10 +119,20 @@ function App() {
     }
   };
 
+  // 0. Loading Screen
+  if (loading) {
+    return (
+      <div className="app-loading">
+        <div className="loading-spinner"></div>
+        <p>Carregando VesTibular...</p>
+      </div>
+    );
+  }
+
   // 1. Visitor Flow (Non-logged in)
   if (!user) {
     if (showLogin) {
-      return <LoginScreen onLogin={handleLogin} />;
+      return <LoginScreen onLogin={() => setShowLogin(false)} />;
     }
     return (
       <LandingPage
@@ -114,7 +146,7 @@ function App() {
 
   // 2. Onboarding Flow (First tasks after login)
   if (!focus) {
-    return <SelectionScreen onSelect={handleSelectFocus} />;
+    return <SelectionScreen onSelect={handleSelectFocus} onLogout={handleLogout} />;
   }
 
   if ((focus === 'uerj' || focus === 'ambos') && !course) {
@@ -134,6 +166,8 @@ function App() {
       onViewChange={handleViewChange}
       darkMode={darkMode}
       onToggleDark={() => setDarkMode(d => !d)}
+      user={user}
+      onLogout={handleLogout}
     >
       {renderView()}
     </Layout>

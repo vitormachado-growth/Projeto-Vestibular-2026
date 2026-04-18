@@ -1,10 +1,13 @@
 import './Sidebar.css';
 
-const Sidebar = ({ focus, currentView, onViewChange, collapsed, onToggle }) => {
+const Sidebar = ({ user, focus, currentView, onViewChange, collapsed, onToggle, onLogout }) => {
   const getFocusLabel = () => {
+    if (!focus) return 'Não definida';
     if (focus === 'ambos') return 'ENEM + UERJ';
     return focus.toUpperCase();
   };
+
+  const userInitial = user?.email?.charAt(0).toUpperCase() || 'E';
 
   const navItems = [
     { id: 'inicio', label: 'Início', icon: '🏠', group: 'Principal' },
@@ -63,12 +66,15 @@ const Sidebar = ({ focus, currentView, onViewChange, collapsed, onToggle }) => {
 
       <div className="sidebar-footer">
         <div className="user-profile">
-          <div className="avatar">VM</div>
+          <div className="avatar">{userInitial}</div>
           {!collapsed && (
             <div className="user-info">
-              <p className="name">Estudante</p>
-              <p className="plan">Plano Grátis</p>
+              <p className="name">{user?.email?.split('@')[0] || 'Estudante'}</p>
+              <button className="logout-link" onClick={onLogout}>Sair</button>
             </div>
+          )}
+          {collapsed && (
+             <button className="logout-mini-btn" onClick={onLogout} title="Sair">🚪</button>
           )}
         </div>
       </div>
