@@ -1,0 +1,293 @@
+.desemp-wrap {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* ── HEADER ─────────────────────────────────────────────────────────────── */
+.desemp-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.desemp-header h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.25rem;
+}
+.desemp-header p {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin: 0;
+}
+.btn-limpar-hist {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.btn-limpar-hist:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+/* ── EMPTY ───────────────────────────────────────────────────────────────── */
+.desemp-empty {
+  text-align: center;
+  padding: 5rem 2rem;
+  color: var(--text-muted);
+}
+.desemp-empty .empty-icon {
+  font-size: 3.5rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+.desemp-empty h2 {
+  font-size: 1.2rem;
+  color: var(--text-main);
+  margin: 0 0 0.5rem;
+}
+.desemp-empty p {
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+/* ── KPI CARDS ───────────────────────────────────────────────────────────── */
+.desemp-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.desemp-kpi {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.desemp-kpi-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.desemp-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+}
+.desemp-kpi-value.green { color: #16a34a; }
+.desemp-kpi-value.blue  { color: var(--primary); }
+.desemp-kpi-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ── SECTION ─────────────────────────────────────────────────────────────── */
+.desemp-section {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.desemp-section h2 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 0 0 1.1rem;
+}
+
+/* ── TREND CHART ─────────────────────────────────────────────────────────── */
+.trend-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 130px;
+  padding-bottom: 1.75rem;
+  position: relative;
+}
+.trend-gridline {
+  position: absolute;
+  left: 0; right: 0;
+  border-top: 1px dashed var(--border-color);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  padding-left: 2px;
+}
+.trend-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  justify-content: flex-end;
+  position: relative;
+  min-width: 0;
+}
+.trend-bar {
+  width: 100%;
+  max-width: 40px;
+  border-radius: 6px 6px 0 0;
+  transition: height 0.4s ease;
+  cursor: default;
+  position: relative;
+}
+.trend-bar:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 3px 7px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}
+.trend-bar-label {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  max-width: 40px;
+}
+.trend-pct-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* ── SUBJECT BARS ────────────────────────────────────────────────────────── */
+.desemp-subject-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+.desemp-subject-name {
+  font-size: 0.82rem;
+  color: var(--text-main);
+  font-weight: 600;
+  min-width: 140px;
+}
+.desemp-subject-bar-wrap {
+  flex: 1;
+  height: 10px;
+  background: var(--border-color);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.desemp-subject-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+.desemp-subject-pct {
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 36px;
+  text-align: right;
+}
+.desemp-subject-count {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  min-width: 44px;
+  text-align: right;
+}
+
+/* ── HISTORY TABLE ───────────────────────────────────────────────────────── */
+.desemp-history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.desemp-hist-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 1rem;
+  background: var(--bg-main, #f8fafc);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 0.83rem;
+}
+.desemp-hist-num {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  min-width: 22px;
+}
+.desemp-hist-date {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  min-width: 95px;
+}
+.desemp-hist-score {
+  font-weight: 700;
+  min-width: 44px;
+  font-size: 0.95rem;
+}
+.desemp-hist-score.great { color: #16a34a; }
+.desemp-hist-score.good  { color: #ca8a04; }
+.desemp-hist-score.bad   { color: #dc2626; }
+.desemp-hist-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.desemp-hist-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+}
+.desemp-hist-detail {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  min-width: 80px;
+}
+.desemp-hist-trend {
+  font-size: 0.8rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .desemp-wrap { padding: 1rem; }
+  .desemp-kpis { grid-template-columns: 1fr 1fr; }
+  .desemp-subject-name { min-width: 90px; }
+}

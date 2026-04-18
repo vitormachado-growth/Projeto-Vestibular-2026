@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap');
+
+:root {
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #eff6ff;
+  --secondary: #7c3aed;
+  --secondary-light: #f5f3ff;
+  --bg-main: #f8f9fa;
+  --bg-card: #ffffff;
+  --card-bg: #ffffff;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border-color: #e5e7eb;
+  --accent-enem: #10b981;
+  --accent-uerj: #f59e0b;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --sidebar-width: 260px;
+  --header-height: 70px;
+  --border-radius: 12px;
+}
+
+html[data-theme="dark"] {
+  --primary: #60a5fa;
+  --primary-dark: #3b82f6;
+  --primary-light: #1e3a5f;
+  --secondary: #a78bfa;
+  --secondary-light: #2d1f5e;
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --card-bg: #1e293b;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+}
+
+/* ── Dark mode overrides for hardcoded colors ────────────────────────────── */
+html[data-theme="dark"] body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] .search-bar input {
+  color: var(--text-main);
+}
+
+/* Rows e cards que usam background hardcoded */
+html[data-theme="dark"] .desemp-hist-row,
+html[data-theme="dark"] .inicio-rank-row,
+html[data-theme="dark"] .rk-rank-row,
+html[data-theme="dark"] .rk-action-card,
+html[data-theme="dark"] .rk-alt,
+html[data-theme="dark"] .rk-comp-row,
+html[data-theme="dark"] .rk-nota-btn,
+html[data-theme="dark"] .user-profile {
+  background: #1e293b;
+}
+
+html[data-theme="dark"] .rk-question-card {
+  background: #1e293b;
+}
+
+/* Destaques com #eff6ff (azul claro) */
+html[data-theme="dark"] .inicio-rank-row.current,
+html[data-theme="dark"] .rk-rank-row.current-week,
+html[data-theme="dark"] .rk-alt.selected {
+  background: #1e3a5f;
+}
+
+/* Hover vermelho do btn-limpar */
+html[data-theme="dark"] .btn-limpar-hist:hover {
+  background: #3b1010;
+}
+
+/* Login / Selection screens */
+html[data-theme="dark"] .login-screen,
+html[data-theme="dark"] .selection-screen,
+html[data-theme="dark"] .course-selection-screen {
+  background: var(--bg-main);
+}
+
+html[data-theme="dark"] .login-card,
+html[data-theme="dark"] .selection-card,
+html[data-theme="dark"] .course-card {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+/* Scrollbar */
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Cronograma — type tags e subject tags coloridas */
+html[data-theme="dark"] .type-tag.uerj  { background: #3b2000; color: #fbbf24; }
+html[data-theme="dark"] .type-tag.enem  { background: #052e16; color: #34d399; }
+html[data-theme="dark"] .type-tag.both  { background: #2d1f5e; color: #c4b5fd; }
+html[data-theme="dark"] .subject-tag.tipo-redacao { background: #3b2500; color: #fbbf24; }
+html[data-theme="dark"] .subject-tag.tipo-simulado { background: #1e1b4b; color: #a5b4fc; }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

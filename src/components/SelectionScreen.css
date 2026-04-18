@@ -1,0 +1,109 @@
+.selection-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
+  padding: 2rem;
+}
+
+.selection-content {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.selection-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.selection-header h1 {
+  font-size: 2.5rem;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.selection-header h1 span {
+  color: var(--primary);
+}
+
+.selection-header p {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+}
+
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.selection-card {
+  background: var(--bg-card);
+  border: 2px solid transparent;
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selection-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  background: var(--bg-main);
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.selection-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+}
+
+.selection-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Modifier Styles */
+.selection-card.enem:hover {
+  border-color: var(--accent-enem);
+}
+.selection-card.uerj:hover {
+  border-color: var(--accent-uerj);
+}
+.selection-card.both:hover {
+  border-color: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .selection-header h1 {
+    font-size: 2rem;
+  }
+}
+
+/* ── Dark Mode Fixes ── */
+html[data-theme="dark"] .selection-container {
+  background: radial-gradient(circle at top left, var(--primary-light), transparent),
+              radial-gradient(circle at bottom right, var(--secondary-light), var(--bg-main));
+}
+
+html[data-theme="dark"] .card-icon {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+}

@@ -1,0 +1,403 @@
+.materias-container {
+  padding: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.materias-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.header-text h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+  font-family: 'Outfit', sans-serif;
+}
+
+.header-text p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.course-indicator {
+  background: var(--secondary-light);
+  color: var(--secondary);
+  padding: 0.6rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  white-space: nowrap;
+}
+
+/* ── BUSCA ───────────────────────────────────────────────────────────────── */
+.materias-search {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 2rem;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.materias-search input {
+  border: none;
+  background: none;
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  color: var(--text-main);
+}
+
+/* ── GRID ────────────────────────────────────────────────────────────────── */
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.subject-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.subject-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: var(--materia-cor);
+}
+
+.subject-card.specific {
+  border: 2px solid var(--secondary);
+  background: linear-gradient(to bottom right, #ffffff, var(--secondary-light));
+}
+
+.specific-badge {
+  position: absolute;
+  top: -10px;
+  right: 16px;
+  background: var(--secondary);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.subject-icon {
+  font-size: 1.8rem;
+  height: 52px;
+  width: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.subject-card:hover .subject-icon {
+  transform: scale(1.08);
+}
+
+.subject-info h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+  color: var(--text-main);
+}
+
+.subject-info p {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.subject-progress-container {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.progress-label strong {
+  color: var(--text-main);
+  font-family: 'Outfit', sans-serif;
+}
+
+.progress-bar {
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.open-subject-btn {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-main);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.subject-card:hover .open-subject-btn {
+  background: var(--materia-cor);
+  color: white;
+  border-color: var(--materia-cor);
+}
+
+/* ── DETAIL VIEW ─────────────────────────────────────────────────────────── */
+.back-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding: 0.4rem 0;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.back-link:hover {
+  color: var(--primary);
+}
+
+.materia-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+}
+
+.materia-detail-icon {
+  font-size: 2.5rem;
+  height: 72px;
+  width: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--materia-cor) 12%, transparent);
+  flex-shrink: 0;
+}
+
+.materia-detail-info {
+  flex: 1;
+  min-width: 220px;
+}
+
+.materia-detail-info h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: var(--text-main);
+}
+
+.materia-detail-info p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.detail-bar {
+  height: 8px;
+  max-width: 100%;
+}
+
+.btn-praticar-topo {
+  background: var(--materia-cor);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn-praticar-topo:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(0.92);
+}
+
+/* ── FILTRO DE TÓPICOS ───────────────────────────────────────────────────── */
+.topicos-filtro {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.filtro-chip {
+  padding: 0.35rem 0.9rem;
+  border-radius: 99px;
+  border: 1.5px solid var(--border-color);
+  background: var(--card-bg);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.filtro-chip:hover { border-color: var(--primary); color: var(--primary); }
+.filtro-chip.ativo { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+/* ── LEGENDA PROGRESSO ───────────────────────────────────────────────────── */
+.prog-legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.72rem;
+  margin-top: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* ── PROGRESS BAR STACKED ────────────────────────────────────────────────── */
+.progress-bar.stacked {
+  position: relative;
+  overflow: visible;
+}
+
+/* ── TÓPICOS ─────────────────────────────────────────────────────────────── */
+.topicos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.topico-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  transition: all 0.15s;
+}
+.topico-card:hover { border-color: var(--materia-cor); transform: translateX(3px); }
+.topico-card.status-1 { border-left-color: #f59e0b; }
+.topico-card.status-2 { border-left-color: #16a34a; background: var(--bg-main); opacity: 0.8; }
+
+.topico-check {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  background: var(--card-bg);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.18s;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+.topico-check:hover { transform: scale(1.15); }
+.topico-check.st-0 { color: var(--text-muted); }
+.topico-check.st-1 { background: #fef3c7; border-color: #f59e0b; color: #92400e; font-size: 1rem; }
+.topico-check.st-2 { background: #dcfce7; border-color: #16a34a; color: #15803d; font-size: 1rem; }
+
+.topico-content { flex: 1; min-width: 0; }
+
+.topico-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+.topico-content h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+.topico-quando {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.topico-done { text-decoration: line-through; color: var(--text-muted); }
+.topico-dica { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; margin: 0; }
+.topicos-vazio { color: var(--text-muted); font-size: 0.88rem; text-align: center; padding: 2rem; }
+
+.topico-praticar {
+  background: transparent;
+  border: 1.5px solid var(--border-color);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.topico-praticar:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+@media (max-width: 640px) {
+  .materias-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .materia-detail-header {
+    padding: 1.25rem;
+  }
+}
