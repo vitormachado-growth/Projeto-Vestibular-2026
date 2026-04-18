@@ -35,20 +35,14 @@ function App() {
   });
 
   useEffect(() => {
-    const isOAuthCallback = new URLSearchParams(window.location.search).has('code')
-      || window.location.hash.includes('access_token');
-
-    if (!isOAuthCallback) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
-      });
-    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session) setShowLogin(false);
-      setLoading(false);
+      if (session?.user) setShowLogin(false);
     });
 
     return () => subscription.unsubscribe();
@@ -152,7 +146,7 @@ function App() {
   // 1. Visitor Flow (Non-logged in)
   if (!user || !user.id) {
     if (showLogin) {
-      return <LoginScreen onLogin={() => setShowLogin(false)} />;
+      return <LoginScreen />;
     }
     return (
       <LandingPage
