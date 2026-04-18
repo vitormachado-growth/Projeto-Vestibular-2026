@@ -35,10 +35,22 @@ function App() {
   });
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    const code = new URLSearchParams(window.location.search).get('code');
+
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code)
+        .then(({ data }) => {
+          setUser(data?.session?.user ?? null);
+          setLoading(false);
+          window.history.replaceState({}, '', window.location.pathname);
+        })
+        .catch(() => setLoading(false));
+    } else {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null);
+        setLoading(false);
+      });
+    }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
