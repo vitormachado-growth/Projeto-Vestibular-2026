@@ -19,8 +19,11 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
-  const [focus, setFocus] = useState(null);
-  const [course, setCourse] = useState(null);
+  
+  // Persist focus and course
+  const [focus, setFocus] = useState(() => localStorage.getItem('study_focus'));
+  const [course, setCourse] = useState(() => localStorage.getItem('study_course'));
+  
   const [currentView, setCurrentView] = useState('inicio');
   const [questoesFilter, setQuestoesFilter] = useState(null);
 
@@ -32,14 +35,18 @@ function App() {
   });
 
   useEffect(() => {
-    // 1. Check current session on mount
+    console.log('Auth state initializing...');
+    
+    // 1. Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session ? 'User Found' : 'No User');
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
     // 2. Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth change event:', _event, 'User:', session?.user?.email);
       setUser(session?.user ?? null);
       if (session) setShowLogin(false);
     });
@@ -52,12 +59,25 @@ function App() {
     localStorage.setItem('dark_mode', String(darkMode));
   }, [darkMode]);
 
+  // Sync focus/course with localStorage
+  useEffect(() => {
+    if (focus) localStorage.setItem('study_focus', focus);
+    else localStorage.removeItem('study_focus');
+  }, [focus]);
+
+  useEffect(() => {
+    if (course) localStorage.setItem('study_course', course);
+    else localStorage.removeItem('study_course');
+  }, [course]);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.removeItem('study_focus');
+    localStorage.removeItem('study_course');
     setUser(null);
-    setCurrentView('inicio');
     setFocus(null);
     setCourse(null);
+    setCurrentView('inicio');
   };
 
   const handleSelectFocus = (selectedFocus) => {
@@ -130,7 +150,7 @@ function App() {
   }
 
   // 1. Visitor Flow (Non-logged in)
-  if (!user) {
+  if (!user || !user.id) {
     if (showLogin) {
       return <LoginScreen onLogin={() => setShowLogin(false)} />;
     }
