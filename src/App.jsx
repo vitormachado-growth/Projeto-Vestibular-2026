@@ -35,20 +35,10 @@ function App() {
   });
 
   useEffect(() => {
-    console.log('Auth state initializing...');
-    
-    // 1. Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session check:', session ? 'User Found' : 'No User');
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    // 2. Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth change event:', _event, 'User:', session?.user?.email);
       setUser(session?.user ?? null);
       if (session) setShowLogin(false);
+      if (_event === 'INITIAL_SESSION') setLoading(false);
     });
 
     return () => subscription.unsubscribe();

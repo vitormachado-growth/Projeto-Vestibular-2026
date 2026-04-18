@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import './LoginScreen.css';
 
-const LoginScreen = ({ onLogin }) => {
+const LoginScreen = () => {
   const [activeTab, setActiveTab] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -51,7 +51,6 @@ const LoginScreen = ({ onLogin }) => {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        onLogin();
       }
     } catch (err) {
       setError(err.message);
