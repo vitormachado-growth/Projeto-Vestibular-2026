@@ -7,7 +7,8 @@ const Sidebar = ({ user, focus, currentView, onViewChange, collapsed, onToggle, 
     return focus.toUpperCase();
   };
 
-  const userInitial = user?.email?.charAt(0).toUpperCase() || 'E';
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Estudante';
+  const userInitial = displayName.charAt(0).toUpperCase();
 
   const navItems = [
     { id: 'inicio', label: 'Início', icon: '🏠', group: 'Principal' },
@@ -69,7 +70,7 @@ const Sidebar = ({ user, focus, currentView, onViewChange, collapsed, onToggle, 
           <div className="avatar">{userInitial}</div>
           {!collapsed && (
             <div className="user-info">
-              <p className="name">{user?.email?.split('@')[0] || 'Estudante'}</p>
+              <p className="name">{displayName}</p>
               <button className="logout-link" onClick={onLogout}>Sair</button>
             </div>
           )}
