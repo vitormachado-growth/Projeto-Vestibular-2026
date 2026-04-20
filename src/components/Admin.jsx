@@ -191,6 +191,13 @@ const AREA_LABELS = {
   naturezas: 'Naturezas',
 };
 
+const ENEM_DISCIPLINE = {
+  humanas: 'ciencias-humanas',
+  linguagens: 'linguagens',
+  matematica: 'matematica',
+  naturezas: 'ciencias-natureza',
+};
+
 const emptyQuestao = (ordem, area) => ({
   ordem,
   area,
@@ -214,6 +221,7 @@ const SimuladoEditor = ({ id, onBack }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState(null);
+  const [showImport, setShowImport] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -258,6 +266,15 @@ const SimuladoEditor = ({ id, onBack }) => {
     const maxOrdem = questoes.reduce((m, q) => Math.max(m, q.ordem), 0);
     setQuestoes(qs => [...qs, emptyQuestao(maxOrdem + 1, areaAtiva)]);
   };
+
+  const handleImportEnem = (novas) => {
+    setQuestoes(qs => [...qs, ...novas]);
+    setShowImport(false);
+    setMsg(`${novas.length} questões importadas! Lembre-se de clicar em "Salvar tudo".`);
+    setTimeout(() => setMsg(null), 5000);
+  };
+
+  const proximaOrdem = () => questoes.reduce((m, q) => Math.max(m, q.ordem), 0) + 1;
 
   const removeQuestao = async (idx) => {
     const q = questoes[idx];
@@ -388,11 +405,179 @@ const SimuladoEditor = ({ id, onBack }) => {
               })
             )}
           </div>
-          <button className="admin-btn primary block" onClick={addQuestao}>
-            + Adicionar questão de {AREA_LABELS[areaAtiva]}
-          </button>
+          <div className="admin-add-actions">
+            <button className="admin-btn primary" onClick={() => setShowImport(true)}>
+              📥 Importar do ENEM
+            </button>
+            <button className="admin-btn" onClick={addQuestao}>
+              + Criar em branco
+            </button>
+          </div>
         </>
       )}
+
+      {showImport && (
+        <ImportadorEnem
+          area={areaAtiva}
+          proximaOrdem={proximaOrdem()}
+          onImport={handleImportEnem}
+          onClose={() => setShowImport(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────
+   Importador ENEM (api.enem.dev)
+   ───────────────────────────────────── */
+
+const ImportadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
+  const [years, setYears] = useState([]);
+  const [year, setYear] = useState('');
+  const [questoes, setQuestoes] = useState([]);
+  const [selected, setSelected] = useState(new Set());
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const discipline = ENEM_DISCIPLINE[area];
+
+  useEffect(() => {
+    fetch('https://api.enem.dev/v1/exams')
+      .then(r => r.json())
+      .then(data => {
+        const arr = Array.isArray(data) ? data : [];
+        setYears(arr.sort((a, b) => b.year - a.year));
+      })
+      .catch(() => setError('Falha ao carregar anos disponíveis.'));
+  }, []);
+
+  useEffect(() => {
+    if (!year) return;
+    setLoading(true);
+    setError(null);
+    setSelected(new Set());
+    fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=200`)
+      .then(r => r.json())
+      .then(data => {
+        const all = data.questions || [];
+        const filtered = all.filter(q => q.discipline === discipline);
+        setQuestoes(filtered);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Erro ao carregar questões do ENEM.');
+        setLoading(false);
+      });
+  }, [year, discipline]);
+
+  const toggle = (idx) => {
+    setSelected(s => {
+      const n = new Set(s);
+      if (n.has(idx)) n.delete(idx); else n.add(idx);
+      return n;
+    });
+  };
+
+  const toggleAll = () => {
+    setSelected(s => s.size === questoes.length
+      ? new Set()
+      : new Set(questoes.map(q => q.index)));
+  };
+
+  const importar = () => {
+    const escolhidas = questoes.filter(q => selected.has(q.index));
+    const mapeadas = escolhidas.map((q, i) => ({
+      ordem: proximaOrdem + i,
+      area,
+      enunciado: [q.context, q.alternativesIntroduction, q.alternativeIntroduction]
+        .filter(Boolean)
+        .join('\n\n') || q.title || '',
+      alternativas: (q.alternatives || []).map(a => ({
+        letra: a.letter,
+        texto: a.text || (a.file ? `[Imagem: ${a.file}]` : ''),
+      })),
+      gabarito: q.correctAlternative,
+      _novo: true,
+    }));
+    onImport(mapeadas);
+  };
+
+  return (
+    <div className="admin-modal-overlay" onClick={onClose}>
+      <div className="admin-modal" onClick={e => e.stopPropagation()}>
+        <header className="admin-modal-head">
+          <div>
+            <h3>Importar do ENEM</h3>
+            <p className="admin-muted">Área: {AREA_LABELS[area]} · via api.enem.dev</p>
+          </div>
+          <button className="admin-modal-close" onClick={onClose}>×</button>
+        </header>
+
+        <div className="admin-modal-body">
+          <div className="admin-field">
+            <label>Ano da prova</label>
+            <select value={year} onChange={e => setYear(e.target.value)}>
+              <option value="">Selecione um ano…</option>
+              {years.map(y => (
+                <option key={y.year} value={y.year}>{y.title || `ENEM ${y.year}`}</option>
+              ))}
+            </select>
+          </div>
+
+          {error && <div className="admin-alert error">{error}</div>}
+          {loading && <p className="admin-muted">Carregando questões…</p>}
+
+          {!loading && year && questoes.length > 0 && (
+            <>
+              <div className="admin-import-summary">
+                <span>
+                  <strong>{questoes.length}</strong> questões disponíveis ·
+                  <strong> {selected.size}</strong> selecionadas
+                </span>
+                <button type="button" className="admin-btn small" onClick={toggleAll}>
+                  {selected.size === questoes.length ? 'Desmarcar todas' : 'Selecionar todas'}
+                </button>
+              </div>
+
+              <div className="admin-import-list">
+                {questoes.map(q => {
+                  const checked = selected.has(q.index);
+                  const preview = (q.context || q.title || '').replace(/\s+/g, ' ').slice(0, 180);
+                  return (
+                    <label key={q.index} className={`admin-import-item ${checked ? 'checked' : ''}`}>
+                      <input type="checkbox" checked={checked} onChange={() => toggle(q.index)} />
+                      <div className="admin-import-item-body">
+                        <div className="admin-import-item-head">
+                          <strong>Questão {q.index}</strong>
+                          {q.language && <span className="admin-badge">{q.language}</span>}
+                          <span className="admin-muted">Gabarito: {q.correctAlternative}</span>
+                        </div>
+                        <p>{preview}{preview.length >= 180 ? '…' : ''}</p>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {!loading && year && questoes.length === 0 && !error && (
+            <p className="admin-muted">Nenhuma questão de {AREA_LABELS[area]} para este ano.</p>
+          )}
+        </div>
+
+        <footer className="admin-modal-foot">
+          <button className="admin-btn" onClick={onClose}>Cancelar</button>
+          <button
+            className="admin-btn primary"
+            onClick={importar}
+            disabled={selected.size === 0}
+          >
+            Importar {selected.size > 0 ? `${selected.size} ` : ''}questões
+          </button>
+        </footer>
+      </div>
     </div>
   );
 };
