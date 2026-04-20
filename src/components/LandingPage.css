@@ -449,34 +449,112 @@ html[data-theme="dark"] .grid-box {
     text-align: center;
     padding-top: 6rem;
   }
-  
+
   .hero-content {
     margin-bottom: 5rem;
   }
-  
+
   .hero-actions {
     justify-content: center;
   }
-  
+
   .hero-stats {
     justify-content: center;
   }
-  
+
   .hero-content h1 {
     font-size: 3rem;
   }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .footer-links {
+    gap: 2.5rem;
+    flex-wrap: wrap;
+  }
 }
 
-@media (max-width: 480px) {
-  .hero-content h1 {
-    font-size: 2.5rem;
+@media (max-width: 640px) {
+  /* Nav: esconde links de texto, mantém só logo + ações */
+  .landing-nav {
+    padding: 1rem 4%;
   }
-  
+
+  .nav-links a {
+    display: none;
+  }
+
+  .nav-links {
+    gap: 0.75rem;
+  }
+
+  .landing-logo h2 {
+    font-size: 1.35rem;
+  }
+
+  .nav-login-btn {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.88rem;
+  }
+
+  /* Hero */
+  .hero-section {
+    padding: 3rem 4% 4rem;
+    min-height: unset;
+  }
+
+  .hero-content h1 {
+    font-size: 2.4rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+
   .hero-actions {
     flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
   }
-  
-  .main-card {
-    width: 300px;
+
+  .cta-primary,
+  .cta-secondary {
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .hero-stats {
+    gap: 1.75rem;
+  }
+
+  /* Esconde o visual decorativo em telas muito pequenas */
+  .hero-visual {
+    display: none;
+  }
+
+  /* Features */
+  .features-section {
+    padding: 4rem 4%;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+  }
+
+  /* Footer */
+  .landing-footer {
+    padding: 4rem 4% 3rem;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    gap: 2rem;
   }
 }
