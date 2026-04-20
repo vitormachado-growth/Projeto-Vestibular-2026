@@ -514,15 +514,88 @@ html[data-theme="dark"] .tag-feito.nota-baixo { background: #3b1010 !important; 
 
 /* ── NOTA FINAL ──────────────────────────────────────────────────────────── */
 .nota-final {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 2rem 1.5rem;
+  padding: 1.75rem 1.5rem 1.25rem;
   background: var(--bg-main);
   border: 1.5px solid var(--border-color);
   border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
+
+.nota-principal {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.nota-barra-wrap {
+  width: 100%;
+  max-width: 360px;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.nota-barra-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.6s ease;
+}
+
+.nota-barra-ok   { background: #10b981; }
+.nota-barra-medio { background: #f59e0b; }
+.nota-barra-baixo { background: #ef4444; }
+
+.nota-faixa {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── FEEDBACK BOXES ──────────────────────────────────────────────────────── */
+.feedback-box {
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.feedback-box h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.6rem;
+}
+
+.feedback-box ul,
+.feedback-box ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.feedback-fortes {
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+}
+
+.feedback-fortes h4 { color: #059669; }
+
+.feedback-sugestoes {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #78350f;
+}
+
+.feedback-sugestoes h4 { color: #d97706; }
 
 .nota-label {
   font-size: 0.85rem;
@@ -652,6 +725,61 @@ html[data-theme="dark"] .tag-feito.nota-baixo { background: #3b1010 !important; 
   border-top: 1px solid var(--border-color);
 }
 
+.metricas-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.metricas-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-arg {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-con {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+
+.comp-barra-wrap {
+  height: 4px;
+  background: var(--border-color);
+  border-radius: 99px;
+  overflow: hidden;
+  margin: 0.1rem 0;
+}
+
+.comp-barra-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--primary);
+  transition: width 0.5s ease;
+}
+
+.comp-card.comp-ok .comp-barra-fill { background: #10b981; }
+.comp-card.comp-medio .comp-barra-fill { background: #f59e0b; }
+.comp-card.comp-baixo .comp-barra-fill { background: #ef4444; }
+
 /* ── DETAILS ─────────────────────────────────────────────────────────────── */
 .redacao-details summary {
   cursor: pointer;
@@ -684,3 +812,31 @@ html[data-theme="dark"] .tag-feito.nota-baixo { background: #3b1010 !important; 
   box-shadow: none !important;
   transform: none !important;
 }
+
+/* ── DARK MODE ────────────────────────────────────────────────────────────── */
+html[data-theme="dark"] .feedback-fortes {
+  background: #022c22;
+  border-color: #065f46;
+  color: #6ee7b7;
+}
+html[data-theme="dark"] .feedback-fortes h4 { color: #34d399; }
+
+html[data-theme="dark"] .feedback-sugestoes {
+  background: #1c1408;
+  border-color: #92400e;
+  color: #fcd34d;
+}
+html[data-theme="dark"] .feedback-sugestoes h4 { color: #fbbf24; }
+
+html[data-theme="dark"] .badge-arg {
+  background: #1e3a5f;
+  color: #93c5fd;
+}
+html[data-theme="dark"] .badge-con {
+  background: #2e1065;
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .comp-card.comp-ok { background: #022c22; border-color: #059669; }
+html[data-theme="dark"] .comp-card.comp-medio { background: #1c1408; border-color: #d97706; }
+html[data-theme="dark"] .comp-card.comp-baixo { background: #1f0707; border-color: #dc2626; }

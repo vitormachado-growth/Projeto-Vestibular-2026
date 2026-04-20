@@ -348,31 +348,69 @@ export default function Redacao() {
             </>
           ) : correcao && (
             <div className="redacao-enviada">
+
+              {/* Nota + barra de progresso */}
               <div className="nota-final">
-                <span className="nota-label">Nota da IA</span>
-                <span className={`nota-valor nota-${notaClasse(correcao.notaTotal)}`}>
-                  {correcao.notaTotal}
-                </span>
-                <span className="nota-max">/ 1000</span>
+                <div className="nota-principal">
+                  <span className="nota-label">Nota da IA</span>
+                  <span className={`nota-valor nota-${notaClasse(correcao.notaTotal)}`}>
+                    {correcao.notaTotal}
+                  </span>
+                  <span className="nota-max">/ 1000</span>
+                </div>
+                <div className="nota-barra-wrap">
+                  <div
+                    className={`nota-barra-fill nota-barra-${notaClasse(correcao.notaTotal)}`}
+                    style={{ width: `${(correcao.notaTotal / 1000) * 100}%` }}
+                  />
+                </div>
+                <p className="nota-faixa">
+                  {correcao.notaTotal >= 800 ? 'Excelente — acima da média dos aprovados' :
+                   correcao.notaTotal >= 600 ? 'Bom — dentro da faixa competitiva' :
+                   'Abaixo da média — foque nas sugestões abaixo'}
+                </p>
               </div>
 
+              {/* Pontos fortes */}
+              {correcao.pontosFortes.length > 0 && (
+                <div className="feedback-box feedback-fortes">
+                  <h4>Pontos fortes</h4>
+                  <ul>
+                    {correcao.pontosFortes.map((p, i) => <li key={i}>{p}</li>)}
+                  </ul>
+                </div>
+              )}
+
+              {/* Sugestões de melhoria */}
+              {correcao.sugestoes.length > 0 && (
+                <div className="feedback-box feedback-sugestoes">
+                  <h4>Como melhorar</h4>
+                  <ol>
+                    {correcao.sugestoes.map((s, i) => <li key={i}>{s}</li>)}
+                  </ol>
+                </div>
+              )}
+
+              {/* Cards de competências */}
               <div className="competencias-grid">
                 {correcao.competencias.map(c => (
                   <div key={c.numero} className={`comp-card comp-${notaClasse(c.nota * 5)}`}>
                     <div className="comp-header">
-                      <span className="comp-numero">Competência {c.numero}</span>
+                      <span className="comp-numero">C{c.numero}</span>
                       <span className="comp-nota">{c.nota}/200</span>
                     </div>
                     <p className="comp-titulo">{c.titulo}</p>
+                    <div className="comp-barra-wrap">
+                      <div className="comp-barra-fill" style={{ width: `${(c.nota / 200) * 100}%` }} />
+                    </div>
                     <ul className="comp-observacoes">
-                      {c.observacoes.map((o, i) => (
-                        <li key={i}>{o}</li>
-                      ))}
+                      {c.observacoes.map((o, i) => <li key={i}>{o}</li>)}
                     </ul>
                   </div>
                 ))}
               </div>
 
+              {/* Métricas detalhadas */}
               <div className="metricas-box">
                 <h4>Análise do texto</h4>
                 <div className="metricas-grid">
@@ -380,12 +418,33 @@ export default function Redacao() {
                   <div><strong>{correcao.metricas.paragrafos}</strong> parágrafos</div>
                   <div><strong>{correcao.metricas.frases}</strong> frases</div>
                   <div><strong>{correcao.metricas.conectivos}</strong> conectivos</div>
-                  <div><strong>{correcao.metricas.aderenciaTema}%</strong> aderência ao tema</div>
-                  <div><strong>{correcao.metricas.informalidades}</strong> informalidades</div>
+                  <div><strong>{correcao.metricas.aderenciaTema}%</strong> aderência</div>
+                  <div><strong>{correcao.metricas.diversidadeVocabular}%</strong> vocabulário único</div>
                 </div>
+
+                {correcao.metricas.tiposArgumentos.length > 0 && (
+                  <div className="metricas-badges">
+                    <span className="metricas-label">Argumentos:</span>
+                    {correcao.metricas.tiposArgumentos.map(t => (
+                      <span key={t} className="badge-arg">
+                        {{ exemplificacao: 'exemplificação', causalidade: 'causalidade', autoridade: 'autoridade', contraargumento: 'contraargumento' }[t]}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {correcao.metricas.categoriaConectivos.length > 0 && (
+                  <div className="metricas-badges">
+                    <span className="metricas-label">Conectivos:</span>
+                    {correcao.metricas.categoriaConectivos.map(c => (
+                      <span key={c} className="badge-con">{c}</span>
+                    ))}
+                  </div>
+                )}
+
                 {correcao.metricas.repetidas.length > 0 && (
                   <p className="metricas-repetidas">
-                    <strong>Palavras repetidas:</strong> {correcao.metricas.repetidas.join(', ')}
+                    <strong>Repetição excessiva:</strong> {correcao.metricas.repetidas.join(', ')}
                   </p>
                 )}
               </div>
