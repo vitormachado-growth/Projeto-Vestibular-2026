@@ -445,18 +445,29 @@ const mapearQuestao = (q, ordem, area) => ({
   _novo: true,
 });
 
+const PAGE_SIZE = 50;
+
 const buscarPorAnoArea = async (year, discipline) => {
   try {
-    // Tenta buscar 180 questões de uma vez (limite da prova)
-    const r1 = await fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=180`);
+    // 1ª página + total
+    const r1 = await fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=${PAGE_SIZE}&offset=0`);
     const d1 = await r1.json();
-    const batch1 = (d1.questions || []).filter(q => q.discipline === discipline);
-    if (batch1.length > 0) return batch1;
+    const total = d1.metadata?.total ?? 0;
+    const paginas = Math.ceil(total / PAGE_SIZE);
 
-    // 2° dia (matematica/naturezas) pode começar no offset 90
-    const r2 = await fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=90&offset=90`);
-    const d2 = await r2.json();
-    return (d2.questions || []).filter(q => q.discipline === discipline);
+    // Páginas restantes em paralelo
+    const offsets = Array.from({ length: paginas - 1 }, (_, i) => (i + 1) * PAGE_SIZE);
+    const resto = await Promise.all(
+      offsets.map(off =>
+        fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=${PAGE_SIZE}&offset=${off}`)
+          .then(r => r.json())
+          .then(d => d.questions || [])
+          .catch(() => [])
+      )
+    );
+
+    const todas = [...(d1.questions || []), ...resto.flat()];
+    return todas.filter(q => q.discipline === discipline);
   } catch {
     return [];
   }
@@ -498,7 +509,7 @@ const SorteadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
       // Busca sequencial pra não sobrecarregar a API
       const pool = [];
       for (const year of lista) {
-        setProgresso(`Buscando ENEM ${year}…`);
+        setProgresso(`Buscando ENEM ${year} (~4 páginas)…`);
         const qs = await buscarPorAnoArea(year, discipline);
         pool.push(...qs);
       }
