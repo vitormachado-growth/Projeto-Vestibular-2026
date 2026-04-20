@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import LandingPage from './components/LandingPage';
 import LoginScreen from './components/LoginScreen';
+import ProfileSetupScreen from './components/ProfileSetupScreen';
 import SelectionScreen from './components/SelectionScreen';
 import CourseSelectionScreen from './components/CourseSelectionScreen';
 import Layout from './components/Layout';
@@ -19,6 +20,8 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(false);
   
   // Persist focus and course
   const [focus, setFocus] = useState(() => localStorage.getItem('study_focus'));
@@ -51,6 +54,27 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Fetch profile when user logs in / out
+  useEffect(() => {
+    if (!user?.id) {
+      setProfile(null);
+      return;
+    }
+    let cancelled = false;
+    setProfileLoading(true);
+    supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (cancelled) return;
+        setProfile(data || null);
+        setProfileLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [user?.id]);
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
     localStorage.setItem('dark_mode', String(darkMode));
@@ -72,6 +96,7 @@ function App() {
     localStorage.removeItem('study_focus');
     localStorage.removeItem('study_course');
     setUser(null);
+    setProfile(null);
     setFocus(null);
     setCourse(null);
     setCurrentView('inicio');
@@ -161,7 +186,27 @@ function App() {
     );
   }
 
-  // 2. Onboarding Flow (First tasks after login)
+  // 2a. Profile setup (new registration step)
+  if (profileLoading) {
+    return (
+      <div className="app-loading">
+        <div className="loading-spinner"></div>
+        <p>Carregando perfil...</p>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <ProfileSetupScreen
+        user={user}
+        onComplete={setProfile}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  // 2b. Onboarding Flow (First tasks after login)
   if (!focus) {
     return <SelectionScreen onSelect={handleSelectFocus} onLogout={handleLogout} />;
   }
@@ -184,6 +229,7 @@ function App() {
       darkMode={darkMode}
       onToggleDark={() => setDarkMode(d => !d)}
       user={user}
+      profile={profile}
       onLogout={handleLogout}
     >
       {renderView()}

@@ -14,7 +14,7 @@ const viewTitles = {
   ranking: 'Simulados Semanais',
 };
 
-const Layout = ({ children, focus, currentView, onViewChange, darkMode, onToggleDark }) => {
+const Layout = ({ children, focus, currentView, onViewChange, darkMode, onToggleDark, user, profile, onLogout }) => {
   const [collapsed, setCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebar_collapsed');
     return saved === null ? true : saved === 'true';
@@ -35,6 +35,9 @@ const Layout = ({ children, focus, currentView, onViewChange, darkMode, onToggle
         onViewChange={onViewChange}
         collapsed={collapsed}
         onToggle={toggleCollapsed}
+        user={user}
+        profile={profile}
+        onLogout={onLogout}
       />
       <div className="main-wrapper">
         <Navbar

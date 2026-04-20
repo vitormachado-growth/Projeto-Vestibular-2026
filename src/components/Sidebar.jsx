@@ -1,13 +1,13 @@
 import './Sidebar.css';
 
-const Sidebar = ({ user, focus, currentView, onViewChange, collapsed, onToggle, onLogout }) => {
+const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, onToggle, onLogout }) => {
   const getFocusLabel = () => {
     if (!focus) return 'Não definida';
     if (focus === 'ambos') return 'ENEM + UERJ';
     return focus.toUpperCase();
   };
 
-  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Estudante';
+  const displayName = profile?.apelido || profile?.nome_completo?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Estudante';
   const userInitial = displayName.charAt(0).toUpperCase();
 
   const navItems = [
