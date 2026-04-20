@@ -40,7 +40,6 @@ function CountdownCard({ prova }) {
     { val: t.dias,  label: 'DIAS' },
     { val: t.horas, label: 'HRS'  },
     { val: t.min,   label: 'MIN'  },
-    { val: t.seg,   label: 'SEG'  },
   ];
 
   return (
