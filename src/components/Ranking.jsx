@@ -86,18 +86,18 @@ export default function Ranking() {
     ? simulados.find(s => s.id === temporadaAtiva.simulado_id)
     : null;
 
-  // Temporada pra mostrar no leaderboard: ativa, ou a mais recente finalizada
-  const temporadaLeaderboard = temporadaAtiva ||
-    temporadas.find(t => statusDe(t, hoje) === 'finalizada');
+  // Agrupa resultados por simulado e ordena por pontuação
+  const leaderboardPorSimulado = leaderboard.reduce((acc, r) => {
+    if (!acc[r.simulado_id]) acc[r.simulado_id] = [];
+    acc[r.simulado_id].push({ ...r, pontuacao: calcPontuacao(r) });
+    return acc;
+  }, {});
+  Object.values(leaderboardPorSimulado).forEach(entries =>
+    entries.sort((a, b) => b.pontuacao - a.pontuacao)
+  );
 
-  const leaderboardDaTemporada = temporadaLeaderboard
-    ? leaderboard
-        .filter(r => r.temporada_id === temporadaLeaderboard.id)
-        .map(r => ({ ...r, pontuacao: calcPontuacao(r) }))
-        .sort((a, b) => b.pontuacao - a.pontuacao)
-    : [];
-
-  const minhaPosicao = leaderboardDaTemporada.findIndex(r => r.user_id === currentUserId) + 1;
+  // Simulados que já têm ao menos 1 resultado — ordenados pela ordem de exibição
+  const simuladosComRanking = simulados.filter(s => leaderboardPorSimulado[s.id]?.length > 0);
 
   if (playing) {
     return (
@@ -170,34 +170,34 @@ export default function Ranking() {
         )}
       </div>
 
-      {temporadaLeaderboard && leaderboardDaTemporada.length > 0 && (
-        <Leaderboard
-          temporada={temporadaLeaderboard}
-          entries={leaderboardDaTemporada}
-          currentUserId={currentUserId}
-          minhaPosicao={minhaPosicao}
-        />
-      )}
+      {simuladosComRanking.map(s => {
+        const entries = leaderboardPorSimulado[s.id];
+        const minhaPosicao = entries.findIndex(r => r.user_id === currentUserId) + 1;
+        return (
+          <Leaderboard
+            key={s.id}
+            titulo={s.titulo}
+            entries={entries}
+            currentUserId={currentUserId}
+            minhaPosicao={minhaPosicao}
+          />
+        );
+      })}
     </div>
   );
 }
 
-function Leaderboard({ temporada, entries, currentUserId, minhaPosicao }) {
+function Leaderboard({ titulo, entries, currentUserId, minhaPosicao }) {
   const top3 = entries.slice(0, 3);
-  const resto = entries.slice(3);
 
-  const initial = (e) => {
-    const nome = e.apelido || e.nome_completo || '?';
-    return nome.charAt(0).toUpperCase();
-  };
-
+  const initial = (e) => (e.apelido || e.nome_completo || '?').charAt(0).toUpperCase();
   const nomeEx = (e) => e.apelido || e.nome_completo?.split(' ')[0] || 'Aluno';
 
   return (
     <>
       <div className="rk-section">
         <div className="rk-lb-head">
-          <h2>Ranking — Temporada #{temporada.numero}</h2>
+          <h2>🏆 Ranking — {titulo}</h2>
           {minhaPosicao > 0 && (
             <div className="rk-my-pos">
               <span className="rk-my-pos-label">Sua posição</span>
@@ -209,33 +209,31 @@ function Leaderboard({ temporada, entries, currentUserId, minhaPosicao }) {
         {top3.length > 0 && <Podio players={top3} currentUserId={currentUserId} />}
       </div>
 
-      {resto.length > 0 && (
-        <div className="rk-section">
-          <h2>Classificação completa</h2>
-          <div className="rk-ranking-list">
-            {entries.map((e, i) => {
-              const isYou = e.user_id === currentUserId;
-              const barPct = Math.min(100, (e.pontuacao / 1000) * 100);
-              const barColor = e.pontuacao >= 700 ? '#16a34a' : e.pontuacao >= 500 ? '#ca8a04' : '#dc2626';
-              return (
-                <div key={e.user_id} className={`rk-rank-row ${isYou ? 'current-week' : ''}`}>
-                  <span className="rk-rank-pos">
-                    {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
-                  </span>
-                  <div className="rk-rank-avatar">
-                    {e.avatar_url ? <img src={e.avatar_url} alt="" /> : initial(e)}
-                  </div>
-                  <span className="rk-rank-week">{isYou ? 'Você' : nomeEx(e)}</span>
-                  <div className="rk-rank-bar-wrap">
-                    <div className="rk-rank-bar-fill" style={{ width: `${barPct}%`, background: barColor }} />
-                  </div>
-                  <span className="rk-rank-score">{e.pontuacao} pts</span>
+      <div className="rk-section">
+        <h2>Classificação completa</h2>
+        <div className="rk-ranking-list">
+          {entries.map((e, i) => {
+            const isYou = e.user_id === currentUserId;
+            const barPct = Math.min(100, (e.pontuacao / 1000) * 100);
+            const barColor = e.pontuacao >= 700 ? '#16a34a' : e.pontuacao >= 500 ? '#ca8a04' : '#dc2626';
+            return (
+              <div key={e.user_id} className={`rk-rank-row ${isYou ? 'current-week' : ''}`}>
+                <span className="rk-rank-pos">
+                  {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
+                </span>
+                <div className="rk-rank-avatar">
+                  {e.avatar_url ? <img src={e.avatar_url} alt="" /> : initial(e)}
                 </div>
-              );
-            })}
-          </div>
+                <span className="rk-rank-week">{isYou ? 'Você' : nomeEx(e)}</span>
+                <div className="rk-rank-bar-wrap">
+                  <div className="rk-rank-bar-fill" style={{ width: `${barPct}%`, background: barColor }} />
+                </div>
+                <span className="rk-rank-score">{e.pontuacao} pts</span>
+              </div>
+            );
+          })}
         </div>
-      )}
+      </div>
     </>
   );
 }
