@@ -407,7 +407,7 @@ const SimuladoEditor = ({ id, onBack }) => {
           </div>
           <div className="admin-add-actions">
             <button className="admin-btn primary" onClick={() => setShowImport(true)}>
-              📥 Importar do ENEM
+              🎲 Sortear do ENEM
             </button>
             <button className="admin-btn" onClick={addQuestao}>
               + Criar em branco
@@ -417,7 +417,7 @@ const SimuladoEditor = ({ id, onBack }) => {
       )}
 
       {showImport && (
-        <ImportadorEnem
+        <SorteadorEnem
           area={areaAtiva}
           proximaOrdem={proximaOrdem()}
           onImport={handleImportEnem}
@@ -429,15 +429,35 @@ const SimuladoEditor = ({ id, onBack }) => {
 };
 
 /* ─────────────────────────────────────
-   Importador ENEM (api.enem.dev)
+   Sorteador ENEM (api.enem.dev)
    ───────────────────────────────────── */
 
-const ImportadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
-  const [years, setYears] = useState([]);
-  const [year, setYear] = useState('');
-  const [questoes, setQuestoes] = useState([]);
-  const [selected, setSelected] = useState(new Set());
+const mapearQuestao = (q, ordem, area) => ({
+  ordem,
+  area,
+  enunciado: [q.context, q.alternativesIntroduction, q.alternativeIntroduction]
+    .filter(Boolean).join('\n\n') || q.title || '',
+  alternativas: (q.alternatives || []).map(a => ({
+    letra: a.letter,
+    texto: a.text || (a.file ? `[Imagem: ${a.file}]` : ''),
+  })),
+  gabarito: q.correctAlternative,
+  _novo: true,
+});
+
+const buscarPorAnoArea = (year, discipline) =>
+  fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=200`)
+    .then(r => r.json())
+    .then(d => (d.questions || []).filter(q => q.discipline === discipline))
+    .catch(() => []);
+
+const SorteadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
+  const [anos, setAnos] = useState([]);
+  const [anosEscolhidos, setAnosEscolhidos] = useState(new Set());
+  const [quantidade, setQuantidade] = useState(40);
   const [loading, setLoading] = useState(false);
+  const [loadingAnos, setLoadingAnos] = useState(true);
+  const [progresso, setProgresso] = useState('');
   const [error, setError] = useState(null);
 
   const discipline = ENEM_DISCIPLINE[area];
@@ -446,135 +466,109 @@ const ImportadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
     fetch('https://api.enem.dev/v1/exams')
       .then(r => r.json())
       .then(data => {
-        const arr = Array.isArray(data) ? data : [];
-        setYears(arr.sort((a, b) => b.year - a.year));
+        const arr = (Array.isArray(data) ? data : []).sort((a, b) => b.year - a.year);
+        setAnos(arr);
+        setAnosEscolhidos(new Set(arr.slice(0, 5).map(a => a.year)));
+        setLoadingAnos(false);
       })
-      .catch(() => setError('Falha ao carregar anos disponíveis.'));
+      .catch(() => { setError('Falha ao carregar anos.'); setLoadingAnos(false); });
   }, []);
 
-  useEffect(() => {
-    if (!year) return;
+  const toggleAno = (year) =>
+    setAnosEscolhidos(s => { const n = new Set(s); n.has(year) ? n.delete(year) : n.add(year); return n; });
+
+  const sortear = async () => {
     setLoading(true);
     setError(null);
-    setSelected(new Set());
-    fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=200`)
-      .then(r => r.json())
-      .then(data => {
-        const all = data.questions || [];
-        const filtered = all.filter(q => q.discipline === discipline);
-        setQuestoes(filtered);
+    try {
+      const lista = [...anosEscolhidos];
+      setProgresso(`Buscando questões de ${lista.length} prova(s)…`);
+      const resultados = await Promise.all(lista.map(y => buscarPorAnoArea(y, discipline)));
+      const pool = resultados.flat();
+
+      if (pool.length === 0) {
+        setError('Nenhuma questão encontrada para esta área nos anos selecionados.');
         setLoading(false);
-      })
-      .catch(() => {
-        setError('Erro ao carregar questões do ENEM.');
-        setLoading(false);
-      });
-  }, [year, discipline]);
+        return;
+      }
 
-  const toggle = (idx) => {
-    setSelected(s => {
-      const n = new Set(s);
-      if (n.has(idx)) n.delete(idx); else n.add(idx);
-      return n;
-    });
-  };
-
-  const toggleAll = () => {
-    setSelected(s => s.size === questoes.length
-      ? new Set()
-      : new Set(questoes.map(q => q.index)));
-  };
-
-  const importar = () => {
-    const escolhidas = questoes.filter(q => selected.has(q.index));
-    const mapeadas = escolhidas.map((q, i) => ({
-      ordem: proximaOrdem + i,
-      area,
-      enunciado: [q.context, q.alternativesIntroduction, q.alternativeIntroduction]
-        .filter(Boolean)
-        .join('\n\n') || q.title || '',
-      alternativas: (q.alternatives || []).map(a => ({
-        letra: a.letter,
-        texto: a.text || (a.file ? `[Imagem: ${a.file}]` : ''),
-      })),
-      gabarito: q.correctAlternative,
-      _novo: true,
-    }));
-    onImport(mapeadas);
+      const embaralhadas = [...pool].sort(() => Math.random() - 0.5);
+      const escolhidas = embaralhadas.slice(0, Math.min(quantidade, embaralhadas.length));
+      setProgresso(`Montando ${escolhidas.length} questões…`);
+      onImport(escolhidas.map((q, i) => mapearQuestao(q, proximaOrdem + i, area)));
+    } catch {
+      setError('Erro ao sortear. Tente novamente.');
+      setLoading(false);
+    }
   };
 
   return (
     <div className="admin-modal-overlay" onClick={onClose}>
-      <div className="admin-modal" onClick={e => e.stopPropagation()}>
+      <div className="admin-modal admin-modal-sm" onClick={e => e.stopPropagation()}>
         <header className="admin-modal-head">
           <div>
-            <h3>Importar do ENEM</h3>
-            <p className="admin-muted">Área: {AREA_LABELS[area]} · via api.enem.dev</p>
+            <h3>🎲 Sortear questões</h3>
+            <p className="admin-muted">Área: {AREA_LABELS[area]}</p>
           </div>
           <button className="admin-modal-close" onClick={onClose}>×</button>
         </header>
 
         <div className="admin-modal-body">
+          {error && <div className="admin-alert error">{error}</div>}
+
           <div className="admin-field">
-            <label>Ano da prova</label>
-            <select value={year} onChange={e => setYear(e.target.value)}>
-              <option value="">Selecione um ano…</option>
-              {years.map(y => (
-                <option key={y.year} value={y.year}>{y.title || `ENEM ${y.year}`}</option>
-              ))}
-            </select>
+            <label>Quantidade de questões: <strong>{quantidade}</strong></label>
+            <input
+              type="range"
+              min={5} max={45} step={5}
+              value={quantidade}
+              onChange={e => setQuantidade(+e.target.value)}
+              className="admin-range"
+            />
+            <div className="admin-range-labels">
+              <span>5</span><span>15</span><span>25</span><span>35</span><span>45</span>
+            </div>
           </div>
 
-          {error && <div className="admin-alert error">{error}</div>}
-          {loading && <p className="admin-muted">Carregando questões…</p>}
-
-          {!loading && year && questoes.length > 0 && (
-            <>
-              <div className="admin-import-summary">
-                <span>
-                  <strong>{questoes.length}</strong> questões disponíveis ·
-                  <strong> {selected.size}</strong> selecionadas
-                </span>
-                <button type="button" className="admin-btn small" onClick={toggleAll}>
-                  {selected.size === questoes.length ? 'Desmarcar todas' : 'Selecionar todas'}
-                </button>
-              </div>
-
-              <div className="admin-import-list">
-                {questoes.map(q => {
-                  const checked = selected.has(q.index);
-                  const preview = (q.context || q.title || '').replace(/\s+/g, ' ').slice(0, 180);
-                  return (
-                    <label key={q.index} className={`admin-import-item ${checked ? 'checked' : ''}`}>
-                      <input type="checkbox" checked={checked} onChange={() => toggle(q.index)} />
-                      <div className="admin-import-item-body">
-                        <div className="admin-import-item-head">
-                          <strong>Questão {q.index}</strong>
-                          {q.language && <span className="admin-badge">{q.language}</span>}
-                          <span className="admin-muted">Gabarito: {q.correctAlternative}</span>
-                        </div>
-                        <p>{preview}{preview.length >= 180 ? '…' : ''}</p>
-                      </div>
+          <div className="admin-field">
+            <label>Sortear de quais anos?</label>
+            {loadingAnos ? (
+              <p className="admin-muted">Carregando anos…</p>
+            ) : (
+              <>
+                <div className="admin-anos-grid">
+                  {anos.map(a => (
+                    <label key={a.year} className={`admin-ano-chip ${anosEscolhidos.has(a.year) ? 'active' : ''}`}>
+                      <input type="checkbox" checked={anosEscolhidos.has(a.year)} onChange={() => toggleAno(a.year)} />
+                      {a.year}
                     </label>
-                  );
-                })}
-              </div>
-            </>
-          )}
+                  ))}
+                </div>
+                <div className="admin-anos-quick">
+                  <button type="button" className="admin-btn small" onClick={() => setAnosEscolhidos(new Set(anos.slice(0, 5).map(a => a.year)))}>Últimos 5</button>
+                  <button type="button" className="admin-btn small" onClick={() => setAnosEscolhidos(new Set(anos.map(a => a.year)))}>Todos</button>
+                  <button type="button" className="admin-btn small" onClick={() => setAnosEscolhidos(new Set())}>Limpar</button>
+                </div>
+              </>
+            )}
+          </div>
 
-          {!loading && year && questoes.length === 0 && !error && (
-            <p className="admin-muted">Nenhuma questão de {AREA_LABELS[area]} para este ano.</p>
+          {loading && (
+            <div className="admin-sortear-status">
+              <span className="admin-spin" />
+              <span>{progresso}</span>
+            </div>
           )}
         </div>
 
         <footer className="admin-modal-foot">
-          <button className="admin-btn" onClick={onClose}>Cancelar</button>
+          <button className="admin-btn" onClick={onClose} disabled={loading}>Cancelar</button>
           <button
             className="admin-btn primary"
-            onClick={importar}
-            disabled={selected.size === 0}
+            onClick={sortear}
+            disabled={loading || anosEscolhidos.size === 0}
           >
-            Importar {selected.size > 0 ? `${selected.size} ` : ''}questões
+            {loading ? 'Sorteando…' : `🎲 Sortear ${quantidade} questões`}
           </button>
         </footer>
       </div>
