@@ -158,7 +158,7 @@ function App() {
   // 1. Visitor Flow (Non-logged in)
   if (!user || !user.id) {
     if (showLogin) {
-      return <LoginScreen />;
+      return <LoginScreen onBack={() => setShowLogin(false)} />;
     }
     return (
       <LandingPage
