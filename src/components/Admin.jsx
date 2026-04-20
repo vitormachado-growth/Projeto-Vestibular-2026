@@ -604,32 +604,88 @@ const SorteadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
   );
 };
 
+/* Renderiza texto com imagens inline (markdown ![]() e [Imagem: url]) */
+export const RenderConteudo = ({ texto, className = '' }) => {
+  if (!texto) return null;
+  const partes = texto.split(/(!\[.*?\]\(.*?\)|\[Imagem:\s*.*?\])/g);
+  return (
+    <span className={className}>
+      {partes.map((parte, i) => {
+        const md = parte.match(/^!\[.*?\]\((.*?)\)$/);
+        const tag = parte.match(/^\[Imagem:\s*(.*?)\]$/);
+        const url = md?.[1] || tag?.[1];
+        if (url) {
+          return (
+            <img
+              key={i}
+              src={url}
+              alt="Imagem da questão"
+              className="questao-img"
+              loading="lazy"
+            />
+          );
+        }
+        return <span key={i}>{parte}</span>;
+      })}
+    </span>
+  );
+};
+
+const temImagem = (texto) => /!\[.*?\]\(.*?\)|\[Imagem:/i.test(texto || '');
+
 const QuestaoEditor = ({ questao, onChange, onAlt, onRemove }) => {
+  const [preview, setPreview] = useState(false);
+
   return (
     <div className="admin-questao">
       <div className="admin-questao-head">
         <strong>Questão {questao.ordem}</strong>
-        <button className="admin-btn danger small" onClick={onRemove}>Remover</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {temImagem(questao.enunciado) && (
+            <button
+              type="button"
+              className="admin-btn small"
+              onClick={() => setPreview(v => !v)}
+            >
+              {preview ? '✏️ Editar' : '🖼 Ver prévia'}
+            </button>
+          )}
+          <button className="admin-btn danger small" onClick={onRemove}>Remover</button>
+        </div>
       </div>
+
       <div className="admin-field">
         <label>Enunciado</label>
-        <textarea
-          rows={4}
-          value={questao.enunciado}
-          onChange={e => onChange({ enunciado: e.target.value })}
-          placeholder="Texto da questão…"
-        />
+        {preview ? (
+          <div className="admin-questao-preview">
+            <RenderConteudo texto={questao.enunciado} />
+          </div>
+        ) : (
+          <textarea
+            rows={4}
+            value={questao.enunciado}
+            onChange={e => onChange({ enunciado: e.target.value })}
+            placeholder="Texto da questão…"
+          />
+        )}
       </div>
+
       <div className="admin-alternativas">
         {questao.alternativas.map(alt => (
           <div key={alt.letra} className="admin-alt">
             <span className="admin-alt-letra">{alt.letra}</span>
-            <input
-              type="text"
-              value={alt.texto}
-              onChange={e => onAlt(alt.letra, e.target.value)}
-              placeholder={`Alternativa ${alt.letra}`}
-            />
+            {temImagem(alt.texto) ? (
+              <div className="admin-alt-img-wrap">
+                <RenderConteudo texto={alt.texto} />
+              </div>
+            ) : (
+              <input
+                type="text"
+                value={alt.texto}
+                onChange={e => onAlt(alt.letra, e.target.value)}
+                placeholder={`Alternativa ${alt.letra}`}
+              />
+            )}
             <label className="admin-alt-correta">
               <input
                 type="radio"

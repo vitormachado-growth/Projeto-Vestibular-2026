@@ -622,6 +622,44 @@ html[data-theme="dark"] .admin-alert.success {
 
 @keyframes adminSpin { to { transform: rotate(360deg); } }
 
+/* ── Imagens de questões ──────────── */
+.questao-img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  display: block;
+  margin: 6px 0;
+  object-fit: contain;
+  background: var(--bg-main);
+}
+
+.admin-questao-preview {
+  padding: 0.75rem;
+  background: var(--bg-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 80px;
+  white-space: pre-wrap;
+}
+
+.admin-alt-img-wrap {
+  flex: 1;
+  padding: 0.4rem 0.75rem;
+  background: var(--bg-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+}
+
+.admin-alt-img-wrap .questao-img {
+  max-height: 80px;
+  margin: 0;
+}
+
 /* ── Responsive ───────────────────── */
 @media (max-width: 768px) {
   .admin-table-head,
