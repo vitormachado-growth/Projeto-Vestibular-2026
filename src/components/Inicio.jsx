@@ -36,38 +36,34 @@ function CountdownCard({ prova }) {
   const urgente = t.dias < 30;
   const atencao = t.dias < 90;
 
+  const units = [
+    { val: t.dias,  label: 'DIAS' },
+    { val: t.horas, label: 'HRS'  },
+    { val: t.min,   label: 'MIN'  },
+    { val: t.seg,   label: 'SEG'  },
+  ];
+
   return (
     <div className={`cd-card ${urgente ? 'urgente' : atencao ? 'atencao' : ''}`} style={{ '--cd-cor': prova.cor }}>
-      <div className="cd-header">
-        <span className="cd-dot" style={{ background: prova.cor }} />
-        <span className="cd-nome">{prova.nome}</span>
+      <div className="cd-topo">
+        <span className="cd-nome" style={{ color: prova.cor }}>{prova.nome}</span>
         <span className="cd-data-label">
           {prova.data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
         </span>
       </div>
       {t.ended ? (
-        <p className="cd-ended">Prova realizada</p>
+        <p className="cd-ended">Prova realizada ✓</p>
       ) : (
         <div className="cd-unidades">
-          <div className="cd-unidade">
-            <span className="cd-num">{String(t.dias).padStart(2, '0')}</span>
-            <span className="cd-label">dias</span>
-          </div>
-          <span className="cd-sep">:</span>
-          <div className="cd-unidade">
-            <span className="cd-num">{String(t.horas).padStart(2, '0')}</span>
-            <span className="cd-label">horas</span>
-          </div>
-          <span className="cd-sep">:</span>
-          <div className="cd-unidade">
-            <span className="cd-num">{String(t.min).padStart(2, '0')}</span>
-            <span className="cd-label">min</span>
-          </div>
-          <span className="cd-sep">:</span>
-          <div className="cd-unidade">
-            <span className="cd-num cd-seg">{String(t.seg).padStart(2, '0')}</span>
-            <span className="cd-label">seg</span>
-          </div>
+          {units.map((u, i) => (
+            <div key={u.label} className="cd-unidade-wrap">
+              <div className="cd-unidade">
+                <span className="cd-num">{String(u.val).padStart(2, '0')}</span>
+                <span className="cd-label">{u.label}</span>
+              </div>
+              {i < 3 && <span className="cd-sep">:</span>}
+            </div>
+          ))}
         </div>
       )}
     </div>
