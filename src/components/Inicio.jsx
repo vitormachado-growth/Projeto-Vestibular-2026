@@ -5,10 +5,10 @@ import { TOPICOS } from '../utils/geradorCronograma';
 import './Inicio.css';
 
 const PROVAS = [
-  { id: 'enem1',  nome: 'ENEM — 1º dia',   data: new Date('2026-11-01T08:00:00'), cor: '#10b981', focos: ['enem', 'ambos'] },
-  { id: 'enem2',  nome: 'ENEM — 2º dia',   data: new Date('2026-11-08T08:00:00'), cor: '#3b82f6', focos: ['enem', 'ambos'] },
-  { id: 'uerj1',  nome: 'UERJ — 1ª fase',  data: new Date('2026-10-11T08:00:00'), cor: '#f59e0b', focos: ['uerj', 'ambos'] },
-  { id: 'uerj2',  nome: 'UERJ — 2ª fase',  data: new Date('2026-11-29T08:00:00'), cor: '#8b5cf6', focos: ['uerj', 'ambos'] },
+  { id: 'enem1',  nome: 'ENEM — 1º dia',   data: new Date('2026-11-09T08:00:00'), cor: '#10b981', focos: ['enem', 'ambos'] },
+  { id: 'enem2',  nome: 'ENEM — 2º dia',   data: new Date('2026-11-16T08:00:00'), cor: '#3b82f6', focos: ['enem', 'ambos'] },
+  { id: 'uerj1',  nome: 'UERJ — 1ª fase',  data: new Date('2026-06-07T08:00:00'), cor: '#f59e0b', focos: ['uerj', 'ambos'] },
+  { id: 'uerj2',  nome: 'UERJ — 2ª fase',  data: new Date('2026-11-30T08:00:00'), cor: '#8b5cf6', focos: ['uerj', 'ambos'] },
 ];
 
 function useCountdown(target) {

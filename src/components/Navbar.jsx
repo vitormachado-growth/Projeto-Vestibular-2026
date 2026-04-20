@@ -20,7 +20,7 @@ const TIPO_COR_DARK = {
   sucesso: { bg: '#052e16', border: '#14532d', dot: '#16a34a' },
 };
 
-export default function Navbar({ title, darkMode, onToggleDark, onNavigate }) {
+export default function Navbar({ title, darkMode, onToggleDark, onNavigate, onMenuToggle }) {
   const [open, setOpen] = useState(false);
   const [notifs, setNotifs] = useState([]);
   const [lidas, setLidas] = useState([]);
@@ -74,6 +74,9 @@ export default function Navbar({ title, darkMode, onToggleDark, onNavigate }) {
   return (
     <nav className="navbar">
       <div className="navbar-left">
+        <button className="hamburger-btn" onClick={onMenuToggle} aria-label="Abrir menu">
+          ☰
+        </button>
         <h1>{title}</h1>
       </div>
 

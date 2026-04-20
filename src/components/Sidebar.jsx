@@ -1,6 +1,6 @@
 import './Sidebar.css';
 
-const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, onToggle, onLogout }) => {
+const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, onToggle, mobileOpen, onLogout }) => {
   const getFocusLabel = () => {
     if (!focus) return 'Não definida';
     if (focus === 'ambos') return 'ENEM + UERJ';
@@ -26,13 +26,15 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
     ? ['Principal', 'Estudos', 'Evolução', 'Admin']
     : ['Principal', 'Estudos', 'Evolução'];
 
+  const showFull = !collapsed || mobileOpen;
+
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+    <aside className={`sidebar ${!showFull ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
       <div className="sidebar-logo">
-        {collapsed ? (
-          <h2 className="logo-mini"><span>V</span><span>T</span></h2>
-        ) : (
+        {showFull ? (
           <h2><span>V</span>es<span>T</span>ibular</h2>
+        ) : (
+          <h2 className="logo-mini"><span>V</span><span>T</span></h2>
         )}
       </div>
 
@@ -40,27 +42,26 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
         {collapsed ? '›' : '‹'}
       </button>
 
-      {!collapsed && (
-        <div className="focus-badge">
-          <span>Meta: {getFocusLabel()}</span>
-        </div>
-      )}
-
       <nav className="sidebar-nav">
+        {showFull && (
+          <div className="focus-badge">
+            <span>Meta: {getFocusLabel()}</span>
+          </div>
+        )}
         {groups.map(grupo => {
           const items = navItems.filter(i => i.group === grupo);
           return (
             <div key={grupo} className="nav-group">
-              {!collapsed && <label>{grupo}</label>}
+              {showFull && <label>{grupo}</label>}
               {items.map(item => (
                 <button
                   key={item.id}
                   className={`nav-item ${currentView === item.id ? 'active' : ''}`}
                   onClick={() => onViewChange(item.id)}
-                  title={collapsed ? item.label : ''}
+                  title={!showFull ? item.label : ''}
                 >
                   <span className="icon">{item.icon}</span>
-                  {!collapsed && <span className="nav-label">{item.label}</span>}
+                  {showFull && <span className="nav-label">{item.label}</span>}
                 </button>
               ))}
             </div>
@@ -77,16 +78,21 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
               userInitial
             )}
           </div>
-          {!collapsed && (
+          {showFull && (
             <div className="user-info">
               <p className="name">{displayName}</p>
-              <button className="logout-link" onClick={onLogout}>Sair</button>
+              <span className="user-plan">Plano Gratuito</span>
             </div>
           )}
-          {collapsed && (
-             <button className="logout-mini-btn" onClick={onLogout} title="Sair">🚪</button>
-          )}
         </div>
+        <button className="logout-btn" onClick={onLogout} title="Sair">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          {showFull && <span>Sair</span>}
+        </button>
       </div>
     </aside>
   );

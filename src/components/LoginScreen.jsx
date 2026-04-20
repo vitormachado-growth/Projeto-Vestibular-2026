@@ -36,7 +36,7 @@ const LoginScreen = ({ onBack }) => {
   const translateError = (msg) => {
     const m = (msg || '').toLowerCase();
     if (m.includes('invalid login credentials')) return 'E-mail ou senha incorretos.';
-    if (m.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
+    if (m.includes('email not confirmed')) return 'E-mail ou senha incorretos.';
     if (m.includes('user already registered')) return 'Este e-mail já está cadastrado.';
     if (m.includes('password should be at least')) return 'A senha deve ter pelo menos 6 caracteres.';
     if (m.includes('unable to validate email')) return 'E-mail inválido.';
@@ -83,7 +83,7 @@ const LoginScreen = ({ onBack }) => {
           },
         });
         if (error) throw error;
-        setSuccessMessage('Cadastro realizado! Verifique seu e-mail para confirmar a conta.');
+        setSuccessMessage('Cadastro realizado! Você já pode fazer login.');
         setPassword('');
         setConfirmPassword('');
       } else {

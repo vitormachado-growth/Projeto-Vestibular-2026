@@ -19,6 +19,7 @@ const Layout = ({ children, focus, currentView, onViewChange, darkMode, onToggle
     const saved = localStorage.getItem('sidebar_collapsed');
     return saved === null ? true : saved === 'true';
   });
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const toggleCollapsed = () => {
     setCollapsed(c => {
@@ -29,12 +30,16 @@ const Layout = ({ children, focus, currentView, onViewChange, darkMode, onToggle
 
   return (
     <div className={`app-layout ${collapsed ? 'sidebar-collapsed' : ''}`}>
+      {mobileOpen && (
+        <div className="sidebar-backdrop" onClick={() => setMobileOpen(false)} />
+      )}
       <Sidebar
         focus={focus}
         currentView={currentView}
-        onViewChange={onViewChange}
+        onViewChange={(v) => { onViewChange(v); setMobileOpen(false); }}
         collapsed={collapsed}
         onToggle={toggleCollapsed}
+        mobileOpen={mobileOpen}
         user={user}
         profile={profile}
         onLogout={onLogout}
@@ -43,8 +48,9 @@ const Layout = ({ children, focus, currentView, onViewChange, darkMode, onToggle
         <Navbar
           title={viewTitles[currentView] || 'Dashboard'}
           darkMode={darkMode}
-          onToggleDark={() => setDarkMode(d => !d)}
+          onToggleDark={onToggleDark}
           onNavigate={onViewChange}
+          onMenuToggle={() => setMobileOpen(o => !o)}
         />
         <main className="content-area">
           {children}
