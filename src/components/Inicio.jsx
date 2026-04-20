@@ -31,7 +31,7 @@ function useCountdown(target) {
   return time;
 }
 
-function CountdownCard({ prova }) {
+function CountdownCard({ prova, showSeg }) {
   const t = useCountdown(prova.data.getTime());
   const urgente = t.dias < 30;
   const atencao = t.dias < 90;
@@ -40,6 +40,7 @@ function CountdownCard({ prova }) {
     { val: t.dias,  label: 'DIAS' },
     { val: t.horas, label: 'HRS'  },
     { val: t.min,   label: 'MIN'  },
+    ...(showSeg ? [{ val: t.seg, label: 'SEG' }] : []),
   ];
 
   return (
@@ -166,11 +167,17 @@ export default function Inicio({ onNavigate, focus }) {
       </div>
 
       {/* ── Contagem regressiva ────────────────────────────────────────────── */}
-      <div className="cd-grid">
-        {PROVAS.filter(p => p.focos.includes(focus)).map(p => (
-          <CountdownCard key={p.id} prova={p} />
-        ))}
-      </div>
+      {(() => {
+        const provasFiltradas = PROVAS.filter(p => p.focos.includes(focus));
+        const showSeg = provasFiltradas.length <= 2;
+        return (
+          <div className="cd-grid">
+            {provasFiltradas.map(p => (
+              <CountdownCard key={p.id} prova={p} showSeg={showSeg} />
+            ))}
+          </div>
+        );
+      })()}
 
       {/* ── Cards rápidos ──────────────────────────────────────────────────── */}
       <div className="inicio-cards">
