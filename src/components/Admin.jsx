@@ -634,7 +634,7 @@ export const RenderConteudo = ({ texto, className = '' }) => {
 const temImagem = (texto) => /!\[.*?\]\(.*?\)|\[Imagem:/i.test(texto || '');
 
 const QuestaoEditor = ({ questao, onChange, onAlt, onRemove }) => {
-  const [preview, setPreview] = useState(false);
+  const [preview, setPreview] = useState(temImagem(questao.enunciado));
 
   return (
     <div className="admin-questao">
