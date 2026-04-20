@@ -19,9 +19,12 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
     { id: 'redacao', label: 'Redação', icon: '✒️', group: 'Estudos' },
     { id: 'desempenho', label: 'Desempenho', icon: '📊', group: 'Evolução' },
     { id: 'ranking', label: 'Simulados Semanais', icon: '🏆', group: 'Evolução' },
+    ...(profile?.is_admin ? [{ id: 'admin', label: 'Painel Admin', icon: '⚙️', group: 'Admin' }] : []),
   ];
 
-  const groups = ['Principal', 'Estudos', 'Evolução'];
+  const groups = profile?.is_admin
+    ? ['Principal', 'Estudos', 'Evolução', 'Admin']
+    : ['Principal', 'Estudos', 'Evolução'];
 
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>

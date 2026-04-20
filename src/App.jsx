@@ -14,6 +14,7 @@ import Simulado from './components/Simulado';
 import Desempenho from './components/Desempenho';
 import Ranking from './components/Ranking';
 import Inicio from './components/Inicio';
+import Admin from './components/Admin';
 import './App.css';
 
 function App() {
@@ -148,6 +149,8 @@ function App() {
         return <Ranking />;
       case 'redacao':
         return <Redacao />;
+      case 'admin':
+        return profile?.is_admin ? <Admin /> : <Inicio onNavigate={handleViewChange} focus={focus} />;
       case 'cronograma':
       default:
         return (
