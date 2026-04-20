@@ -1,283 +1,268 @@
-import { useState, useMemo } from 'react';
-import { questoes } from '../data/questoesData';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import SimuladoPlayer from './SimuladoPlayer';
 import './Ranking.css';
 
-const STORAGE_KEY = 'ranking_historico_v1';
+const TIPO_LABEL = {
+  humanas_linguagens: 'Humanas + Linguagens',
+  matematica_naturezas: 'Matemática + Naturezas',
+};
 
-const TEMAS_REDACAO = [
-  'Desafios para a valorização de comunidades tradicionais no Brasil',
-  'O papel da educação financeira na redução das desigualdades sociais',
-  'Os impactos das redes sociais na saúde mental dos jovens brasileiros',
-  'A invisibilidade da população em situação de rua no Brasil',
-  'Desafios da inclusão digital no Brasil contemporâneo',
-  'O avanço do trabalho informal e seus efeitos na proteção social',
-  'A crise hídrica no Brasil e os desafios para o desenvolvimento sustentável',
-  'Os obstáculos ao acesso à saúde mental no Brasil',
-  'Desigualdade racial no mercado de trabalho brasileiro',
-  'O papel do saneamento básico na garantia de direitos',
-  'Violência contra a mulher no ambiente doméstico',
-  'Os desafios da mobilidade urbana nas grandes cidades',
-  'A desinformação como ameaça à democracia',
-  'O impacto do desmatamento na soberania alimentar do Brasil',
-  'Desafios da integração de refugiados e migrantes no Brasil',
-  'A superexploração do trabalho na era dos aplicativos',
-  'Crises climáticas e populações vulneráveis no Brasil',
-  'O acesso à cultura como direito fundamental no Brasil',
-  'A evasão escolar no Brasil: causas e consequências',
-  'Desafios para a proteção de crianças e adolescentes na era digital',
-  'O papel do esporte na transformação social no Brasil',
-  'O envelhecimento da população e os desafios para a previdência social',
-  'Ciência e negacionismo: impactos na saúde pública',
-  'A importância da leitura para a cidadania plena',
-];
+const formatDateBR = (iso) => {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+};
 
-const COMPETENCIAS = [
-  { id: 'c1', label: 'Competência 1', desc: 'Domínio da norma culta' },
-  { id: 'c2', label: 'Competência 2', desc: 'Compreensão da proposta e aplicação de conceitos' },
-  { id: 'c3', label: 'Competência 3', desc: 'Seleção e organização das informações' },
-  { id: 'c4', label: 'Competência 4', desc: 'Coesão e coerência textual' },
-  { id: 'c5', label: 'Competência 5', desc: 'Proposta de intervenção respeitando direitos humanos' },
-];
-
-function getWeekNumber(date) {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+function statusDe(temporada, hoje) {
+  if (!temporada) return null;
+  if (temporada.semana_fim < hoje) return 'finalizada';
+  if (temporada.semana_inicio > hoje) return 'futura';
+  return 'ativa';
 }
 
-function seededRandom(seed) {
-  let s = seed;
-  return () => {
-    s = (s * 1664525 + 1013904223) & 0xffffffff;
-    return (s >>> 0) / 0x100000000;
+export default function Ranking() {
+  const [simulados, setSimulados] = useState([]);
+  const [temporadas, setTemporadas] = useState([]);
+  const [resultados, setResultados] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [playing, setPlaying] = useState(null); // { simuladoId, temporadaId }
+
+  const loadData = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setCurrentUserId(user?.id || null);
+    const resQuery = user
+      ? supabase.from('simulado_resultados').select('*').eq('user_id', user.id)
+      : Promise.resolve({ data: [] });
+
+    const [{ data: sims }, { data: temps }, { data: ress }, { data: lb }] = await Promise.all([
+      supabase
+        .from('simulados_semanais')
+        .select('*, simulados_semanais_questoes(count)')
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('simulado_temporadas')
+        .select('*')
+        .order('semana_inicio', { ascending: false }),
+      resQuery,
+      supabase.from('simulado_leaderboard').select('*'),
+    ]);
+    setSimulados(sims || []);
+    setTemporadas(temps || []);
+    setResultados(ress || []);
+    setLeaderboard(lb || []);
+    setLoading(false);
   };
-}
 
-function getWeeklyQuestions(semana, ano, count = 15) {
-  const seed = semana * 1000 + ano;
-  const rng = seededRandom(seed);
-  const pool = [...questoes];
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool.slice(0, Math.min(count, pool.length));
-}
+  useEffect(() => { loadData(); }, []);
 
-function getWeeklyTema(semana) {
-  return TEMAS_REDACAO[(semana - 1) % TEMAS_REDACAO.length];
-}
+  const calcPontuacao = (r) => {
+    if (!r.total_questoes) return 0;
+    const pctQ = r.acertos / r.total_questoes;
+    // Com redação: 80% vem das questões, 20% da redação (escala 0-1000)
+    if (r.redacao_total != null) {
+      return Math.round(pctQ * 800 + r.redacao_total * 0.2);
+    }
+    return Math.round(pctQ * 1000);
+  };
 
-function formatWeek(semana, ano) {
-  return `Semana ${semana}/${ano}`;
-}
+  const resultadoPorSimulado = resultados.reduce((acc, r) => {
+    acc[r.simulado_id] = r;
+    return acc;
+  }, {});
 
-function scoreClass(pct) {
-  return pct >= 70 ? 'great' : pct >= 50 ? 'good' : 'bad';
-}
+  const hoje = new Date().toISOString().split('T')[0];
 
-function loadHistorico() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
-}
+  // Mapeia simulado_id → temporada (a mais recente se houver várias)
+  const temporadaPorSimulado = temporadas.reduce((acc, t) => {
+    if (!acc[t.simulado_id]) acc[t.simulado_id] = t;
+    return acc;
+  }, {});
 
-function saveEntry(entry) {
-  const hist = loadHistorico();
-  const idx = hist.findIndex(e => e.semana === entry.semana && e.ano === entry.ano);
-  if (idx >= 0) hist[idx] = entry;
-  else hist.push(entry);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(hist));
-}
+  const temporadaAtiva = temporadas.find(t => statusDe(t, hoje) === 'ativa');
+  const simuladoAtivo = temporadaAtiva
+    ? simulados.find(s => s.id === temporadaAtiva.simulado_id)
+    : null;
 
-// ── Sub-screens ───────────────────────────────────────────────────────────────
+  // Temporada pra mostrar no leaderboard: ativa, ou a mais recente finalizada
+  const temporadaLeaderboard = temporadaAtiva ||
+    temporadas.find(t => statusDe(t, hoje) === 'finalizada');
 
-function SimuladoSemanal({ questions, onFinish, onCancel }) {
-  const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [finished, setFinished] = useState(false);
+  const leaderboardDaTemporada = temporadaLeaderboard
+    ? leaderboard
+        .filter(r => r.temporada_id === temporadaLeaderboard.id)
+        .map(r => ({ ...r, pontuacao: calcPontuacao(r) }))
+        .sort((a, b) => b.pontuacao - a.pontuacao)
+    : [];
 
-  const q = questions[current];
-  const total = questions.length;
+  const minhaPosicao = leaderboardDaTemporada.findIndex(r => r.user_id === currentUserId) + 1;
 
-  function selectAnswer(qid, alt) {
-    setAnswers(prev => ({ ...prev, [qid]: alt }));
-  }
-
-  function finish() {
-    let corretas = 0;
-    questions.forEach(q => {
-      if (answers[q.id] === q.answer) corretas++;
-    });
-    const pct = Math.round((corretas / total) * 100);
-    onFinish({ corretas, total, pct, answers });
-  }
-
-  if (finished) {
-    let corretas = 0;
-    questions.forEach(q => { if (answers[q.id] === q.answer) corretas++; });
-    const pct = Math.round((corretas / total) * 100);
+  if (playing) {
     return (
-      <div className="rk-result-wrap">
-        <div className={`rk-score-circle ${scoreClass(pct)}`}>{pct}%</div>
-        <p className="rk-result-sub">{corretas}/{total} corretas</p>
-        <button className="rk-btn-primary" onClick={() => onFinish({ corretas, total, pct, answers })}>
-          Continuar para Redação
-        </button>
+      <SimuladoPlayer
+        simuladoId={playing.simuladoId}
+        temporadaId={playing.temporadaId}
+        onClose={() => {
+          setPlaying(null);
+          loadData();
+        }}
+      />
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="rk-wrap">
+        <p className="rk-empty">Carregando simulados…</p>
       </div>
     );
   }
 
-  const answered = Object.keys(answers).length;
+  const abrirSimulado = (simuladoId, temporadaId) => {
+    setPlaying({ simuladoId, temporadaId });
+  };
 
   return (
-    <div className="rk-exam-wrap">
-      <div className="rk-exam-topbar">
-        <span className="rk-exam-progress">{current + 1}/{total}</span>
-        <div className="rk-dots">
-          {questions.map((q2, i) => (
-            <button
-              key={q2.id}
-              className={`rk-dot ${i === current ? 'active' : ''} ${answers[q2.id] ? 'answered' : ''}`}
-              onClick={() => setCurrent(i)}
-            />
-          ))}
-        </div>
-        <button className="rk-btn-cancel" onClick={onCancel}>✕</button>
-      </div>
-
-      <div className="rk-question-card">
-        <div className="rk-q-meta">
-          <span className="rk-tag">{q.subject}</span>
-          <span className="rk-tag muted">{q.topic}</span>
-        </div>
-        <p className="rk-q-statement">{q.statement}</p>
-        <div className="rk-alternatives">
-          {q.alternatives.map(alt => (
-            <button
-              key={alt.id}
-              className={`rk-alt ${answers[q.id] === alt.id ? 'selected' : ''}`}
-              onClick={() => selectAnswer(q.id, alt.id)}
-            >
-              <span className="rk-alt-letter">{alt.id.toUpperCase()}</span>
-              {alt.text}
-            </button>
-          ))}
+    <div className="rk-wrap">
+      <div className="rk-header">
+        <div>
+          <h1>Simulados Semanais</h1>
+          <p>
+            {temporadaAtiva
+              ? `Temporada #${temporadaAtiva.numero} — ${formatDateBR(temporadaAtiva.semana_inicio)} a ${formatDateBR(temporadaAtiva.semana_fim)}`
+              : 'Nenhuma temporada ativa no momento'}
+          </p>
         </div>
       </div>
 
-      <div className="rk-exam-footer">
-        <button
-          className="rk-btn-secondary"
-          disabled={current === 0}
-          onClick={() => setCurrent(c => c - 1)}
-        >
-          ← Anterior
-        </button>
-        {current < total - 1 ? (
-          <button
-            className="rk-btn-primary"
-            onClick={() => setCurrent(c => c + 1)}
-          >
-            Próxima →
-          </button>
+      {simuladoAtivo && (
+        <SimuladoCard
+          simulado={simuladoAtivo}
+          temporada={temporadaAtiva}
+          resultado={resultadoPorSimulado[simuladoAtivo.id]}
+          onIniciar={abrirSimulado}
+          destacado
+        />
+      )}
+
+      <div className="rk-section">
+        <h2>Todos os simulados</h2>
+        {simulados.length === 0 ? (
+          <div className="rk-empty">
+            <span className="rk-empty-icon">📝</span>
+            <h2>Nenhum simulado disponível</h2>
+            <p>Os simulados criados no painel admin aparecerão aqui.</p>
+          </div>
         ) : (
-          <button
-            className="rk-btn-primary"
-            disabled={answered < total}
-            onClick={() => setFinished(true)}
-            title={answered < total ? `Responda todas as ${total} questões` : ''}
-          >
-            Finalizar ({answered}/{total})
-          </button>
+          <div className="rk-simulados-grid">
+            {simulados.map(s => (
+              <SimuladoCard
+                key={s.id}
+                simulado={s}
+                temporada={temporadaPorSimulado[s.id]}
+                resultado={resultadoPorSimulado[s.id]}
+                onIniciar={abrirSimulado}
+              />
+            ))}
+          </div>
         )}
       </div>
+
+      {temporadaLeaderboard && leaderboardDaTemporada.length > 0 && (
+        <Leaderboard
+          temporada={temporadaLeaderboard}
+          entries={leaderboardDaTemporada}
+          currentUserId={currentUserId}
+          minhaPosicao={minhaPosicao}
+        />
+      )}
     </div>
   );
 }
 
-function AvaliarRedacao({ tema, onFinish, onCancel }) {
-  const [notas, setNotas] = useState({ c1: 0, c2: 0, c3: 0, c4: 0, c5: 0 });
+function Leaderboard({ temporada, entries, currentUserId, minhaPosicao }) {
+  const top3 = entries.slice(0, 3);
+  const resto = entries.slice(3);
 
-  const options = [0, 40, 80, 120, 160, 200];
-  const total = Object.values(notas).reduce((s, v) => s + v, 0);
+  const initial = (e) => {
+    const nome = e.apelido || e.nome_completo || '?';
+    return nome.charAt(0).toUpperCase();
+  };
+
+  const nomeEx = (e) => e.apelido || e.nome_completo?.split(' ')[0] || 'Aluno';
 
   return (
-    <div className="rk-avaliar-wrap">
-      <h2 className="rk-avaliar-title">Avalie sua Redação</h2>
-      <p className="rk-avaliar-tema">Tema: <strong>{tema}</strong></p>
-      <p className="rk-avaliar-sub">
-        Escreva sua redação no papel e avalie cada competência conforme os critérios do ENEM.
-      </p>
+    <>
+      <div className="rk-section">
+        <div className="rk-lb-head">
+          <h2>Ranking — Temporada #{temporada.numero}</h2>
+          {minhaPosicao > 0 && (
+            <div className="rk-my-pos">
+              <span className="rk-my-pos-label">Sua posição</span>
+              <span className="rk-my-pos-value">#{minhaPosicao}</span>
+            </div>
+          )}
+        </div>
 
-      <div className="rk-competencias">
-        {COMPETENCIAS.map(comp => (
-          <div key={comp.id} className="rk-comp-row">
-            <div className="rk-comp-info">
-              <span className="rk-comp-label">{comp.label}</span>
-              <span className="rk-comp-desc">{comp.desc}</span>
-            </div>
-            <div className="rk-comp-options">
-              {options.map(v => (
-                <button
-                  key={v}
-                  className={`rk-nota-btn ${notas[comp.id] === v ? 'selected' : ''}`}
-                  onClick={() => setNotas(prev => ({ ...prev, [comp.id]: v }))}
-                >
-                  {v}
-                </button>
-              ))}
-            </div>
+        {top3.length > 0 && <Podio players={top3} currentUserId={currentUserId} />}
+      </div>
+
+      {resto.length > 0 && (
+        <div className="rk-section">
+          <h2>Classificação completa</h2>
+          <div className="rk-ranking-list">
+            {entries.map((e, i) => {
+              const isYou = e.user_id === currentUserId;
+              const barPct = Math.min(100, (e.pontuacao / 1000) * 100);
+              const barColor = e.pontuacao >= 700 ? '#16a34a' : e.pontuacao >= 500 ? '#ca8a04' : '#dc2626';
+              return (
+                <div key={e.user_id} className={`rk-rank-row ${isYou ? 'current-week' : ''}`}>
+                  <span className="rk-rank-pos">
+                    {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
+                  </span>
+                  <div className="rk-rank-avatar">
+                    {e.avatar_url ? <img src={e.avatar_url} alt="" /> : initial(e)}
+                  </div>
+                  <span className="rk-rank-week">{isYou ? 'Você' : nomeEx(e)}</span>
+                  <div className="rk-rank-bar-wrap">
+                    <div className="rk-rank-bar-fill" style={{ width: `${barPct}%`, background: barColor }} />
+                  </div>
+                  <span className="rk-rank-score">{e.pontuacao} pts</span>
+                </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
-
-      <div className="rk-total-redacao">
-        Nota total: <strong>{total}</strong> / 1000
-      </div>
-
-      <div className="rk-avaliar-footer">
-        <button className="rk-btn-secondary" onClick={onCancel}>Cancelar</button>
-        <button
-          className="rk-btn-primary"
-          onClick={() => onFinish(notas)}
-        >
-          Salvar semana
-        </button>
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 }
 
-// ── Dados fictícios do leaderboard ───────────────────────────────────────────
-
-const MOCK_USERS = [
-  { id: 'lucas',   nome: 'Lucas Mendes',    iniciais: 'LM', cor: '#6366f1', score: 892 },
-  { id: 'ana',     nome: 'Ana Beatriz',     iniciais: 'AB', cor: '#ec4899', score: 845 },
-  { id: 'pedro',   nome: 'Pedro Alves',     iniciais: 'PA', cor: '#f59e0b', score: 798 },
-  { id: 'mari',    nome: 'Mariana Costa',   iniciais: 'MC', cor: '#10b981', score: 756 },
-  { id: 'gabriel', nome: 'Gabriel Santos',  iniciais: 'GS', cor: '#3b82f6', score: 721 },
-  { id: 'julia',   nome: 'Julia Ferreira',  iniciais: 'JF', cor: '#8b5cf6', score: 689 },
-  { id: 'rafael',  nome: 'Rafael Lima',     iniciais: 'RL', cor: '#ef4444', score: 645 },
-];
-
-function Podio({ players }) {
+function Podio({ players, currentUserId }) {
   const [segundo, primeiro, terceiro] = [players[1], players[0], players[2]];
-  const medals = { 0: { label: '🥇', color: '#f59e0b', height: 90 }, 1: { label: '🥈', color: '#94a3b8', height: 60 }, 2: { label: '🥉', color: '#cd7c3a', height: 44 } };
+  const medals = {
+    0: { label: '🥇', color: '#f59e0b', height: 90 },
+    1: { label: '🥈', color: '#94a3b8', height: 60 },
+    2: { label: '🥉', color: '#cd7c3a', height: 44 },
+  };
 
   const Card = ({ player, pos, originalPos }) => {
+    if (!player) return null;
     const m = medals[originalPos];
+    const isYou = player.user_id === currentUserId;
+    const nome = player.apelido || player.nome_completo?.split(' ')[0] || 'Aluno';
+    const initial = nome.charAt(0).toUpperCase();
     return (
       <div className={`podio-card pos-${pos}`}>
         <span className="podio-medal">{m.label}</span>
-        <div className="podio-avatar" style={{ background: player.cor }}>
-          {player.iniciais}
-          {player.isYou && <span className="podio-you-badge">Você</span>}
+        <div className="podio-avatar">
+          {player.avatar_url ? <img src={player.avatar_url} alt={nome} /> : initial}
+          {isYou && <span className="podio-you-badge">Você</span>}
         </div>
-        <span className="podio-name">{player.isYou ? 'Você' : player.nome.split(' ')[0]}</span>
-        <span className="podio-score">{player.score} pts</span>
+        <span className="podio-name">{isYou ? 'Você' : nome}</span>
+        <span className="podio-score">{player.pontuacao} pts</span>
         <div className="podio-block" style={{ height: m.height, background: m.color }} />
       </div>
     );
@@ -286,258 +271,79 @@ function Podio({ players }) {
   return (
     <div className="podio-wrap">
       {segundo && <Card player={segundo} pos="second" originalPos={1} />}
-      {primeiro && <Card player={primeiro} pos="first"  originalPos={0} />}
-      {terceiro && <Card player={terceiro} pos="third"  originalPos={2} />}
+      {primeiro && <Card player={primeiro} pos="first" originalPos={0} />}
+      {terceiro && <Card player={terceiro} pos="third" originalPos={2} />}
     </div>
   );
 }
 
-// ── Main Ranking component ────────────────────────────────────────────────────
+function SimuladoCard({ simulado, temporada, resultado, onIniciar, destacado }) {
+  const hoje = new Date().toISOString().split('T')[0];
+  const status = statusDe(temporada, hoje);
+  const questoesCount = simulado.simulados_semanais_questoes?.[0]?.count ?? 0;
+  const feito = !!resultado;
 
-export default function Ranking() {
-  const today = new Date();
-  const semanaAtual = getWeekNumber(today);
-  const anoAtual = today.getFullYear();
+  const statusLabel = {
+    ativa: '🔴 Esta semana',
+    futura: '⏳ Em breve',
+    finalizada: '✓ Finalizada',
+  };
 
-  const [historico, setHistorico] = useState(loadHistorico);
-  const [phase, setPhase] = useState('home'); // home | simulado | redacao | avaliar
-  const [simResult, setSimResult] = useState(null);
+  const pct = feito && resultado.total_questoes > 0
+    ? Math.round((resultado.acertos / resultado.total_questoes) * 100)
+    : null;
 
-  const questions = useMemo(
-    () => getWeeklyQuestions(semanaAtual, anoAtual),
-    [semanaAtual, anoAtual]
-  );
-  const tema = getWeeklyTema(semanaAtual);
+  const podeFazer = questoesCount > 0 && status !== 'futura';
 
-  const entradaAtual = historico.find(e => e.semana === semanaAtual && e.ano === anoAtual);
-  const simDone = entradaAtual?.simulado != null;
-  const redDone = entradaAtual?.redacao != null;
-  const semanaCompleta = simDone && redDone;
-
-  function handleSimFinish(result) {
-    setSimResult(result);
-    setPhase('redacao');
-  }
-
-  function handleRedacaoSkip() {
-    if (!simResult) return;
-    const entry = {
-      semana: semanaAtual, ano: anoAtual,
-      simulado: simResult,
-      redacao: null,
-      score: simResult.pct * 10,
-    };
-    saveEntry(entry);
-    setHistorico(loadHistorico());
-    setPhase('home');
-    setSimResult(null);
-  }
-
-  function handleAvaliacaoFinish(notas) {
-    const notaRedacao = Object.values(notas).reduce((s, v) => s + v, 0);
-    const simPts = (simResult?.pct ?? entradaAtual?.simulado?.pct ?? 0) * 10;
-    const redPts = notaRedacao;
-    const score = Math.round((simPts + redPts) / 2);
-
-    const entry = {
-      semana: semanaAtual, ano: anoAtual,
-      simulado: simResult ?? entradaAtual?.simulado,
-      redacao: { notas, total: notaRedacao },
-      score,
-    };
-    saveEntry(entry);
-    setHistorico(loadHistorico());
-    setPhase('home');
-    setSimResult(null);
-  }
-
-  // ── Phase screens ───────────────────────────────────────────────────────────
-
-  if (phase === 'simulado') {
-    return (
-      <SimuladoSemanal
-        questions={questions}
-        onFinish={handleSimFinish}
-        onCancel={() => setPhase('home')}
-      />
-    );
-  }
-
-  if (phase === 'redacao') {
-    return (
-      <div className="rk-redacao-wrap">
-        <div className="rk-redacao-header">
-          <h2>Redação Semanal</h2>
-          <p>Escreva sua redação sobre o tema abaixo e depois avalie-a.</p>
-        </div>
-        <div className="rk-tema-card">
-          <span className="rk-tema-label">Tema da semana</span>
-          <p className="rk-tema-text">{tema}</p>
-        </div>
-        <div className="rk-redacao-tips">
-          <h3>Estrutura sugerida</h3>
-          <ul>
-            <li><strong>Introdução:</strong> apresente o tema com repertório sociocultural.</li>
-            <li><strong>Desenvolvimento 1:</strong> argumento + dados/exemplos concretos.</li>
-            <li><strong>Desenvolvimento 2:</strong> aprofundamento ou segundo argumento.</li>
-            <li><strong>Conclusão:</strong> proposta de intervenção com agente, ação, meio, finalidade e detalhamento.</li>
-          </ul>
-        </div>
-        <div className="rk-redacao-footer">
-          <button className="rk-btn-secondary" onClick={handleRedacaoSkip}>
-            Pular redação
-          </button>
-          <button className="rk-btn-primary" onClick={() => setPhase('avaliar')}>
-            Já escrevi — avaliar
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (phase === 'avaliar') {
-    return (
-      <AvaliarRedacao
-        tema={tema}
-        onFinish={handleAvaliacaoFinish}
-        onCancel={() => setPhase('redacao')}
-      />
-    );
-  }
-
-  // ── Home ────────────────────────────────────────────────────────────────────
-
-  // Monta leaderboard: usuários fictícios + "Você" com melhor score salvo
-  const meuMelhorScore = useMemo(() => {
-    const scores = historico.filter(e => e.score != null).map(e => e.score);
-    return scores.length > 0 ? Math.max(...scores) : null;
-  }, [historico]);
-
-  const leaderboard = useMemo(() => {
-    const lista = [...MOCK_USERS.map(u => ({ ...u }))];
-    const eu = { id: 'voce', nome: 'Você', iniciais: 'VM', cor: '#3b82f6', score: meuMelhorScore ?? 0, isYou: true };
-    lista.push(eu);
-    return lista.sort((a, b) => b.score - a.score);
-  }, [meuMelhorScore]);
-
-  const minhaPosicao = leaderboard.findIndex(u => u.isYou) + 1;
+  const labelBotao = () => {
+    if (feito) return 'Ver resultado';
+    if (status === 'finalizada') return 'Encerrado';
+    if (status === 'futura') return 'Em breve';
+    if (questoesCount === 0) return 'Sem questões';
+    return 'Iniciar';
+  };
 
   return (
-    <div className="rk-wrap">
-
-      <div className="rk-header">
+    <div className={`rk-sim-card ${destacado ? 'destacado' : ''} ${status || ''} ${feito ? 'feito' : ''}`}>
+      <div className="rk-sim-card-head">
         <div>
-          <h1>Simulados Semanais</h1>
-          <p>Desafio da {formatWeek(semanaAtual, anoAtual)}</p>
+          {destacado && <span className="rk-challenge-tag">Esta semana</span>}
+          <h3 className="rk-sim-title">{simulado.titulo}</h3>
         </div>
-        {meuMelhorScore && (
-          <div className="rk-my-pos">
-            <span className="rk-my-pos-label">Sua posição</span>
-            <span className="rk-my-pos-value">#{minhaPosicao}</span>
-          </div>
+        {feito ? (
+          <span className="rk-sim-status ativa">✓ {pct}%</span>
+        ) : status ? (
+          <span className={`rk-sim-status ${status}`}>{statusLabel[status]}</span>
+        ) : null}
+      </div>
+
+      <div className="rk-sim-meta">
+        <span className="rk-sim-tag">{TIPO_LABEL[simulado.tipo] || simulado.tipo}</span>
+        <span className="rk-sim-dot">•</span>
+        <span>{questoesCount} / 80 questões</span>
+        {simulado.tem_redacao && (
+          <>
+            <span className="rk-sim-dot">•</span>
+            <span>✒️ com redação</span>
+          </>
         )}
       </div>
 
-      {/* ── Desafio da semana ─────────────────────────────────────────────── */}
-      <div className="rk-challenge-card">
-        <div className="rk-challenge-top">
-          <div>
-            <span className="rk-challenge-tag">Esta semana</span>
-            <h2 className="rk-challenge-title">Desafio Semanal</h2>
-          </div>
-          <div className="rk-challenge-badges">
-            <span className={`rk-badge ${simDone ? 'done' : 'pending'}`}>
-              {simDone ? '✓' : '○'} Simulado
-            </span>
-            <span className={`rk-badge ${redDone ? 'done' : 'pending'}`}>
-              {redDone ? '✓' : '○'} Redação
-            </span>
-          </div>
-        </div>
+      {temporada && (
+        <p className="rk-sim-periodo">
+          {formatDateBR(temporada.semana_inicio)} — {formatDateBR(temporada.semana_fim)}
+        </p>
+      )}
 
-        <div className="rk-challenge-actions">
-          <div className="rk-action-card">
-            <span className="rk-action-icon">📝</span>
-            <div>
-              <strong>Simulado — 15 questões</strong>
-              <p>{questions.length} questões selecionadas para esta semana</p>
-            </div>
-            {simDone ? (
-              <span className="rk-done-tag">{entradaAtual.simulado.pct}% ✓</span>
-            ) : (
-              <button className="rk-btn-primary small" onClick={() => setPhase('simulado')}>
-                Iniciar
-              </button>
-            )}
-          </div>
-
-          <div className="rk-action-card">
-            <span className="rk-action-icon">✒️</span>
-            <div>
-              <strong>Redação semanal</strong>
-              <p className="rk-action-tema">{tema}</p>
-            </div>
-            {redDone ? (
-              <span className="rk-done-tag">{entradaAtual.redacao.total}/1000 ✓</span>
-            ) : (
-              <button
-                className={`rk-btn-primary small ${!simDone ? 'disabled' : ''}`}
-                onClick={() => simDone && setPhase('redacao')}
-                disabled={!simDone}
-                title={!simDone ? 'Complete o simulado primeiro' : ''}
-              >
-                {simDone ? 'Iniciar' : 'Após o simulado'}
-              </button>
-            )}
-          </div>
-        </div>
-
-        {semanaCompleta && (
-          <div className="rk-semana-score">
-            <span className="rk-semana-score-label">Pontuação da semana</span>
-            <span className={`rk-semana-score-value ${scoreClass(entradaAtual.score / 10)}`}>
-              {entradaAtual.score}
-            </span>
-            <span className="rk-semana-score-sub">/ 1000 pts</span>
-          </div>
-        )}
+      <div className="rk-sim-actions">
+        <button
+          className="rk-btn-primary small"
+          disabled={!feito && !podeFazer}
+          onClick={() => onIniciar(simulado.id, temporada?.id)}
+        >
+          {labelBotao()}
+        </button>
       </div>
-
-      {/* ── Pódio ─────────────────────────────────────────────────────────── */}
-      <div className="rk-section">
-        <h2>Ranking geral — {formatWeek(semanaAtual, anoAtual)}</h2>
-        <Podio players={leaderboard.slice(0, 3)} />
-      </div>
-
-      {/* ── Lista completa ────────────────────────────────────────────────── */}
-      <div className="rk-section">
-        <h2>Classificação completa</h2>
-        <div className="rk-ranking-list">
-          {leaderboard.map((user, i) => {
-            const barColor = user.score >= 700 ? '#16a34a' : user.score >= 500 ? '#ca8a04' : '#dc2626';
-            return (
-              <div key={user.id} className={`rk-rank-row ${user.isYou ? 'current-week' : ''}`}>
-                <span className="rk-rank-pos">
-                  {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
-                </span>
-                <div className="rk-rank-avatar" style={{ background: user.cor }}>
-                  {user.iniciais}
-                </div>
-                <span className="rk-rank-week">
-                  {user.isYou ? 'Você' : user.nome}
-                </span>
-                <div className="rk-rank-bar-wrap">
-                  <div className="rk-rank-bar-fill" style={{ width: `${user.score / 10}%`, background: barColor }} />
-                </div>
-                <span className={`rk-rank-score ${scoreClass(user.score / 10)}`}>
-                  {user.score > 0 ? `${user.score} pts` : '—'}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
     </div>
   );
 }

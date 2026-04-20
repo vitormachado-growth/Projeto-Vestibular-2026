@@ -1,0 +1,497 @@
+.sp-wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sp-loading-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sp-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spSpin 0.7s linear infinite;
+}
+
+@keyframes spSpin { to { transform: rotate(360deg); } }
+
+.sp-back {
+  align-self: flex-start;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: inherit;
+  transition: border-color 0.15s, color 0.15s;
+}
+.sp-back:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ── INTRO ─────────────────────────────────────── */
+.sp-intro-card, .sp-result-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem;
+}
+
+.sp-intro-card h1, .sp-result-card h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.25rem;
+  font-family: 'Outfit', sans-serif;
+}
+
+.sp-intro-sub, .sp-result-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0 0 1.5rem;
+}
+
+.sp-intro-areas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.sp-intro-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-main, #f8fafc);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 0.88rem;
+}
+
+.sp-intro-area strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.sp-intro-warn {
+  background: #fef3c7;
+  border: 1px solid #d97706;
+  color: #78350f;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+html[data-theme="dark"] .sp-intro-warn {
+  background: rgba(217, 119, 6, 0.15);
+  color: #fbbf24;
+}
+
+/* ── TOPBAR ────────────────────────────────────── */
+.sp-topbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.sp-progress {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.sp-area-badge {
+  flex: 1;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sp-btn-cancel {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* ── NAV (DOTS) ────────────────────────────────── */
+.sp-nav {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.sp-nav-group { flex: 1; min-width: 180px; }
+
+.sp-nav-group label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.sp-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.sp-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s;
+}
+
+.sp-dot.answered { background: var(--primary); border-color: var(--primary); }
+.sp-dot.active { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25); border-color: var(--primary); }
+
+/* ── QUESTION ──────────────────────────────────── */
+.sp-question {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+.sp-q-body {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-main);
+  margin-bottom: 1.25rem;
+  white-space: pre-wrap;
+}
+
+.sp-alts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.sp-alt {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-main, #f8fafc);
+  text-align: left;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.sp-alt:hover { border-color: var(--primary); }
+
+.sp-alt.selected {
+  border-color: var(--primary);
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.sp-alt-letra {
+  font-weight: 700;
+  color: var(--primary);
+  min-width: 20px;
+  flex-shrink: 0;
+}
+
+.sp-alt-body { flex: 1; min-width: 0; line-height: 1.5; }
+
+/* ── FOOTER ───────────────────────────────────── */
+.sp-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sp-btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+.sp-btn-primary:hover:not(:disabled) { opacity: 0.88; }
+.sp-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.sp-btn-secondary {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.sp-btn-secondary:hover { border-color: var(--text-muted); color: var(--text-main); }
+
+/* ── REDAÇÃO ──────────────────────────────────── */
+.sp-redacao-head h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.3rem;
+}
+.sp-redacao-head p { color: var(--text-muted); font-size: 0.88rem; margin: 0; }
+
+.sp-tema-card {
+  background: var(--card-bg);
+  border: 2px solid var(--primary);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+
+.sp-tema-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.sp-tema-text {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.sp-textos {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.sp-textos h3 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.sp-textos pre {
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+}
+
+/* ── AVALIAR ──────────────────────────────────── */
+.sp-competencias {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.sp-comp-row {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sp-comp-row strong {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  display: block;
+}
+
+.sp-comp-row small {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.sp-comp-opts {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.sp-nota-btn {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-main, #f8fafc);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.sp-nota-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+.sp-nota-btn.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.sp-redacao-total {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: right;
+}
+
+/* ── RESULTADO ────────────────────────────────── */
+.sp-result-card { text-align: center; }
+
+.sp-score-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  font-weight: 700;
+  border: 8px solid;
+  margin: 0 auto 0.75rem;
+}
+
+.sp-score-circle.great { border-color: #16a34a; color: #16a34a; }
+.sp-score-circle.good { border-color: #ca8a04; color: #ca8a04; }
+.sp-score-circle.bad { border-color: #dc2626; color: #dc2626; }
+
+.sp-result-count {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0 0 2rem;
+}
+
+.sp-result-areas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.sp-area-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.88rem;
+}
+
+.sp-area-label {
+  min-width: 120px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.sp-area-bar {
+  flex: 1;
+  height: 10px;
+  background: var(--border-color);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.sp-area-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+
+.sp-area-pts {
+  font-weight: 700;
+  color: var(--text-main);
+  min-width: 50px;
+  text-align: right;
+}
+
+.sp-redacao-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem;
+  background: var(--bg-main, #f8fafc);
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.sp-redacao-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.sp-redacao-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+@media (max-width: 600px) {
+  .sp-wrap { padding: 1rem; }
+  .sp-alt { font-size: 0.85rem; }
+}
