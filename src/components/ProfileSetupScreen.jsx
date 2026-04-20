@@ -113,11 +113,11 @@ const ProfileSetupScreen = ({ user, onComplete, onLogout }) => {
         )}
 
         <form className="profile-form" onSubmit={handleSubmit} noValidate>
-          <div className="profile-avatar-section">
-            <div className="profile-avatar-header">
+          <div className="profile-field">
+            <div className="profile-avatar-label-row">
               <label>
                 Foto de perfil <span className="req">*</span>
-                <small>Escolha um cachorrinho 🐶</small>
+                <span className="profile-field-hint">Escolha um cachorrinho 🐶</span>
               </label>
               <button
                 type="button"
@@ -125,7 +125,7 @@ const ProfileSetupScreen = ({ user, onComplete, onLogout }) => {
                 onClick={fetchDogs}
                 disabled={loadingDogs}
               >
-                {loadingDogs ? '…' : '🔄 Ver outras'}
+                {loadingDogs ? '…' : 'Ver outras'}
               </button>
             </div>
 
