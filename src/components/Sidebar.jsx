@@ -67,7 +67,13 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
 
       <div className="sidebar-footer">
         <div className="user-profile">
-          <div className="avatar">{userInitial}</div>
+          <div className="avatar">
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt={displayName} />
+            ) : (
+              userInitial
+            )}
+          </div>
           {!collapsed && (
             <div className="user-info">
               <p className="name">{displayName}</p>

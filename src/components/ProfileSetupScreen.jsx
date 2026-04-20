@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import './ProfileSetupScreen.css';
+
+const DOG_API = 'https://dog.ceo/api/breeds/image/random/8';
 
 const ANOS_OPCOES = [
   '1º ano do Ensino Médio',
@@ -27,8 +29,26 @@ const ProfileSetupScreen = ({ user, onComplete, onLogout }) => {
   const [escola, setEscola] = useState('');
   const [cidade, setCidade] = useState('');
   const [estado, setEstado] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [dogs, setDogs] = useState([]);
+  const [loadingDogs, setLoadingDogs] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  const fetchDogs = async () => {
+    setLoadingDogs(true);
+    try {
+      const res = await fetch(DOG_API);
+      const json = await res.json();
+      setDogs(json.message || []);
+    } catch {
+      setDogs([]);
+    } finally {
+      setLoadingDogs(false);
+    }
+  };
+
+  useEffect(() => { fetchDogs(); }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,6 +56,11 @@ const ProfileSetupScreen = ({ user, onComplete, onLogout }) => {
 
     if (!apelido.trim() || !nomeCompleto.trim() || !anoSerie) {
       setError('Preencha os campos obrigatórios.');
+      return;
+    }
+
+    if (!avatarUrl) {
+      setError('Escolha uma foto de perfil.');
       return;
     }
 
@@ -49,6 +74,7 @@ const ProfileSetupScreen = ({ user, onComplete, onLogout }) => {
       escola: escola.trim() || null,
       cidade: cidade.trim() || null,
       estado: estado || null,
+      avatar_url: avatarUrl,
       updated_at: new Date().toISOString(),
     };
 
@@ -87,6 +113,44 @@ const ProfileSetupScreen = ({ user, onComplete, onLogout }) => {
         )}
 
         <form className="profile-form" onSubmit={handleSubmit} noValidate>
+          <div className="profile-avatar-section">
+            <div className="profile-avatar-header">
+              <label>
+                Foto de perfil <span className="req">*</span>
+                <small>Escolha um cachorrinho 🐶</small>
+              </label>
+              <button
+                type="button"
+                className="profile-avatar-refresh"
+                onClick={fetchDogs}
+                disabled={loadingDogs}
+              >
+                {loadingDogs ? '…' : '🔄 Ver outras'}
+              </button>
+            </div>
+
+            <div className="profile-avatar-grid">
+              {loadingDogs && dogs.length === 0 ? (
+                Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="profile-avatar-item skeleton" />
+                ))
+              ) : (
+                dogs.map((url) => (
+                  <button
+                    key={url}
+                    type="button"
+                    className={`profile-avatar-item ${avatarUrl === url ? 'selected' : ''}`}
+                    onClick={() => setAvatarUrl(url)}
+                    aria-label="Selecionar foto"
+                  >
+                    <img src={url} alt="" loading="lazy" />
+                    {avatarUrl === url && <span className="profile-avatar-check">✓</span>}
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+
           <div className="profile-row">
             <div className="profile-field">
               <label htmlFor="apelido">
