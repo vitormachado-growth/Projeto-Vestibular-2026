@@ -445,11 +445,22 @@ const mapearQuestao = (q, ordem, area) => ({
   _novo: true,
 });
 
-const buscarPorAnoArea = (year, discipline) =>
-  fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=200`)
-    .then(r => r.json())
-    .then(d => (d.questions || []).filter(q => q.discipline === discipline))
-    .catch(() => []);
+const buscarPorAnoArea = async (year, discipline) => {
+  try {
+    // Tenta buscar 180 questões de uma vez (limite da prova)
+    const r1 = await fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=180`);
+    const d1 = await r1.json();
+    const batch1 = (d1.questions || []).filter(q => q.discipline === discipline);
+    if (batch1.length > 0) return batch1;
+
+    // 2° dia (matematica/naturezas) pode começar no offset 90
+    const r2 = await fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=90&offset=90`);
+    const d2 = await r2.json();
+    return (d2.questions || []).filter(q => q.discipline === discipline);
+  } catch {
+    return [];
+  }
+};
 
 const SorteadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
   const [anos, setAnos] = useState([]);
@@ -482,19 +493,25 @@ const SorteadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
     setError(null);
     try {
       const lista = [...anosEscolhidos];
-      setProgresso(`Buscando questões de ${lista.length} prova(s)…`);
-      const resultados = await Promise.all(lista.map(y => buscarPorAnoArea(y, discipline)));
-      const pool = resultados.flat();
+      setProgresso(`Buscando "${discipline}" em ${lista.length} prova(s)…`);
+
+      // Busca sequencial pra não sobrecarregar a API
+      const pool = [];
+      for (const year of lista) {
+        setProgresso(`Buscando ENEM ${year}…`);
+        const qs = await buscarPorAnoArea(year, discipline);
+        pool.push(...qs);
+      }
 
       if (pool.length === 0) {
-        setError('Nenhuma questão encontrada para esta área nos anos selecionados.');
+        setError(`Nenhuma questão de "${discipline}" encontrada. Tente outros anos ou verifique sua conexão.`);
         setLoading(false);
         return;
       }
 
       const embaralhadas = [...pool].sort(() => Math.random() - 0.5);
       const escolhidas = embaralhadas.slice(0, Math.min(quantidade, embaralhadas.length));
-      setProgresso(`Montando ${escolhidas.length} questões…`);
+      setProgresso(`${pool.length} questões no pool → sorteando ${escolhidas.length}…`);
       onImport(escolhidas.map((q, i) => mapearQuestao(q, proximaOrdem + i, area)));
     } catch {
       setError('Erro ao sortear. Tente novamente.');
