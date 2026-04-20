@@ -7,6 +7,14 @@
     <title>VesTibular</title>
   </head>
   <body>
+    <script>
+      (function() {
+        var saved = localStorage.getItem('dark_mode');
+        var h = new Date().getHours();
+        var dark = saved !== null ? saved === 'true' : (h >= 18 || h < 6);
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
