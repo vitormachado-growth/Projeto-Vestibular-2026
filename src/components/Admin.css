@@ -180,6 +180,32 @@ html[data-theme="dark"] .admin-status.finalizada { background: rgba(156, 163, 17
   color: var(--text-main);
 }
 
+.admin-field-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.admin-btn-sortear {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.admin-btn-sortear:hover {
+  background: var(--primary);
+  color: white;
+}
+
 .admin-field input[type="text"],
 .admin-field input[type="date"],
 .admin-field select,

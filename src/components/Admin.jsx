@@ -191,11 +191,71 @@ const AREA_LABELS = {
   naturezas: 'Naturezas',
 };
 
-const ENEM_DISCIPLINE = {
-  humanas: 'ciencias-humanas',
-  linguagens: 'linguagens',
-  matematica: 'matematica',
-  naturezas: 'ciencias-natureza',
+const TEMAS_REDACAO = [
+  {
+    tema: 'O impacto das fake news na sociedade contemporânea',
+    textos_motivadores:
+      'Texto I\n"Um estudo realizado por pesquisadores do Instituto de Tecnologia de Massachusetts (MIT) apontou que as notícias falsas (fake news) têm 70% mais chances de serem compartilhadas nas redes sociais do que as verdadeiras. A pesquisa revelou que a mentira se espalha mais rápido, de forma mais profunda e com maior alcance do que a verdade, apelando para sentimentos como surpresa e repulsa." (Adaptado de revistas científicas).\n\nTexto II\n"A desinformação atinge o cerne da democracia, pois o voto e as escolhas políticas dependem de cidadãos bem informados. Quando a realidade é substituída por narrativas fabricadas, o debate público perde sua racionalidade e o tecido social é fragmentado pela polarização extrema." (Artigo de opinião sobre educação midiática).',
+  },
+  {
+    tema: 'Desafios para a valorização da herança africana no Brasil',
+    textos_motivadores:
+      'Texto I\n"A Lei nº 10.639, de 9 de janeiro de 2003, alterou a Lei de Diretrizes e Bases da Educação Nacional para incluir no currículo oficial da Rede de Ensino a obrigatoriedade da temática \'História e Cultura Afro-Brasileira\'. O objetivo é resgatar a contribuição do negro nas áreas social, econômica e política pertinentes à História do Brasil." (Adaptado da legislação brasileira).\n\nTexto II\n"O mito da democracia racial no Brasil mascarou durante muito tempo o racismo estrutural que apaga e desvaloriza a estética, as religiões e as contribuições intelectuais da população negra. Reconhecer a herança africana exige mais do que tolerância; exige a reconstrução do imaginário nacional e o combate ativo ao preconceito." (Trecho de análise sociológica).',
+  },
+  {
+    tema: 'Desafios para o enfrentamento da invisibilidade do trabalho de cuidado',
+    textos_motivadores:
+      'Texto I\n"Dados do Instituto Brasileiro de Geografia e Estatística (IBGE) mostram que as mulheres dedicam quase o dobro de horas semanais aos afazeres domésticos e ao cuidado de pessoas (crianças, idosos, enfermos) em comparação aos homens. Essa carga dupla ou tripla afeta diretamente a inserção e a permanência feminina no mercado de trabalho remunerado." (Adaptado da Pnad Contínua/IBGE).\n\nTexto II\n"A economia do cuidado é a base invisível que sustenta todas as outras engrenagens da sociedade capitalista. Sem quem cozinhe, limpe e eduque, a força de trabalho não pode existir. No entanto, esse esforço contínuo não entra no cálculo do Produto Interno Bruto (PIB) e é socialmente encarado como uma \'vocação\' feminina, e não como um trabalho que merece reconhecimento e remuneração." (Artigo sobre economia e gênero).',
+  },
+  {
+    tema: 'Desafios para a valorização de comunidades e povos tradicionais no Brasil',
+    textos_motivadores:
+      'Texto I\n"A Constituição Federal de 1988, em seu Art. 231, reconhece aos índios sua organização social, costumes, línguas, crenças e tradições, e os direitos originários sobre as terras que tradicionalmente ocupam, competindo à União demarcá-las, proteger e fazer respeitar todos os seus bens." (Constituição da República Federativa do Brasil).\n\nTexto II\n"As comunidades tradicionais, como quilombolas, ribeirinhos, caiçaras e indígenas, são consideradas pelos cientistas como as principais guardiãs da biodiversidade. Seus modos de vida ancestrais utilizam os recursos naturais de forma sustentável, contrastando com o avanço predatório de atividades extrativistas e do agronegócio sobre seus territórios." (Reportagem ambiental).',
+  },
+  {
+    tema: 'Invisibilidade e registro civil: garantia de acesso à cidadania no Brasil',
+    textos_motivadores:
+      'Texto I\n"No Brasil, milhões de pessoas vivem sem o registro civil de nascimento. Conhecidos como os \'invisíveis\', esses cidadãos não existem oficialmente para o Estado. Sem a certidão de nascimento, é impossível obter RG, CPF, matricular-se em escolas públicas, receber vacinas pelo SUS ou ter acesso a benefícios sociais." (Levantamento sobre sub-registro no Brasil).\n\nTexto II\n"Todo ser humano tem direito a ser reconhecido, em todos os lugares, como pessoa perante a lei." (Artigo VI da Declaração Universal dos Direitos Humanos, 1948). O documento é o passaporte que garante a transição do indivíduo da invisibilidade para a cidadania plena.',
+  },
+  {
+    tema: 'O impacto das tecnologias digitais no desenvolvimento socioemocional de jovens',
+    textos_motivadores:
+      'Texto I\n"Sociedades médicas de pediatria e psicologia alertam para o aumento de quadros de ansiedade, depressão e Transtorno de Déficit de Atenção em crianças e adolescentes devido ao uso excessivo de telas. A hiperestimulação constante altera as vias de recompensa do cérebro, reduzindo a tolerância à frustração e a capacidade de foco prolongado." (Boletim médico sobre saúde digital).\n\nTexto II\n"A tela, que deveria ser uma janela para o mundo, muitas vezes torna-se um espelho que reflete o isolamento. Jovens hiperconectados no ambiente virtual frequentemente relatam sentimentos de solidão profunda no mundo físico, evidenciando uma perda de habilidades sociais essenciais, como a leitura de expressões faciais e o diálogo olho no olho." (Artigo de psicologia comportamental).',
+  },
+  {
+    tema: 'Perspectivas acerca do envelhecimento na sociedade brasileira',
+    textos_motivadores:
+      'Texto I\n"A pirâmide etária brasileira está passando por uma inversão histórica. Projeções demográficas indicam que, nas próximas décadas, o número de idosos no país superará o de jovens e crianças. Esse rápido processo de transição impõe desafios imediatos para a previdência social, o sistema de saúde público e a infraestrutura urbana." (Adaptado de dados censitários).\n\nTexto II\n"O Estatuto da Pessoa Idosa (Lei nº 10.741/2003) assegura a participação do idoso na comunidade, defendendo sua dignidade, bem-estar e o direito à vida. Contudo, o etarismo — o preconceito baseado na idade — ainda marginaliza essa população, excluindo-a do mercado de trabalho e limitando sua autonomia na tomada de decisões familiares e sociais." (Reflexão sobre direitos humanos).',
+  },
+  {
+    tema: 'Meio ambiente e sustentabilidade: os desafios da proteção ambiental',
+    textos_motivadores:
+      'Texto I\n"Art. 225. Todos têm direito ao meio ambiente ecologicamente equilibrado, bem de uso comum do povo e essencial à sadia qualidade de vida, impondo-se ao poder público e à coletividade o dever de defendê-lo e preservá-lo para as presentes e futuras gerações." (Constituição Federal de 1988).\n\nTexto II\n"Os relatórios recentes do Painel Intergovernamental sobre Mudanças Climáticas (IPCC) soam um alerta vermelho para a humanidade. Ondas de calor extremo, secas prolongadas e enchentes devastadoras não são mais previsões futuras, mas a realidade presente. A mudança de um modelo de produção linear para uma economia circular e descarbonizada é uma questão de sobrevivência." (Resumo de relatório ambiental global).',
+  },
+  {
+    tema: 'A influência das redes sociais na autoestima de adolescentes',
+    textos_motivadores:
+      'Texto I\n"O fenômeno chamado \'dismorfia do Snapchat\' ocorre quando pacientes buscam cirurgias plásticas ou procedimentos estéticos para se parecerem com as versões editadas e filtradas de si mesmos. Essa distorção de imagem corporal tem gerado uma epidemia de insatisfação crônica entre os mais jovens." (Artigo de revistas de dermatologia e psiquiatria).\n\nTexto II\n"Os algoritmos das redes sociais são desenhados para reter a atenção, frequentemente priorizando conteúdos que geram comparação social. Ao visualizar vidas aparentemente perfeitas e corpos inatingíveis, adolescentes desenvolvem uma métrica irreal de sucesso e beleza, o que se converte em gatilho para transtornos alimentares e baixa autoestima." (Estudo sobre comportamento digital).',
+  },
+  {
+    tema: 'Desafios para a (re)inserção socioeconômica da população em situação de rua',
+    textos_motivadores:
+      'Texto I\n"Estudos de institutos de pesquisa econômica revelam que a população em situação de rua no Brasil cresceu exponencialmente na última década, impulsionada pelo desemprego, crise habitacional e ausência de redes de apoio. Esse grupo demográfico é extremamente heterogêneo, incluindo desde trabalhadores informais até famílias inteiras desabrigadas." (Dados de institutos de pesquisa social).\n\nTexto II\n"A arquitetura hostil, presente na instalação de espetos de metal sob viadutos, bancos de praças divididos e pedras em calçadas, reflete a \'aporofobia\' (o medo e a rejeição aos pobres). Em vez de promover políticas públicas de acolhimento, moradia e saúde mental (como o modelo \'Housing First\'), muitas cidades optam por varrer essas pessoas do campo de visão da sociedade." (Ensaio sobre urbanismo e desigualdade).',
+  },
+];
+
+// O campo `discipline` da API tem ~5% de erros (ex: questão de química marcada como humanas).
+// O `index` da questão segue o padrão oficial do ENEM e é confiável.
+const AREA_INDEX_RANGE = {
+  linguagens: [1, 45],
+  humanas: [46, 90],
+  naturezas: [91, 135],
+  matematica: [136, 180],
+};
+
+const isQuestaoDaArea = (q, area) => {
+  const [min, max] = AREA_INDEX_RANGE[area] || [];
+  return typeof q.index === 'number' && q.index >= min && q.index <= max;
 };
 
 const emptyQuestao = (ordem, area) => ({
@@ -367,7 +427,19 @@ const SimuladoEditor = ({ id, onBack }) => {
       {areaAtiva === 'redacao' ? (
         <div className="admin-card">
           <div className="admin-field">
-            <label>Tema da redação</label>
+            <div className="admin-field-header">
+              <label>Tema da redação</label>
+              <button
+                type="button"
+                className="admin-btn-sortear"
+                onClick={() => {
+                  const t = TEMAS_REDACAO[Math.floor(Math.random() * TEMAS_REDACAO.length)];
+                  setRedacao({ tema: t.tema, textos_motivadores: t.textos_motivadores });
+                }}
+              >
+                🎲 Sortear tema
+              </button>
+            </div>
             <input
               type="text"
               value={redacao.tema}
@@ -447,7 +519,7 @@ const mapearQuestao = (q, ordem, area) => ({
 
 const PAGE_SIZE = 50;
 
-const buscarPorAnoArea = async (year, discipline) => {
+const buscarPorAnoArea = async (year, area) => {
   try {
     // 1ª página + total
     const r1 = await fetch(`https://api.enem.dev/v1/exams/${year}/questions?limit=${PAGE_SIZE}&offset=0`);
@@ -467,7 +539,13 @@ const buscarPorAnoArea = async (year, discipline) => {
     );
 
     const todas = [...(d1.questions || []), ...resto.flat()];
-    return todas.filter(q => q.discipline === discipline);
+    // Dedup por index (bordas de paginação às vezes duplicam) + filtra por faixa de índice da área
+    const vistos = new Set();
+    return todas.filter(q => {
+      if (vistos.has(q.index)) return false;
+      vistos.add(q.index);
+      return isQuestaoDaArea(q, area);
+    });
   } catch {
     return [];
   }
@@ -481,8 +559,6 @@ const SorteadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
   const [loadingAnos, setLoadingAnos] = useState(true);
   const [progresso, setProgresso] = useState('');
   const [error, setError] = useState(null);
-
-  const discipline = ENEM_DISCIPLINE[area];
 
   useEffect(() => {
     fetch('https://api.enem.dev/v1/exams')
@@ -504,18 +580,18 @@ const SorteadorEnem = ({ area, proximaOrdem, onImport, onClose }) => {
     setError(null);
     try {
       const lista = [...anosEscolhidos];
-      setProgresso(`Buscando "${discipline}" em ${lista.length} prova(s)…`);
+      setProgresso(`Buscando questões de ${AREA_LABELS[area]} em ${lista.length} prova(s)…`);
 
       // Busca sequencial pra não sobrecarregar a API
       const pool = [];
       for (const year of lista) {
         setProgresso(`Buscando ENEM ${year} (~4 páginas)…`);
-        const qs = await buscarPorAnoArea(year, discipline);
+        const qs = await buscarPorAnoArea(year, area);
         pool.push(...qs);
       }
 
       if (pool.length === 0) {
-        setError(`Nenhuma questão de "${discipline}" encontrada. Tente outros anos ou verifique sua conexão.`);
+        setError(`Nenhuma questão de ${AREA_LABELS[area]} encontrada. Tente outros anos ou verifique sua conexão.`);
         setLoading(false);
         return;
       }
