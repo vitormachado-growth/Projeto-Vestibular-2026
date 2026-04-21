@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { STORAGE_SIMULADOS } from './Simulado';
+import { STORAGE_SIMULADOS, ReviewItem } from './Simulado';
 import { STORAGE_ESTUDADOS } from './Materias';
 import { TOPICOS } from '../utils/geradorCronograma';
 import './Inicio.css';
@@ -95,6 +95,7 @@ export default function Inicio({ onNavigate, focus }) {
 
   const [ranking, setRanking] = useState([]);
   const [showHistorico, setShowHistorico] = useState(false);
+  const [revisandoSimulado, setRevisandoSimulado] = useState(null);
   const simulados = useMemo(() => loadSimulados(), []);
 
   useEffect(() => {
@@ -147,6 +148,7 @@ export default function Inicio({ onNavigate, focus }) {
   const dataFormatada = today.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
 
   return (
+    <>
     <div className="inicio-wrap">
 
       {/* ── Saudação ───────────────────────────────────────────────────────── */}
@@ -308,6 +310,11 @@ export default function Inicio({ onNavigate, focus }) {
                       </div>
                       <span className="inicio-historico-pct" style={{ color: cor }}>{s.pct}%</span>
                       <span className="inicio-historico-detalhe">{s.corretas}/{s.total}</span>
+                      {s.questions?.length > 0 && (
+                        <button className="inicio-historico-ver-btn" onClick={() => setRevisandoSimulado(s)}>
+                          Ver
+                        </button>
+                      )}
                     </div>
                   );
                 })}
@@ -354,5 +361,35 @@ export default function Inicio({ onNavigate, focus }) {
       </div>
 
     </div>
+
+    {/* ── Modal revisão de simulado passado ─────────────────────────────── */}
+    {revisandoSimulado && (
+      <div className="sim-revisao-modal-overlay" onClick={() => setRevisandoSimulado(null)}>
+        <div className="sim-revisao-modal" onClick={e => e.stopPropagation()}>
+          <div className="sim-revisao-modal-header">
+            <div>
+              <h2>Revisão do simulado</h2>
+              <p className="sim-revisao-modal-sub">
+                {new Date(revisandoSimulado.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                {' — '}{revisandoSimulado.corretas}/{revisandoSimulado.total} acertos ({revisandoSimulado.pct}%)
+              </p>
+            </div>
+            <button className="sim-revisao-modal-close" onClick={() => setRevisandoSimulado(null)}>✕</button>
+          </div>
+          <div className="sim-revisao-modal-body">
+            {revisandoSimulado.questions.map((q, i) => (
+              <ReviewItem
+                key={q.id}
+                q={q}
+                i={i}
+                userAns={revisandoSimulado.answers?.[q.id]}
+                correct={revisandoSimulado.answers?.[q.id] === q.answer}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

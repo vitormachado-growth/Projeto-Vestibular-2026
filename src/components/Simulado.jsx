@@ -396,7 +396,7 @@ function ResultScreen({ questions, answers, onNovo }) {
   );
 }
 
-function ReviewItem({ q, i, userAns, correct }) {
+export function ReviewItem({ q, i, userAns, correct }) {
   const [expanded, setExpanded] = useState(false);
   const opts = ['a','b','c','d','e'];
   return (
@@ -500,6 +500,8 @@ export default function Simulado() {
       corretas,
       pct: Math.round((corretas / questions.length) * 100),
       bySubject,
+      questions,
+      answers: userAnswers,
     };
     try {
       const raw = localStorage.getItem(STORAGE_SIMULADOS);
