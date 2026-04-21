@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { STORAGE_SIMULADOS } from './Simulado';
+import { STORAGE_SIMULADOS, ReviewItem } from './Simulado';
+import { questoes as questoesBase } from '../data/questoesData';
 import './Desempenho.css';
 
 function formatDate(iso) {
@@ -27,6 +28,20 @@ export default function Desempenho() {
       return raw ? JSON.parse(raw) : [];
     } catch { return []; }
   });
+  const [revisando, setRevisando] = useState(null);
+
+  function abrirRevisao(s) {
+    if (s.questions?.length > 0) { setRevisando(s); return; }
+    if (s.questionIds?.length > 0) {
+      try {
+        const importadas = JSON.parse(localStorage.getItem('questoes_importadas_v1') || '[]');
+        const pool = [...questoesBase, ...importadas];
+        const map = Object.fromEntries(pool.map(q => [q.id, q]));
+        const questions = s.questionIds.map(id => map[id]).filter(Boolean);
+        setRevisando({ ...s, questions });
+      } catch { setRevisando({ ...s, questions: [] }); }
+    }
+  }
 
   function limparHistorico() {
     if (confirm('Apagar todo o histórico de simulados?')) {
@@ -91,6 +106,7 @@ export default function Desempenho() {
   }
 
   return (
+    <>
     <div className="desemp-wrap">
 
       <div className="desemp-header">
@@ -216,6 +232,11 @@ export default function Desempenho() {
                 <span className="desemp-hist-trend" style={{ color: trendColor }}>
                   {trendIcon}
                 </span>
+                {(sim.questions?.length > 0 || sim.questionIds?.length > 0) && (
+                  <button className="inicio-historico-ver-btn" onClick={() => abrirRevisao(sim)}>
+                    Ver
+                  </button>
+                )}
               </div>
             );
           })}
@@ -223,5 +244,38 @@ export default function Desempenho() {
       </div>
 
     </div>
+
+    {revisando && (
+      <div className="sim-revisao-modal-overlay" onClick={() => setRevisando(null)}>
+        <div className="sim-revisao-modal" onClick={e => e.stopPropagation()}>
+          <div className="sim-revisao-modal-header">
+            <div>
+              <h2>Revisão do simulado</h2>
+              <p className="sim-revisao-modal-sub">
+                {new Date(revisando.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                {' — '}{revisando.corretas}/{revisando.total} acertos ({revisando.pct}%)
+              </p>
+            </div>
+            <button className="sim-revisao-modal-close" onClick={() => setRevisando(null)}>✕</button>
+          </div>
+          <div className="sim-revisao-modal-body">
+            {revisando.questions?.length > 0 ? revisando.questions.map((q, i) => (
+              <ReviewItem
+                key={q.id}
+                q={q}
+                i={i}
+                userAns={revisando.answers?.[q.id]}
+                correct={revisando.answers?.[q.id] === q.answer}
+              />
+            )) : (
+              <p style={{ color: 'var(--text-muted)', padding: '1rem' }}>
+                Questões não disponíveis para este simulado.
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
