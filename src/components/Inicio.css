@@ -188,7 +188,7 @@
   display: grid;
   grid-template-columns: 1fr 280px;
   gap: 1.25rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 /* ── SECTIONS ────────────────────────────────────────────────────────────── */
@@ -276,7 +276,8 @@
 .inicio-rank-score.bad   { color: #dc2626; }
 
 /* ── ASIDE STATS ─────────────────────────────────────────────────────────── */
-.inicio-aside { display: flex; flex-direction: column; }
+.inicio-aside { display: flex; flex-direction: column; align-self: stretch; }
+.inicio-aside .inicio-section.compact { flex: 1; display: flex; flex-direction: column; }
 .inicio-stat-list {
   display: flex;
   gap: 1rem;
