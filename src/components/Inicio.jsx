@@ -276,24 +276,21 @@ export default function Inicio({ onNavigate, focus }) {
               Fazer simulado →
             </button>
           </div>
+        </div>
 
-          <div className="inicio-section compact">
+      </div>
+
+      {/* ── Cobertura de tópicos (full width) ─────────────────────────────── */}
+      <div className="inicio-section inicio-cob-full">
+        <div className="inicio-cob-full-inner">
+          <div className="inicio-cob-full-left">
             <h2>Cobertura de tópicos</h2>
             {cobertura && cobertura.totalTopicos > 0 ? (
-              <>
-                <div className="inicio-cob-bar-wrap">
-                  <div className="inicio-cob-bar">
-                    <div className="inicio-cob-fill estudando" style={{ width: `${Math.round(((cobertura.dominados + cobertura.estudando) / cobertura.totalTopicos) * 100)}%` }} />
-                    <div className="inicio-cob-fill dominado"  style={{ width: `${Math.round((cobertura.dominados / cobertura.totalTopicos) * 100)}%` }} />
-                  </div>
-                  <span className="inicio-cob-pct">{cobertura.pct}%</span>
-                </div>
-                <div className="inicio-cob-legend">
-                  <span className="dom">■ {cobertura.dominados} dominados</span>
-                  <span className="est">■ {cobertura.estudando} estudando</span>
-                  <span className="nao">■ {cobertura.totalTopicos - cobertura.dominados - cobertura.estudando} não iniciados</span>
-                </div>
-              </>
+              <div className="inicio-cob-legend inicio-cob-legend-row">
+                <span className="dom">■ {cobertura.dominados} dominados</span>
+                <span className="est">■ {cobertura.estudando} estudando</span>
+                <span className="nao">■ {cobertura.totalTopicos - cobertura.dominados - cobertura.estudando} não iniciados</span>
+              </div>
             ) : (
               <p className="inicio-empty-sm">Nenhum tópico marcado ainda.</p>
             )}
@@ -301,9 +298,18 @@ export default function Inicio({ onNavigate, focus }) {
               Ver matérias →
             </button>
           </div>
+          <div className="inicio-cob-full-bar">
+            <div className="inicio-cob-bar-wrap">
+              <div className="inicio-cob-bar">
+                <div className="inicio-cob-fill estudando" style={{ width: `${cobertura ? Math.round(((cobertura.dominados + cobertura.estudando) / cobertura.totalTopicos) * 100) : 0}%` }} />
+                <div className="inicio-cob-fill dominado"  style={{ width: `${cobertura ? Math.round((cobertura.dominados / cobertura.totalTopicos) * 100) : 0}%` }} />
+              </div>
+              <span className="inicio-cob-pct">{cobertura?.pct ?? 0}%</span>
+            </div>
+          </div>
         </div>
-
       </div>
+
     </div>
   );
 }
