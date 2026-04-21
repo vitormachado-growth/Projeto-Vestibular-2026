@@ -94,6 +94,7 @@ export default function Inicio({ onNavigate, focus }) {
   const today = new Date();
 
   const [ranking, setRanking] = useState([]);
+  const [showHistorico, setShowHistorico] = useState(false);
   const simulados = useMemo(() => loadSimulados(), []);
 
   useEffect(() => {
@@ -285,9 +286,36 @@ export default function Inicio({ onNavigate, focus }) {
                 <p className="inicio-empty-sm">Nenhum simulado livre ainda.</p>
               )}
             </div>
+            {simStats && (
+              <button
+                className="inicio-link"
+                style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'block' }}
+                onClick={() => setShowHistorico(v => !v)}
+              >
+                {showHistorico ? 'Ocultar histórico ▲' : 'Ver histórico ▼'}
+              </button>
+            )}
+            {showHistorico && (
+              <div className="inicio-historico-list">
+                {[...simulados].reverse().map((s, i) => {
+                  const data = new Date(s.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+                  const cor = s.pct >= 70 ? '#16a34a' : s.pct >= 50 ? '#ca8a04' : '#dc2626';
+                  return (
+                    <div key={s.id ?? i} className="inicio-historico-row">
+                      <span className="inicio-historico-data">{data}</span>
+                      <div className="inicio-historico-bar-wrap">
+                        <div className="inicio-historico-bar" style={{ width: `${s.pct}%`, background: cor }} />
+                      </div>
+                      <span className="inicio-historico-pct" style={{ color: cor }}>{s.pct}%</span>
+                      <span className="inicio-historico-detalhe">{s.corretas}/{s.total}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: 'auto', paddingTop: '1rem' }}>
               <button className="inicio-btn-sm" onClick={() => onNavigate('simulados')}>
-                {simStats ? 'Ver simulados →' : 'Fazer simulado →'}
+                {simStats ? 'Fazer novo simulado →' : 'Fazer simulado →'}
               </button>
             </div>
           </div>
