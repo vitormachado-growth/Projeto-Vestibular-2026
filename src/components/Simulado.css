@@ -503,6 +503,8 @@
 }
 .sim-review-item.correct { background: #f0fdf4; border: 1px solid #bbf7d0; }
 .sim-review-item.wrong   { background: #fef2f2; border: 1px solid #fecaca; }
+html[data-theme="dark"] .sim-review-item.correct { background: #052e16; border-color: #166534; }
+html[data-theme="dark"] .sim-review-item.wrong   { background: #3b0f0f; border-color: #7f1d1d; }
 .sim-review-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
 .sim-review-content { flex: 1; }
 .sim-review-q {
@@ -518,6 +520,76 @@
 }
 .sim-review-ans .correct-ans { color: #16a34a; }
 .sim-review-ans .wrong-ans   { color: #dc2626; }
+
+.sim-review-explanation {
+  margin-top: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.sim-review-expand-btn {
+  margin-top: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+.sim-review-expand-btn:hover { text-decoration: underline; }
+
+.sim-review-full {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg-main);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.sim-review-full-statement {
+  font-size: 0.85rem;
+  color: var(--text-main);
+  line-height: 1.55;
+  margin: 0 0 0.75rem;
+  white-space: pre-wrap;
+}
+
+.sim-review-full-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sim-review-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  color: var(--text-main);
+}
+
+.sim-review-opt-letter {
+  font-weight: 700;
+  min-width: 18px;
+  flex-shrink: 0;
+}
+
+.sim-review-opt.opt-correct {
+  background: #f0fdf4;
+  color: #166534;
+  font-weight: 600;
+}
+.sim-review-opt.opt-wrong {
+  background: #fef2f2;
+  color: #991b1b;
+}
+html[data-theme="dark"] .sim-review-opt.opt-correct { background: #052e16; color: #86efac; }
+html[data-theme="dark"] .sim-review-opt.opt-wrong   { background: #3b0f0f; color: #fca5a5; }
 
 .sim-result-actions {
   display: flex;

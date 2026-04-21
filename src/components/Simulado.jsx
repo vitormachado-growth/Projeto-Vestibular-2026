@@ -378,39 +378,7 @@ function ResultScreen({ questions, answers, onNovo }) {
                 const userAns = answers[q.id];
                 const correct = userAns === q.answer;
                 return (
-                  <div key={q.id} className={`sim-review-item ${correct ? 'correct' : 'wrong'}`}>
-                    <span className="sim-review-icon">{correct ? '✓' : '✗'}</span>
-                    <div className="sim-review-content">
-                      <div className="sim-review-q">
-                        <strong>Q{i + 1}</strong> — {q.statement.replace(/\n/g, ' ').slice(0, 100)}…
-                      </div>
-                      <div className="sim-review-ans">
-                        {userAns ? (
-                          <>
-                            Sua resposta:{' '}
-                            <span className={correct ? 'correct-ans' : 'wrong-ans'}>
-                              {userAns.toUpperCase()}
-                            </span>
-                            {!correct && (
-                              <>
-                                {' '}· Gabarito:{' '}
-                                <span className="correct-ans">{q.answer.toUpperCase()}</span>
-                              </>
-                            )}
-                          </>
-                        ) : (
-                          <span style={{ color: '#94a3b8' }}>
-                            Não respondida · Gabarito: <strong>{q.answer.toUpperCase()}</strong>
-                          </span>
-                        )}
-                      </div>
-                      {!correct && q.explanation && (
-                        <div style={{ marginTop: '0.3rem', fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                          {q.explanation}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <ReviewItem key={q.id} q={q} i={i} userAns={userAns} correct={correct} />
                 );
               })}
             </div>
@@ -423,6 +391,61 @@ function ResultScreen({ questions, answers, onNovo }) {
           </button>
         </div>
 
+      </div>
+    </div>
+  );
+}
+
+function ReviewItem({ q, i, userAns, correct }) {
+  const [expanded, setExpanded] = useState(false);
+  const opts = ['a','b','c','d','e'];
+  return (
+    <div className={`sim-review-item ${correct ? 'correct' : 'wrong'}`}>
+      <span className="sim-review-icon">{correct ? '✓' : '✗'}</span>
+      <div className="sim-review-content">
+        <div className="sim-review-q">
+          <strong>Q{i + 1}</strong> — {q.statement.replace(/\n/g, ' ').slice(0, 120)}{q.statement.length > 120 ? '…' : ''}
+        </div>
+        <div className="sim-review-ans">
+          {userAns ? (
+            <>
+              Sua resposta:{' '}
+              <span className={correct ? 'correct-ans' : 'wrong-ans'}>{userAns.toUpperCase()}</span>
+              {!correct && (
+                <> · Gabarito: <span className="correct-ans">{q.answer.toUpperCase()}</span></>
+              )}
+            </>
+          ) : (
+            <span style={{ color: '#94a3b8' }}>
+              Não respondida · Gabarito: <strong>{q.answer.toUpperCase()}</strong>
+            </span>
+          )}
+        </div>
+        {!correct && q.explanation && (
+          <div className="sim-review-explanation">{q.explanation}</div>
+        )}
+        <button className="sim-review-expand-btn" onClick={() => setExpanded(v => !v)}>
+          {expanded ? 'Ocultar questão ▲' : 'Ver questão completa ▼'}
+        </button>
+        {expanded && (
+          <div className="sim-review-full">
+            <p className="sim-review-full-statement">{q.statement}</p>
+            <div className="sim-review-full-opts">
+              {opts.map(l => {
+                const text = q.options?.[l] ?? q[l];
+                if (!text) return null;
+                const isCorrect = l === q.answer;
+                const isUser = l === userAns;
+                return (
+                  <div key={l} className={`sim-review-opt ${isCorrect ? 'opt-correct' : ''} ${isUser && !isCorrect ? 'opt-wrong' : ''}`}>
+                    <span className="sim-review-opt-letter">{l.toUpperCase()}</span>
+                    <span>{text}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
