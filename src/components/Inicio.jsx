@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { STORAGE_SIMULADOS, ReviewItem } from './Simulado';
+import { questoes as questoesBase } from '../data/questoesData';
 import { STORAGE_ESTUDADOS } from './Materias';
 import { TOPICOS } from '../utils/geradorCronograma';
 import './Inicio.css';
@@ -96,6 +97,23 @@ export default function Inicio({ onNavigate, focus }) {
   const [ranking, setRanking] = useState([]);
   const [showHistorico, setShowHistorico] = useState(false);
   const [revisandoSimulado, setRevisandoSimulado] = useState(null);
+
+  function abrirRevisao(s) {
+    // Suporte a entradas antigas (questions) e novas (questionIds)
+    if (s.questions?.length > 0) {
+      setRevisandoSimulado(s);
+      return;
+    }
+    if (s.questionIds?.length > 0) {
+      try {
+        const importadas = JSON.parse(localStorage.getItem('questoes_importadas_v1') || '[]');
+        const pool = [...questoesBase, ...importadas];
+        const map = Object.fromEntries(pool.map(q => [q.id, q]));
+        const questions = s.questionIds.map(id => map[id]).filter(Boolean);
+        setRevisandoSimulado({ ...s, questions });
+      } catch { setRevisandoSimulado({ ...s, questions: [] }); }
+    }
+  }
   const simulados = useMemo(() => loadSimulados(), []);
 
   useEffect(() => {
@@ -310,8 +328,8 @@ export default function Inicio({ onNavigate, focus }) {
                       </div>
                       <span className="inicio-historico-pct" style={{ color: cor }}>{s.pct}%</span>
                       <span className="inicio-historico-detalhe">{s.corretas}/{s.total}</span>
-                      {s.questions?.length > 0 && (
-                        <button className="inicio-historico-ver-btn" onClick={() => setRevisandoSimulado(s)}>
+                      {(s.questions?.length > 0 || s.questionIds?.length > 0) && (
+                        <button className="inicio-historico-ver-btn" onClick={() => abrirRevisao(s)}>
                           Ver
                         </button>
                       )}

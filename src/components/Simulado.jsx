@@ -518,7 +518,7 @@ export default function Simulado() {
       corretas,
       pct: Math.round((corretas / questions.length) * 100),
       bySubject,
-      questions,
+      questionIds: questions.map(q => q.id),
       answers: userAnswers,
     };
     try {
@@ -526,7 +526,9 @@ export default function Simulado() {
       const historico = raw ? JSON.parse(raw) : [];
       historico.push(entry);
       localStorage.setItem(STORAGE_SIMULADOS, JSON.stringify(historico));
-    } catch {}
+    } catch (err) {
+      console.error('Erro ao salvar histórico:', err);
+    }
   }
 
   function handleNovo() {
