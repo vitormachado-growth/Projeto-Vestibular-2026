@@ -24,7 +24,10 @@ export default function Navbar({ title, darkMode, onToggleDark, onNavigate, onMe
   const [open, setOpen] = useState(false);
   const [notifs, setNotifs] = useState([]);
   const [lidas, setLidas] = useState([]);
-  const [permissao, setPermissao] = useState(Notification?.permission ?? 'default');
+  const [permissao, setPermissao] = useState(() => {
+    try { return (typeof Notification !== 'undefined') ? Notification.permission : 'unsupported'; }
+    catch { return 'unsupported'; }
+  });
   const ref = useRef(null);
 
   useEffect(() => {

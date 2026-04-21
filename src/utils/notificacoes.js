@@ -148,6 +148,8 @@ export function solicitarPermissaoBrowser() {
 }
 
 export function enviarNotificacaoBrowser(titulo, corpo, icone = '/favicon.ico') {
-  if (Notification.permission !== 'granted') return;
-  new Notification(titulo, { body: corpo, icon: icone });
+  try {
+    if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    new Notification(titulo, { body: corpo, icon: icone });
+  } catch {}
 }
