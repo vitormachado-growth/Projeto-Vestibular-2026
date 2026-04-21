@@ -5,6 +5,24 @@ import './Simulado.css';
 const STORAGE_IMPORTADAS = 'questoes_importadas_v1';
 export const STORAGE_SIMULADOS = 'simulados_historico_v1';
 
+// Converte markdown ![alt](url) em elementos <img>
+function renderMd(text) {
+  if (!text) return null;
+  const IMG_RE = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  const parts = [];
+  let last = 0, m, key = 0;
+  while ((m = IMG_RE.exec(text)) !== null) {
+    if (m.index > last) parts.push(<span key={key++}>{text.slice(last, m.index)}</span>);
+    parts.push(
+      <img key={key++} src={m[2]} alt={m[1] || 'imagem da questão'}
+        className="sim-q-img" loading="lazy" />
+    );
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push(<span key={key++}>{text.slice(last)}</span>);
+  return parts.length ? parts : text;
+}
+
 const SUBJECTS = [
   'Matemática', 'Português', 'Literatura', 'Inglês', 'Biologia',
   'Química', 'Física', 'História', 'Geografia', 'Sociologia', 'Filosofia',
@@ -240,7 +258,7 @@ function ExamScreen({ questions, tempoInicial, onFinish }) {
 
           <div className="sim-q-statement">
             {q.statement.split('\n').map((line, i) => (
-              <p key={i}>{line}</p>
+              <p key={i}>{renderMd(line)}</p>
             ))}
           </div>
 
@@ -254,7 +272,7 @@ function ExamScreen({ questions, tempoInicial, onFinish }) {
                   onClick={() => selectAnswer(q.id, alt.id)}
                 >
                   <span className="sim-alt-letter">{alt.id.toUpperCase()}</span>
-                  <span>{alt.text}</span>
+                  <span>{renderMd(alt.text)}</span>
                 </button>
               );
             })}
@@ -429,17 +447,17 @@ export function ReviewItem({ q, i, userAns, correct }) {
         </button>
         {expanded && (
           <div className="sim-review-full">
-            <p className="sim-review-full-statement">{q.statement}</p>
+            <p className="sim-review-full-statement">{renderMd(q.statement)}</p>
             <div className="sim-review-full-opts">
               {opts.map(l => {
-                const text = q.options?.[l] ?? q[l];
+                const text = q.options?.[l] ?? q[l] ?? q.alternatives?.find(a => a.id === l)?.text;
                 if (!text) return null;
                 const isCorrect = l === q.answer;
                 const isUser = l === userAns;
                 return (
                   <div key={l} className={`sim-review-opt ${isCorrect ? 'opt-correct' : ''} ${isUser && !isCorrect ? 'opt-wrong' : ''}`}>
                     <span className="sim-review-opt-letter">{l.toUpperCase()}</span>
-                    <span>{text}</span>
+                    <span>{renderMd(text)}</span>
                   </div>
                 );
               })}

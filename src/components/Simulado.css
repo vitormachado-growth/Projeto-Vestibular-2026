@@ -270,6 +270,19 @@
   margin: 0 0 0.6rem;
 }
 
+.sim-q-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+  margin: 0.5rem auto;
+}
+
+.sim-alternative .sim-q-img {
+  max-width: 280px;
+  margin: 0.25rem 0;
+}
+
 .sim-alternatives {
   display: flex;
   flex-direction: column;
