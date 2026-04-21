@@ -164,7 +164,6 @@ export default function Navbar({ title, darkMode, onToggleDark, onNavigate, onMe
           >
             {darkMode ? '☀️' : '🌙'}
           </button>
-          <button className="premium-btn">Seja Premium</button>
         </div>
       </div>
     </nav>

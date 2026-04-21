@@ -81,7 +81,6 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
           {showFull && (
             <div className="user-info">
               <p className="name">{displayName}</p>
-              <span className="user-plan">Plano Gratuito</span>
             </div>
           )}
         </div>
