@@ -216,34 +216,51 @@ export default function Inicio({ onNavigate, focus }) {
             </button>
           </div>
 
-          {ranking.length === 0 ? (
-            <div className="inicio-empty-block">
-              <span>Nenhum simulado semanal concluído ainda.</span>
-              <button className="inicio-btn-sm" onClick={() => onNavigate('ranking')}>
-                Fazer agora
-              </button>
-            </div>
-          ) : (
-            <div className="inicio-ranking-list">
-              {ranking.slice(0, 5).map((entry, i) => {
-                const isAtual = entry.semana === semanaAtual && entry.ano === anoAtual;
-                const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
-                const barColor = entry.score >= 700 ? '#16a34a' : entry.score >= 500 ? '#ca8a04' : '#dc2626';
-                return (
-                  <div key={`${entry.semana}-${entry.ano}`} className={`inicio-rank-row ${isAtual ? 'current' : ''}`}>
-                    <span className="inicio-rank-pos">{medal}</span>
-                    <span className="inicio-rank-week">{formatWeek(entry.semana, entry.ano)}{isAtual ? ' ★' : ''}</span>
-                    <div className="inicio-rank-bar-wrap">
-                      <div className="inicio-rank-bar-fill" style={{ width: `${entry.score / 10}%`, background: barColor }} />
-                    </div>
-                    <span className={`inicio-rank-score ${scoreClass(entry.score)}`}>
-                      {entry.score} pts
-                    </span>
+          {/* Pódio sempre visível */}
+          <div className="inicio-podio">
+            {[1, 0, 2].map(pos => {
+              const entry = ranking[pos];
+              const medals = ['🥇', '🥈', '🥉'];
+              const heights = ['80px', '100px', '64px'];
+              const colors = ['#f59e0b', '#e2e8f0', '#cd7c2f'];
+              const isAtual = entry && entry.semana === semanaAtual && entry.ano === anoAtual;
+              return (
+                <div key={pos} className={`inicio-podio-col ${pos === 0 ? 'top' : ''}`}>
+                  <div className="inicio-podio-info">
+                    {entry ? (
+                      <>
+                        <span className="inicio-podio-medal">{medals[pos]}</span>
+                        <span className="inicio-podio-semana">{formatWeek(entry.semana, entry.ano)}{isAtual ? ' ★' : ''}</span>
+                        <span className="inicio-podio-score" style={{ color: entry.score >= 700 ? '#16a34a' : entry.score >= 500 ? '#ca8a04' : '#dc2626' }}>
+                          {entry.score} pts
+                        </span>
+                      </>
+                    ) : (
+                      <span className="inicio-podio-vazio">—</span>
+                    )}
                   </div>
-                );
-              })}
-            </div>
+                  <div
+                    className="inicio-podio-bloco"
+                    style={{ height: heights[pos], background: entry ? colors[pos] : 'var(--border-color)', opacity: entry ? 1 : 0.35 }}
+                  >
+                    <span className="inicio-podio-num">{pos + 1}º</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {ranking.length === 0 && (
+            <p className="inicio-empty-sm" style={{ textAlign: 'center', marginTop: '0.75rem' }}>
+              Nenhum simulado semanal concluído ainda.
+            </p>
           )}
+
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <button className="inicio-btn-sm" onClick={() => onNavigate('ranking')}>
+              {ranking.length === 0 ? 'Fazer o primeiro simulado →' : 'Ver ranking completo →'}
+            </button>
+          </div>
         </div>
 
         {/* ── Stats simulados livres ────────────────────────────────────────── */}

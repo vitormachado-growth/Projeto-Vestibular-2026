@@ -377,6 +377,71 @@
 .inicio-cob-legend .est { color: #f59e0b; }
 .inicio-cob-legend .nao { color: var(--text-muted); }
 
+/* ── PÓDIO ───────────────────────────────────────────────────────────────── */
+.inicio-podio {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0 0;
+}
+
+.inicio-podio-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 140px;
+}
+
+.inicio-podio-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  margin-bottom: 0.4rem;
+  min-height: 60px;
+  justify-content: flex-end;
+}
+
+.inicio-podio-medal {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.inicio-podio-semana {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.inicio-podio-score {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.inicio-podio-vazio {
+  font-size: 1.2rem;
+  color: var(--border-color);
+}
+
+.inicio-podio-bloco {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s;
+}
+
+.inicio-podio-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(0,0,0,0.4);
+}
+
 /* ── COBERTURA FULL WIDTH ────────────────────────────────────────────────── */
 .inicio-cob-full {
   margin-top: 1.25rem;
