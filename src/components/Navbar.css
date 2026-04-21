@@ -302,7 +302,28 @@ html[data-theme="dark"] .notif-permissao-negada {
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    padding: 0 1rem;
+  }
+
   .search-bar {
     display: none;
+  }
+
+  .navbar-right {
+    gap: 0.5rem;
+  }
+
+  .navbar-actions {
+    gap: 0.5rem;
+  }
+
+  .premium-btn {
+    display: none;
+  }
+
+  .notif-panel {
+    width: calc(100vw - 2rem);
+    right: -0.5rem;
   }
 }
