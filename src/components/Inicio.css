@@ -278,6 +278,7 @@
 /* ── ASIDE STATS ─────────────────────────────────────────────────────────── */
 .inicio-aside { display: flex; flex-direction: column; align-self: stretch; }
 .inicio-aside .inicio-section.compact { flex: 1; display: flex; flex-direction: column; }
+.inicio-simulados-livres-body { flex: 1; }
 .inicio-stat-list {
   display: flex;
   gap: 1rem;

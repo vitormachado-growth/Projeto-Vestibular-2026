@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 import { STORAGE_SIMULADOS } from './Simulado';
 import { STORAGE_ESTUDADOS } from './Materias';
 import { TOPICOS } from '../utils/geradorCronograma';
@@ -70,29 +71,16 @@ function CountdownCard({ prova, showSeg }) {
   );
 }
 
-const RANKING_KEY = 'ranking_historico_v1';
-
-function getWeekNumber(date) {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-}
-
-function formatWeek(semana, ano) {
-  return `Semana ${semana}/${ano}`;
-}
-
 function scoreClass(score) {
   const pct = score / 10;
   return pct >= 70 ? 'great' : pct >= 50 ? 'good' : 'bad';
 }
 
-function loadRanking() {
-  try {
-    const raw = localStorage.getItem(RANKING_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+function calcPontuacao(r) {
+  if (!r.total_questoes) return 0;
+  const pctQ = r.acertos / r.total_questoes;
+  if (r.redacao_total != null) return Math.round(pctQ * 800 + r.redacao_total * 0.2);
+  return Math.round(pctQ * 1000);
 }
 
 function loadSimulados() {
@@ -104,21 +92,28 @@ function loadSimulados() {
 
 export default function Inicio({ onNavigate, focus }) {
   const today = new Date();
-  const semanaAtual = getWeekNumber(today);
-  const anoAtual = today.getFullYear();
 
-  const ranking = useMemo(() => {
-    return loadRanking()
-      .filter(e => e.score != null)
-      .sort((a, b) => b.score - a.score);
-  }, []);
-
+  const [ranking, setRanking] = useState([]);
   const simulados = useMemo(() => loadSimulados(), []);
 
-  const entradaAtual = useMemo(
-    () => ranking.find(e => e.semana === semanaAtual && e.ano === anoAtual),
-    [ranking, semanaAtual, anoAtual]
-  );
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from('simulado_resultados')
+        .select('*, simulados_semanais(titulo, tipo)')
+        .eq('user_id', user.id)
+        .then(({ data }) => {
+          if (!data) return;
+          const sorted = data
+            .map(r => ({ ...r, score: calcPontuacao(r), titulo: r.simulados_semanais?.titulo }))
+            .sort((a, b) => b.score - a.score);
+          setRanking(sorted);
+        });
+    });
+  }, []);
+
+  const entradaAtual = null;
 
   const simStats = useMemo(() => {
     if (simulados.length === 0) return null;
@@ -223,14 +218,13 @@ export default function Inicio({ onNavigate, focus }) {
               const medals = ['🥇', '🥈', '🥉'];
               const heights = ['80px', '100px', '64px'];
               const colors = ['#f59e0b', '#e2e8f0', '#cd7c2f'];
-              const isAtual = entry && entry.semana === semanaAtual && entry.ano === anoAtual;
               return (
                 <div key={pos} className={`inicio-podio-col ${pos === 0 ? 'top' : ''}`}>
                   <div className="inicio-podio-info">
                     {entry ? (
                       <>
                         <span className="inicio-podio-medal">{medals[pos]}</span>
-                        <span className="inicio-podio-semana">{formatWeek(entry.semana, entry.ano)}{isAtual ? ' ★' : ''}</span>
+                        <span className="inicio-podio-semana">{entry.titulo || `Simulado #${pos + 1}`}</span>
                         <span className="inicio-podio-score" style={{ color: entry.score >= 700 ? '#16a34a' : entry.score >= 500 ? '#ca8a04' : '#dc2626' }}>
                           {entry.score} pts
                         </span>
@@ -267,31 +261,35 @@ export default function Inicio({ onNavigate, focus }) {
         <div className="inicio-aside">
           <div className="inicio-section compact">
             <h2>Simulados livres</h2>
-            {simStats ? (
-              <div className="inicio-stat-list">
-                <div className="inicio-stat">
-                  <span className="inicio-stat-val blue">{simStats.total}</span>
-                  <span className="inicio-stat-label">realizados</span>
+            <div className="inicio-simulados-livres-body">
+              {simStats ? (
+                <div className="inicio-stat-list">
+                  <div className="inicio-stat">
+                    <span className="inicio-stat-val blue">{simStats.total}</span>
+                    <span className="inicio-stat-label">realizados</span>
+                  </div>
+                  <div className="inicio-stat">
+                    <span className={`inicio-stat-val ${simStats.avg >= 70 ? 'great' : simStats.avg >= 50 ? 'good' : 'bad'}`}>
+                      {simStats.avg}%
+                    </span>
+                    <span className="inicio-stat-label">média</span>
+                  </div>
+                  <div className="inicio-stat">
+                    <span className={`inicio-stat-val ${simStats.melhor >= 70 ? 'great' : simStats.melhor >= 50 ? 'good' : 'bad'}`}>
+                      {simStats.melhor}%
+                    </span>
+                    <span className="inicio-stat-label">melhor</span>
+                  </div>
                 </div>
-                <div className="inicio-stat">
-                  <span className={`inicio-stat-val ${simStats.avg >= 70 ? 'great' : simStats.avg >= 50 ? 'good' : 'bad'}`}>
-                    {simStats.avg}%
-                  </span>
-                  <span className="inicio-stat-label">média</span>
-                </div>
-                <div className="inicio-stat">
-                  <span className={`inicio-stat-val ${simStats.melhor >= 70 ? 'great' : simStats.melhor >= 50 ? 'good' : 'bad'}`}>
-                    {simStats.melhor}%
-                  </span>
-                  <span className="inicio-stat-label">melhor</span>
-                </div>
-              </div>
-            ) : (
-              <p className="inicio-empty-sm">Nenhum simulado livre ainda.</p>
-            )}
-            <button className="inicio-btn-sm mt" onClick={() => onNavigate('simulados')}>
-              Fazer simulado →
-            </button>
+              ) : (
+                <p className="inicio-empty-sm">Nenhum simulado livre ainda.</p>
+              )}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 'auto', paddingTop: '1rem' }}>
+              <button className="inicio-btn-sm" onClick={() => onNavigate('simulados')}>
+                {simStats ? 'Ver simulados →' : 'Fazer simulado →'}
+              </button>
+            </div>
           </div>
         </div>
 
