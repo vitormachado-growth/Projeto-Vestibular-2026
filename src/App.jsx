@@ -152,7 +152,6 @@ function App() {
       case 'admin':
         return profile?.is_admin ? <Admin /> : <Inicio onNavigate={handleViewChange} focus={focus} />;
       case 'cronograma':
-      default:
         return (
           <Cronograma
             focus={focus}
@@ -161,6 +160,8 @@ function App() {
             onOpenRedacao={() => setCurrentView('redacao')}
           />
         );
+      default:
+        return <Inicio onNavigate={handleViewChange} focus={focus} />;
     }
   };
 
