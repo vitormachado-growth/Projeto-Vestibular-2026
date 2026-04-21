@@ -230,6 +230,7 @@ function App() {
       focus={focus}
       currentView={currentView}
       onViewChange={handleViewChange}
+      onNavigateToSubject={navigateToSubjectQuestoes}
       darkMode={darkMode}
       onToggleDark={() => setDarkMode(d => !d)}
       user={user}

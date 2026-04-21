@@ -14,7 +14,7 @@ const viewTitles = {
   ranking: 'Simulados Semanais',
 };
 
-const Layout = ({ children, focus, currentView, onViewChange, darkMode, onToggleDark, user, profile, onLogout }) => {
+const Layout = ({ children, focus, currentView, onViewChange, onNavigateToSubject, darkMode, onToggleDark, user, profile, onLogout }) => {
   const [collapsed, setCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebar_collapsed');
     return saved === null ? true : saved === 'true';
@@ -50,6 +50,7 @@ const Layout = ({ children, focus, currentView, onViewChange, darkMode, onToggle
           darkMode={darkMode}
           onToggleDark={onToggleDark}
           onNavigate={onViewChange}
+          onNavigateToSubject={onNavigateToSubject}
           onMenuToggle={() => setMobileOpen(o => !o)}
         />
         <main className="content-area">
