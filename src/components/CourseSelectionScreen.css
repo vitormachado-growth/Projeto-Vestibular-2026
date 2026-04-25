@@ -9,7 +9,7 @@
 .course-selection-content {
   max-width: 900px;
   width: 100%;
-  animation: fadeIn 0.4s ease-out;
+  animation: fadeIn var(--duration-crawl) ease-out;
 }
 
 @keyframes fadeIn {
@@ -22,7 +22,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 2rem;
-  transition: color 0.2s;
+  transition: color var(--duration-base) var(--ease-standard);
 }
 
 .back-link:hover {
@@ -107,7 +107,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--duration-base) var(--ease-standard);
   text-align: left;
 }
 
@@ -130,7 +130,7 @@
   font-size: 1.2rem;
   opacity: 0;
   transform: translateX(-10px);
-  transition: all 0.2s;
+  transition: all var(--duration-base) var(--ease-standard);
   flex-shrink: 0;
   margin-left: 1rem;
 }
@@ -168,7 +168,7 @@
   justify-content: center;
   padding: 2rem;
   z-index: 100;
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn var(--duration-base) ease-out;
 }
 
 .polo-modal {
@@ -180,7 +180,7 @@
   max-height: 85vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-  animation: modalIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: modalIn var(--duration-base) var(--ease-standard);
 }
 
 @keyframes modalIn {
@@ -221,7 +221,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -255,7 +255,7 @@
   border-radius: 10px;
   padding: 1rem 1.25rem;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   text-align: left;
   width: 100%;
 }

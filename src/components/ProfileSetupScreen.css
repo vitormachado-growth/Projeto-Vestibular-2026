@@ -64,7 +64,7 @@
   font-size: 0.85rem;
   margin-bottom: 1.25rem;
   line-height: 1.4;
-  animation: profileAlertIn 0.25s ease-out;
+  animation: profileAlertIn var(--duration-base) ease-out;
 }
 
 .profile-alert.error {
@@ -118,7 +118,7 @@
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background var(--duration-fast), color var(--duration-fast);
   white-space: nowrap;
   font-family: inherit;
 }
@@ -145,7 +145,7 @@
   border: 2px solid var(--border-color);
   padding: 0;
   cursor: pointer;
-  transition: transform 0.15s, border-color 0.18s, box-shadow 0.18s;
+  transition: transform var(--duration-fast), border-color var(--duration-fast), box-shadow var(--duration-fast);
 }
 
 .profile-avatar-item:hover:not(.skeleton) {
@@ -233,7 +233,7 @@
   color: var(--text-main);
   font-family: inherit;
   font-size: 0.92rem;
-  transition: border-color 0.18s, box-shadow 0.18s;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
   width: 100%;
 }
 
@@ -271,7 +271,7 @@
   border: none;
   cursor: pointer;
   font-family: inherit;
-  transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+  transition: background var(--duration-fast), transform var(--duration-fast), box-shadow var(--duration-fast);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -22,7 +22,7 @@
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.25);
-  animation: authFadeIn 0.5s ease-out;
+  animation: authFadeIn var(--duration-crawl) ease-out;
 }
 
 @keyframes authFadeIn {
@@ -84,7 +84,7 @@
   gap: 6px;
   width: fit-content;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: background var(--duration-base), transform var(--duration-base);
 }
 
 .auth-back-btn:hover {
@@ -170,7 +170,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   backdrop-filter: blur(6px);
-  transition: transform 0.2s, background 0.2s;
+  transition: transform var(--duration-base), background var(--duration-base);
 }
 
 .auth-features li:hover {
@@ -257,7 +257,7 @@
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
-  transition: color 0.25s ease;
+  transition: color var(--duration-base) ease;
   border-radius: 8px;
 }
 
@@ -273,7 +273,7 @@
   background: var(--bg-card);
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: left 0.28s var(--ease-standard);
   z-index: 1;
 }
 
@@ -290,7 +290,7 @@
   font-size: 0.85rem;
   line-height: 1.4;
   margin-bottom: 1rem;
-  animation: alertSlide 0.25s ease-out;
+  animation: alertSlide var(--duration-base) ease-out;
 }
 
 @keyframes alertSlide {
@@ -331,7 +331,7 @@
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.18s, border-color 0.18s, transform 0.12s;
+  transition: background var(--duration-fast), border-color var(--duration-fast), transform 0.12s;
   margin-bottom: 1rem;
 }
 
@@ -412,7 +412,7 @@
   color: var(--text-main);
   font-family: inherit;
   font-size: 0.95rem;
-  transition: border-color 0.18s, box-shadow 0.18s;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
   width: 100%;
 }
 
@@ -444,7 +444,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.18s, background 0.18s;
+  transition: color var(--duration-fast), background var(--duration-fast);
 }
 
 .auth-input-toggle:hover {
@@ -467,7 +467,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+  transition: background var(--duration-fast), transform var(--duration-fast), box-shadow var(--duration-fast);
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
 }
 

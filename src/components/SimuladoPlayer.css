@@ -41,7 +41,7 @@
   cursor: pointer;
   font-size: 0.85rem;
   font-family: inherit;
-  transition: border-color 0.15s, color 0.15s;
+  transition: border-color var(--duration-fast), color var(--duration-fast);
 }
 .sp-back:hover { border-color: var(--primary); color: var(--primary); }
 
@@ -179,7 +179,7 @@ html[data-theme="dark"] .sp-intro-warn {
   background: transparent;
   cursor: pointer;
   padding: 0;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .sp-dot.answered { background: var(--primary); border-color: var(--primary); }
@@ -219,7 +219,7 @@ html[data-theme="dark"] .sp-intro-warn {
   font-size: 0.88rem;
   color: var(--text-main);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   font-family: inherit;
 }
 
@@ -256,7 +256,7 @@ html[data-theme="dark"] .sp-intro-warn {
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  transition: opacity 0.15s;
+  transition: opacity var(--duration-fast) var(--ease-standard);
 }
 .sp-btn-primary:hover:not(:disabled) { opacity: 0.88; }
 .sp-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -271,7 +271,7 @@ html[data-theme="dark"] .sp-intro-warn {
   color: var(--text-muted);
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 .sp-btn-secondary:hover { border-color: var(--text-muted); color: var(--text-main); }
 
@@ -379,7 +379,7 @@ html[data-theme="dark"] .sp-intro-warn {
   color: var(--text-muted);
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .sp-nota-btn:hover { border-color: var(--primary); color: var(--primary); }
@@ -456,7 +456,7 @@ html[data-theme="dark"] .sp-intro-warn {
   height: 100%;
   background: var(--primary);
   border-radius: 99px;
-  transition: width 0.5s ease;
+  transition: width var(--duration-crawl) ease;
 }
 
 .sp-area-pts {

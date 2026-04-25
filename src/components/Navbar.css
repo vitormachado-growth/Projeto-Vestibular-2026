@@ -94,7 +94,7 @@
   box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   z-index: 200;
   overflow: hidden;
-  animation: notif-drop 0.15s ease;
+  animation: notif-drop var(--duration-fast) ease;
 }
 
 .search-result-item {
@@ -163,7 +163,7 @@
   font-size: 1.25rem;
   padding: 8px;
   border-radius: 50%;
-  transition: background 0.2s;
+  transition: background var(--duration-base) var(--ease-standard);
 }
 
 .icon-btn:hover {
@@ -180,7 +180,7 @@
   border-radius: 50%;
   border: 1px solid var(--border-color);
   background: var(--bg-card);
-  transition: all 0.2s;
+  transition: all var(--duration-base) var(--ease-standard);
 }
 .dark-toggle:hover { background: var(--border-color); }
 
@@ -200,7 +200,7 @@
   border-radius: 50%;
   border: 1px solid var(--border-color);
   background: var(--bg-card);
-  transition: all 0.2s;
+  transition: all var(--duration-base) var(--ease-standard);
 }
 .notif-btn:hover { background: var(--border-color); }
 
@@ -234,7 +234,7 @@
   box-shadow: 0 8px 32px rgba(0,0,0,0.14);
   z-index: 200;
   overflow: hidden;
-  animation: notif-drop 0.18s ease;
+  animation: notif-drop var(--duration-fast) ease;
 }
 
 @keyframes notif-drop {
@@ -279,7 +279,7 @@
   cursor: pointer;
   font-family: inherit;
   text-align: left;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 .notif-permissao-btn:hover { background: var(--primary); color: #fff; }
 
@@ -321,7 +321,7 @@ html[data-theme="dark"] .notif-permissao-negada {
   background: transparent;
   cursor: pointer;
   text-align: left;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   margin-bottom: 0.35rem;
   font-family: inherit;
 }
@@ -376,7 +376,7 @@ html[data-theme="dark"] .notif-permissao-negada {
   border-radius: 20px;
   font-weight: 600;
   font-size: 0.85rem;
-  transition: opacity 0.2s;
+  transition: opacity var(--duration-base) var(--ease-standard);
 }
 
 .premium-btn:hover {

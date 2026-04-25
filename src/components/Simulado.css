@@ -59,7 +59,7 @@
   font-size: 0.82rem;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   font-family: inherit;
 }
 .sim-chip:hover {
@@ -86,7 +86,7 @@
   font-size: 0.78rem;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   text-align: center;
   font-family: inherit;
 }
@@ -120,7 +120,7 @@
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   font-family: inherit;
   display: block;
   width: 100%;
@@ -188,7 +188,7 @@
   height: 100%;
   background: var(--primary);
   border-radius: 99px;
-  transition: width 0.3s ease;
+  transition: width var(--duration-slow) ease;
 }
 .sim-answered-count {
   font-size: 0.75rem;
@@ -231,7 +231,7 @@
   color: var(--text-muted);
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -302,7 +302,7 @@
   font-size: 0.88rem;
   color: var(--text-main);
   line-height: 1.5;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   width: 100%;
 }
 .sim-alternative:hover:not(:disabled) {
@@ -326,7 +326,7 @@
   font-size: 0.75rem;
   font-weight: 700;
   flex-shrink: 0;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 .sim-alternative.selected .sim-alt-letter {
   background: var(--primary);
@@ -349,7 +349,7 @@
   color: var(--text-muted);
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 .sim-nav-btn:hover:not(:disabled) {
   border-color: var(--primary);
@@ -369,7 +369,7 @@
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 .sim-submit-btn:hover {
   background: #059669;
@@ -490,7 +490,7 @@
 .sim-subject-bar-fill {
   height: 100%;
   border-radius: 99px;
-  transition: width 0.5s ease;
+  transition: width var(--duration-crawl) ease;
 }
 .sim-subject-pct {
   font-size: 0.78rem;
@@ -620,7 +620,7 @@ html[data-theme="dark"] .sim-review-opt.opt-wrong   { background: #3b0f0f; color
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 .sim-btn-novo:hover {
   background: var(--primary-dark);
@@ -637,7 +637,7 @@ html[data-theme="dark"] .sim-review-opt.opt-wrong   { background: #3b0f0f; color
   color: var(--text-muted);
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 .sim-btn-revisao:hover {
   border-color: var(--primary);

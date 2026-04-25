@@ -51,7 +51,7 @@
   height: 100%;
   background: var(--primary);
   border-radius: 4px;
-  transition: width 0.5s ease;
+  transition: width var(--duration-crawl) ease;
 }
 
 .progress-fill.secondary {
@@ -71,7 +71,7 @@
   padding: 1.5rem;
   display: flex;
   gap: 1.5rem;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform var(--duration-base), box-shadow var(--duration-base);
 }
 
 .schedule-card:hover {
@@ -141,7 +141,7 @@
   border-radius: 8px;
   font-weight: 600;
   font-size: 0.85rem;
-  transition: all 0.2s;
+  transition: all var(--duration-base) var(--ease-standard);
 }
 
 .action-btn:hover {
@@ -169,7 +169,7 @@
   font-size: 1.1rem;
   font-weight: 700;
   color: #fff;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -210,7 +210,7 @@
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   white-space: nowrap;
 }
 
@@ -236,7 +236,7 @@
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .btn-acao:hover {
@@ -266,7 +266,7 @@
   background: transparent;
   border: 1.5px solid transparent;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   text-align: center;
 }
 
@@ -434,7 +434,7 @@ html[data-theme="dark"] .dia-tab.completo:not(.ativo) {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  transition: all 0.25s;
+  transition: all var(--duration-base) var(--ease-standard);
 }
 
 .progress-step.active .step-num {
@@ -493,7 +493,7 @@ html[data-theme="dark"] .dia-tab.completo:not(.ativo) {
   border: 1.5px solid var(--border-color);
   border-radius: 10px;
   background: var(--bg-main);
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .dia-row.ativo {
@@ -537,7 +537,7 @@ html[data-theme="dark"] .dia-tab.completo:not(.ativo) {
   font-weight: 700;
   color: var(--text-main);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .horas-btn:hover:not(:disabled) {
@@ -611,7 +611,7 @@ html[data-theme="dark"] .dia-tab.completo:not(.ativo) {
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .nivel-chip:hover:not(.ativo) {
@@ -636,7 +636,7 @@ html[data-theme="dark"] .dia-tab.completo:not(.ativo) {
   font-weight: 600;
   color: var(--text-main);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .prioridade-chip:hover:not(:disabled):not(.ativo) {
@@ -692,7 +692,7 @@ html[data-theme="dark"] .prioridade-chip.ativo {
   border-radius: 10px;
   padding: 1rem;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -730,7 +730,7 @@ html[data-theme="dark"] .prioridade-chip.ativo {
   background: var(--bg-main);
   cursor: pointer;
   margin-bottom: 0.6rem;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .pref-toggle:hover {
@@ -898,7 +898,7 @@ html[data-theme="dark"] .prioridade-chip.ativo {
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .btn-primario:hover:not(:disabled) {
@@ -921,7 +921,7 @@ html[data-theme="dark"] .prioridade-chip.ativo {
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .btn-secundario:hover:not(:disabled) {

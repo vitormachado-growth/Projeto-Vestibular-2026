@@ -33,7 +33,7 @@
   font-size: 0.8rem;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   font-family: inherit;
   white-space: nowrap;
 }
@@ -149,7 +149,7 @@
   width: 100%;
   max-width: 40px;
   border-radius: 6px 6px 0 0;
-  transition: height 0.4s ease;
+  transition: height var(--duration-crawl) ease;
   cursor: default;
   position: relative;
 }
@@ -212,7 +212,7 @@
 .desemp-subject-bar-fill {
   height: 100%;
   border-radius: 99px;
-  transition: width 0.5s ease;
+  transition: width var(--duration-crawl) ease;
 }
 .desemp-subject-pct {
   font-size: 0.8rem;

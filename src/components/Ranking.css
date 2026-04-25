@@ -339,7 +339,7 @@
 .rk-rank-bar-fill {
   height: 100%;
   border-radius: 99px;
-  transition: width 0.5s ease;
+  transition: width var(--duration-crawl) ease;
 }
 .rk-rank-score {
   font-weight: 700;
@@ -410,7 +410,7 @@
   border: 2px solid var(--border-color);
   background: transparent;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   padding: 0;
 }
 .rk-dot.answered { background: var(--primary); border-color: var(--primary); }
@@ -473,7 +473,7 @@
   font-size: 0.86rem;
   color: var(--text-main);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 .rk-alt:hover { border-color: var(--primary); }
 .rk-alt.selected { border-color: var(--primary); background: #eff6ff; }
@@ -640,7 +640,7 @@
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 .rk-nota-btn:hover { border-color: var(--primary); color: var(--primary); }
 .rk-nota-btn.selected {
@@ -671,7 +671,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: opacity var(--duration-fast) var(--ease-standard);
   font-family: inherit;
 }
 .rk-btn-primary:hover { opacity: 0.88; }
@@ -687,7 +687,7 @@
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--duration-fast) var(--ease-standard);
   font-family: inherit;
 }
 .rk-btn-secondary:hover { border-color: var(--text-muted); color: var(--text-main); }
@@ -707,7 +707,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-  transition: border-color 0.18s, box-shadow 0.18s;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
 }
 
 .rk-sim-card.destacado {
