@@ -35,7 +35,7 @@ const NIVEL_PESO = { forte: 1, medio: 2, fraco: 3 };
 
 export function gerarCronograma(config) {
   const {
-    focus, diasAtivos, horasPorDia, niveis,
+    focus, diasAtivos, janelas, niveis,
     duracaoSessao, incluirRedacao, incluirSimulado,
     prioridades,
   } = config;
@@ -58,15 +58,21 @@ export function gerarCronograma(config) {
   };
 
   const slotsPorDia = {};
+  const inicioMinPorDia = {};
   let totalSlotsSemana = 0;
   DIAS.forEach(d => {
-    if (diasAtivos[d]) {
-      const horas = horasPorDia[d] || 0;
-      const slots = Math.floor((horas * 60) / sessaoMin);
+    const janela = janelas?.[d];
+    if (diasAtivos[d] && janela?.inicio && janela?.fim) {
+      const inicioMin = parseHora(janela.inicio);
+      const fimMin = parseHora(janela.fim);
+      const minutosDia = Math.max(0, fimMin - inicioMin);
+      const slots = Math.floor(minutosDia / sessaoMin);
       slotsPorDia[d] = slots;
+      inicioMinPorDia[d] = inicioMin;
       totalSlotsSemana += slots;
     } else {
       slotsPorDia[d] = 0;
+      inicioMinPorDia[d] = 8 * 60;
     }
   });
 
@@ -136,7 +142,7 @@ export function gerarCronograma(config) {
         if (materiaJaHoje && capacidades[dia] > 1) {
           continue;
         }
-        porDia[dia].push({ ...sessao, horario: gerarHorario(porDia[dia].length, sessaoMin) });
+        porDia[dia].push({ ...sessao, horario: gerarHorario(inicioMinPorDia[dia], porDia[dia].length, sessaoMin) });
         capacidades[dia]--;
         idx++;
         alocado = true;
@@ -146,7 +152,7 @@ export function gerarCronograma(config) {
       for (const dia of diasComSlots) {
         if (capacidades[dia] > 0 && idx < fila.length) {
           const sessao = fila[idx];
-          porDia[dia].push({ ...sessao, horario: gerarHorario(porDia[dia].length, sessaoMin) });
+          porDia[dia].push({ ...sessao, horario: gerarHorario(inicioMinPorDia[dia], porDia[dia].length, sessaoMin) });
           capacidades[dia]--;
           idx++;
         }
@@ -165,14 +171,19 @@ export function gerarCronograma(config) {
   };
 }
 
-function gerarHorario(indice, duracao) {
-  const startMin = 8 * 60 + indice * (duracao + 15);
+function gerarHorario(inicioMin, indice, duracao) {
+  const startMin = inicioMin + indice * duracao;
+  const endMin = startMin + duracao;
   const h = Math.floor(startMin / 60);
   const m = startMin % 60;
-  const endMin = startMin + duracao;
   const h2 = Math.floor(endMin / 60);
   const m2 = endMin % 60;
   return `${pad(h)}:${pad(m)} – ${pad(h2)}:${pad(m2)}`;
+}
+
+function parseHora(s) {
+  const [h, m] = String(s).split(':').map(Number);
+  return (h || 0) * 60 + (m || 0);
 }
 
 function pad(n) {

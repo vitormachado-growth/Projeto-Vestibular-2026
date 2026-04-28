@@ -23,6 +23,34 @@ const NIVEIS = [
   { value: 'fraco', label: 'Dificuldade', desc: 'Preciso estudar muito', color: '#ef4444' },
 ];
 
+// Atalhos de janelas comuns para preenchimento rápido
+const PRESETS_JANELA = [
+  { label: 'Manhã', inicio: '07:00', fim: '11:00' },
+  { label: 'Tarde', inicio: '14:00', fim: '18:00' },
+  { label: 'Após o trabalho', inicio: '19:00', fim: '22:00' },
+  { label: 'Noite tarde', inicio: '20:00', fim: '23:00' },
+];
+
+function parseHora(s) {
+  const [h, m] = String(s).split(':').map(Number);
+  return (h || 0) * 60 + (m || 0);
+}
+
+function janelaHoras(janela) {
+  if (!janela?.inicio || !janela?.fim) return 0;
+  const dur = parseHora(janela.fim) - parseHora(janela.inicio);
+  return Math.max(0, dur / 60);
+}
+
+function formatHoras(h) {
+  if (h === 0) return '0h';
+  const horas = Math.floor(h);
+  const min = Math.round((h - horas) * 60);
+  if (min === 0) return `${horas}h`;
+  if (horas === 0) return `${min}min`;
+  return `${horas}h${min}`;
+}
+
 export default function CronogramaSetup({ focus, onConfirm, onCancel }) {
   const [step, setStep] = useState(1);
   const materiasDisponiveis = MATERIAS[focus] || MATERIAS.ambos;
@@ -31,9 +59,14 @@ export default function CronogramaSetup({ focus, onConfirm, onCancel }) {
     segunda: true, terca: true, quarta: true, quinta: true,
     sexta: true, sabado: true, domingo: false,
   });
-  const [horasPorDia, setHorasPorDia] = useState({
-    segunda: 3, terca: 3, quarta: 3, quinta: 3,
-    sexta: 3, sabado: 4, domingo: 0,
+  const [janelas, setJanelas] = useState({
+    segunda: { inicio: '19:00', fim: '22:00' },
+    terca:   { inicio: '19:00', fim: '22:00' },
+    quarta:  { inicio: '19:00', fim: '22:00' },
+    quinta:  { inicio: '19:00', fim: '22:00' },
+    sexta:   { inicio: '19:00', fim: '22:00' },
+    sabado:  { inicio: '09:00', fim: '13:00' },
+    domingo: { inicio: '09:00', fim: '12:00' },
   });
   const [niveis, setNiveis] = useState(() => {
     const n = {};
@@ -46,16 +79,29 @@ export default function CronogramaSetup({ focus, onConfirm, onCancel }) {
   const [prioridades, setPrioridades] = useState([]);
 
   const totalHoras = DIAS.reduce((acc, d) =>
-    acc + (diasAtivos[d.key] ? horasPorDia[d.key] : 0), 0
+    acc + (diasAtivos[d.key] ? janelaHoras(janelas[d.key]) : 0), 0
   );
   const diasAtivosCount = DIAS.filter(d => diasAtivos[d.key]).length;
+  const algumDiaInvalido = DIAS.some(d =>
+    diasAtivos[d.key] && janelaHoras(janelas[d.key]) <= 0
+  );
 
   function toggleDia(key) {
     setDiasAtivos(prev => ({ ...prev, [key]: !prev[key] }));
   }
 
-  function setHoras(key, valor) {
-    setHorasPorDia(prev => ({ ...prev, [key]: valor }));
+  function setJanelaCampo(key, campo, valor) {
+    setJanelas(prev => ({
+      ...prev,
+      [key]: { ...prev[key], [campo]: valor },
+    }));
+  }
+
+  function aplicarPreset(key, preset) {
+    setJanelas(prev => ({
+      ...prev,
+      [key]: { inicio: preset.inicio, fim: preset.fim },
+    }));
   }
 
   function togglePrioridade(materia) {
@@ -66,13 +112,13 @@ export default function CronogramaSetup({ focus, onConfirm, onCancel }) {
 
   function confirmar() {
     onConfirm({
-      focus, diasAtivos, horasPorDia, niveis,
+      focus, diasAtivos, janelas, niveis,
       duracaoSessao, incluirRedacao, incluirSimulado, prioridades,
     });
   }
 
   const canProgress = {
-    1: totalHoras >= 2 && diasAtivosCount >= 2,
+    1: totalHoras >= 2 && diasAtivosCount >= 2 && !algumDiaInvalido,
     2: true,
     3: true,
     4: true,
@@ -111,42 +157,76 @@ export default function CronogramaSetup({ focus, onConfirm, onCancel }) {
             <div className="step-content">
               <h2>Quando você pode estudar?</h2>
               <p className="step-desc">
-                Marque os dias disponíveis e ajuste a carga horária. Seja realista —
-                consistência vale mais que volume.
+                Marque os dias e defina o horário disponível em cada um.
+                Considere trabalho, escola, academia — seja realista.
               </p>
 
-              <div className="dias-grid">
-                {DIAS.map(d => (
-                  <div key={d.key} className={`dia-row ${diasAtivos[d.key] ? 'ativo' : ''}`}>
-                    <label className="dia-toggle">
-                      <input
-                        type="checkbox"
-                        checked={diasAtivos[d.key]}
-                        onChange={() => toggleDia(d.key)}
-                      />
-                      <span className="dia-name">{d.label}</span>
-                    </label>
-                    {diasAtivos[d.key] && (
-                      <div className="horas-controle">
-                        <button
-                          className="horas-btn"
-                          onClick={() => setHoras(d.key, Math.max(1, horasPorDia[d.key] - 1))}
-                          disabled={horasPorDia[d.key] <= 1}
-                        >−</button>
-                        <span className="horas-valor">{horasPorDia[d.key]}h</span>
-                        <button
-                          className="horas-btn"
-                          onClick={() => setHoras(d.key, Math.min(12, horasPorDia[d.key] + 1))}
-                          disabled={horasPorDia[d.key] >= 12}
-                        >+</button>
-                      </div>
-                    )}
-                  </div>
+              <div className="presets-bar">
+                <span className="presets-label">Aplicar a todos os dias úteis:</span>
+                {PRESETS_JANELA.map(p => (
+                  <button
+                    key={p.label}
+                    type="button"
+                    className="preset-chip"
+                    onClick={() => {
+                      ['segunda','terca','quarta','quinta','sexta'].forEach(k => aplicarPreset(k, p));
+                    }}
+                  >
+                    {p.label} <span className="preset-time">({p.inicio}–{p.fim})</span>
+                  </button>
                 ))}
               </div>
 
+              <div className="dias-grid">
+                {DIAS.map(d => {
+                  const ativo = diasAtivos[d.key];
+                  const j = janelas[d.key];
+                  const horasDia = janelaHoras(j);
+                  const invalido = ativo && horasDia <= 0;
+                  return (
+                    <div key={d.key} className={`dia-row ${ativo ? 'ativo' : ''} ${invalido ? 'invalido' : ''}`}>
+                      <label className="dia-toggle">
+                        <input
+                          type="checkbox"
+                          checked={ativo}
+                          onChange={() => toggleDia(d.key)}
+                        />
+                        <span className="dia-name">{d.label}</span>
+                      </label>
+                      {ativo && (
+                        <div className="janela-controle">
+                          <div className="janela-inputs">
+                            <input
+                              type="time"
+                              className="time-input"
+                              value={j.inicio}
+                              onChange={e => setJanelaCampo(d.key, 'inicio', e.target.value)}
+                              aria-label={`Início ${d.label}`}
+                            />
+                            <span className="time-sep">às</span>
+                            <input
+                              type="time"
+                              className="time-input"
+                              value={j.fim}
+                              onChange={e => setJanelaCampo(d.key, 'fim', e.target.value)}
+                              aria-label={`Fim ${d.label}`}
+                            />
+                          </div>
+                          <span className={`janela-horas ${invalido ? 'janela-erro' : ''}`}>
+                            {invalido ? 'horário inválido' : formatHoras(horasDia)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
               <div className="setup-summary">
-                <strong>{totalHoras}h</strong> por semana em <strong>{diasAtivosCount}</strong> dia{diasAtivosCount !== 1 && 's'}
+                <strong>{formatHoras(totalHoras)}</strong> por semana em <strong>{diasAtivosCount}</strong> dia{diasAtivosCount !== 1 && 's'}
+                {algumDiaInvalido && (
+                  <span className="setup-aviso"> · ajuste os horários inválidos para continuar</span>
+                )}
               </div>
             </div>
           )}
@@ -264,7 +344,7 @@ export default function CronogramaSetup({ focus, onConfirm, onCancel }) {
               <div className="resumo-final">
                 <h3>Resumo do seu plano</h3>
                 <ul>
-                  <li><strong>{totalHoras}h</strong> semanais em <strong>{diasAtivosCount}</strong> dias</li>
+                  <li><strong>{formatHoras(totalHoras)}</strong> semanais em <strong>{diasAtivosCount}</strong> dias</li>
                   <li>Sessões de <strong>{duracaoSessao} min</strong></li>
                   <li>
                     Foco em: <strong>{focus === 'ambos' ? 'ENEM + UERJ' : focus.toUpperCase()}</strong>

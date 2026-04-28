@@ -3,9 +3,9 @@ import CronogramaSetup from './CronogramaSetup';
 import { gerarCronograma } from '../utils/geradorCronograma';
 import './Cronograma.css';
 
-const STORAGE_KEY    = 'cronograma_config_v1';
-const SCHEDULE_KEY   = 'cronograma_gerado_v1';
-const CONCLUIDAS_KEY = 'cronograma_concluidas_v2';
+const STORAGE_KEY    = 'cronograma_config_v2';
+const SCHEDULE_KEY   = 'cronograma_gerado_v2';
+const CONCLUIDAS_KEY = 'cronograma_concluidas_v3';
 
 const DIAS_LABEL = {
   segunda: 'Segunda', terca: 'Terça', quarta: 'Quarta',
