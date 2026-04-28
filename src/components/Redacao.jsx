@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { corrigirRedacao } from '../utils/corretorRedacao';
+import { getMotivadores, TIPO_LABEL } from '../data/textosMotivadores';
 import './Redacao.css';
 
 export const STORAGE_REDACOES  = 'redacoes_historico_v1';
@@ -185,6 +186,7 @@ export default function Redacao() {
   const totalFiltrado = temasPorSecao.reduce((acc, g) => acc + g.temas.length, 0);
 
   const tema = TEMAS.find(t => t.id === temaId);
+  const motivadores = useMemo(() => (temaId ? getMotivadores(temaId) : null), [temaId]);
 
   const palavras = useMemo(
     () => texto.trim().split(/\s+/).filter(Boolean).length,
@@ -287,6 +289,26 @@ export default function Redacao() {
 
           {!enviada ? (
             <>
+              {motivadores && motivadores.length > 0 && (
+                <details className="motivadores-box" open>
+                  <summary className="motivadores-summary">
+                    <span className="motivadores-titulo">📚 Textos motivadores</span>
+                    <span className="motivadores-count">{motivadores.length}</span>
+                    <span className="motivadores-toggle" aria-hidden="true" />
+                  </summary>
+                  <div className="motivadores-list">
+                    {motivadores.map((m, i) => (
+                      <div key={i} className={`motivadora-item motivadora-${m.tipo}`}>
+                        <span className={`motivadora-tipo motivadora-tipo-${m.tipo}`}>
+                          {TIPO_LABEL[m.tipo]} {i + 1}
+                        </span>
+                        <p className="motivadora-conteudo">{m.conteudo}</p>
+                        <span className="motivadora-fonte">{m.fonte}</span>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              )}
               {rascunhoSalvoEm && texto.length > 0 && (
                 <div className="rascunho-banner">
                   <span>📄 Rascunho restaurado — salvo em {rascunhoSalvoEm.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</span>

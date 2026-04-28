@@ -840,3 +840,121 @@ html[data-theme="dark"] .badge-con {
 html[data-theme="dark"] .comp-card.comp-ok { background: #022c22; border-color: #059669; }
 html[data-theme="dark"] .comp-card.comp-medio { background: #1c1408; border-color: #d97706; }
 html[data-theme="dark"] .comp-card.comp-baixo { background: #1f0707; border-color: #dc2626; }
+
+/* ── TEXTOS MOTIVADORES ─────────────────────────────────────────────────── */
+.motivadores-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--secondary);
+  border-radius: 10px;
+  margin-top: 1.25rem;
+  overflow: hidden;
+}
+
+.motivadores-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.motivadores-summary::-webkit-details-marker { display: none; }
+.motivadores-summary:hover { background: var(--secondary-light); }
+
+.motivadores-titulo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--secondary);
+  flex: 1;
+}
+
+.motivadores-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--secondary-light);
+  color: var(--secondary);
+  padding: 0.15rem 0.55rem;
+  border-radius: 99px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.motivadores-toggle {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(45deg);
+  transition: transform var(--duration-base) var(--ease-standard);
+  margin-right: 4px;
+}
+.motivadores-box[open] .motivadores-toggle { transform: rotate(-135deg); }
+
+.motivadores-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 0.5rem 1.25rem 1.25rem;
+}
+
+.motivadora-item {
+  position: relative;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--text-muted);
+  border-radius: 8px;
+  padding: 0.85rem 1rem 0.95rem;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.motivadora-texto    { border-left-color: #3b82f6; }
+.motivadora-dados    { border-left-color: #10b981; }
+.motivadora-citacao  { border-left-color: #f59e0b; }
+
+.motivadora-tipo {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.18rem 0.55rem;
+  border-radius: 4px;
+  margin-bottom: 0.55rem;
+}
+.motivadora-tipo-texto   { background: #dbeafe; color: #1e40af; }
+.motivadora-tipo-dados   { background: #d1fae5; color: #065f46; }
+.motivadora-tipo-citacao { background: #fef3c7; color: #92400e; }
+
+.motivadora-conteudo {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-main);
+  margin: 0 0 0.5rem;
+  text-align: justify;
+}
+
+.motivadora-fonte {
+  display: block;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* Dark mode tweaks */
+html[data-theme="dark"] .motivadora-tipo-texto   { background: #1e3a8a; color: #bfdbfe; }
+html[data-theme="dark"] .motivadora-tipo-dados   { background: #064e3b; color: #a7f3d0; }
+html[data-theme="dark"] .motivadora-tipo-citacao { background: #78350f; color: #fde68a; }
+
+html[data-theme="dark"] .motivadores-summary:hover { background: #2d1f5e; }
+html[data-theme="dark"] .motivadora-item { background: #0b1424; }
+
+@media (max-width: 640px) {
+  .motivadores-summary { padding: 0.75rem 1rem; }
+  .motivadores-list { padding: 0.5rem 1rem 1rem; }
+  .motivadora-item { padding: 0.75rem 0.85rem; }
+  .motivadora-conteudo { text-align: left; font-size: 0.88rem; }
+}
