@@ -64,8 +64,9 @@ export function gerarCronograma(config) {
     const janela = janelas?.[d];
     if (diasAtivos[d] && janela?.inicio && janela?.fim) {
       const inicioMin = parseHora(janela.inicio);
-      const fimMin = parseHora(janela.fim);
-      const minutosDia = Math.max(0, fimMin - inicioMin);
+      let fimMin = parseHora(janela.fim);
+      if (fimMin < inicioMin) fimMin += 24 * 60; // janela cruza a meia-noite
+      const minutosDia = Math.min(Math.max(0, fimMin - inicioMin), 12 * 60);
       const slots = Math.floor(minutosDia / sessaoMin);
       slotsPorDia[d] = slots;
       inicioMinPorDia[d] = inicioMin;
@@ -174,9 +175,9 @@ export function gerarCronograma(config) {
 function gerarHorario(inicioMin, indice, duracao) {
   const startMin = inicioMin + indice * duracao;
   const endMin = startMin + duracao;
-  const h = Math.floor(startMin / 60);
+  const h = Math.floor(startMin / 60) % 24;
   const m = startMin % 60;
-  const h2 = Math.floor(endMin / 60);
+  const h2 = Math.floor(endMin / 60) % 24;
   const m2 = endMin % 60;
   return `${pad(h)}:${pad(m)} – ${pad(h2)}:${pad(m2)}`;
 }

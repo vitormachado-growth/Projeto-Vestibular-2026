@@ -38,8 +38,13 @@ function parseHora(s) {
 
 function janelaHoras(janela) {
   if (!janela?.inicio || !janela?.fim) return 0;
-  const dur = parseHora(janela.fim) - parseHora(janela.inicio);
-  return Math.max(0, dur / 60);
+  const inicio = parseHora(janela.inicio);
+  let fim = parseHora(janela.fim);
+  if (fim < inicio) fim += 24 * 60; // janela atravessa a meia-noite
+  if (fim === inicio) return 0; // mesmo horário não é janela
+  const dur = (fim - inicio) / 60;
+  if (dur > 12) return 0; // implausível: provável erro de digitação
+  return dur;
 }
 
 function formatHoras(h) {
