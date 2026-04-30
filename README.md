@@ -66,4 +66,21 @@ Acompanhamento detalhado da evolução através de:
 
 ---
 
+## 🤖 Skills do Claude Code utilizadas
+
+Este projeto foi desenvolvido com auxílio do Claude Code, utilizando as seguintes skills:
+
+- **update-config**: Configuração do harness do Claude Code via `settings.json` (permissões, hooks, variáveis de ambiente).
+- **keybindings-help**: Customização de atalhos de teclado em `~/.claude/keybindings.json`.
+- **simplify**: Revisão de código alterado para reuso, qualidade e eficiência, com correção de problemas encontrados.
+- **fewer-permission-prompts**: Análise de transcripts para gerar allowlist de comandos read-only e reduzir prompts de permissão.
+- **loop**: Execução de prompts ou slash commands em intervalos recorrentes (ex: polling de status).
+- **schedule**: Criação e gerenciamento de agentes remotos agendados (routines em cron).
+- **claude-api**: Construção, debug e otimização de apps usando a API do Claude / Anthropic SDK, com prompt caching.
+- **init**: Inicialização do arquivo `CLAUDE.md` com documentação do codebase.
+- **review**: Revisão de pull requests.
+- **security-review**: Revisão de segurança das mudanças pendentes na branch atual.
+
+---
+
 **<span>V</span>es<span>T</span>ibular** — Sua jornada rumo à universidade começa aqui.
