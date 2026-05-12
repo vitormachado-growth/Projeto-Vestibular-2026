@@ -91,6 +91,13 @@ const categoryIcons = {
   "Tecnologia e Ciências": "💻"
 };
 
+const categoryThemes = {
+  "Biomédico": "pink",
+  "Ciências Sociais": "yellow",
+  "Educação e Humanidades": "violet",
+  "Tecnologia e Ciências": "blue"
+};
+
 function parseCourse(fullName) {
   const variantMatch = fullName.match(/\s*\(([^)]+)\)/);
   const variant = variantMatch ? variantMatch[1] : null;
@@ -156,19 +163,33 @@ const CourseSelectionScreen = ({ onSelect, onBack }) => {
   }
 
   return (
-    <div className="course-selection-container">
-      <div className="course-selection-content">
-        <button className="back-link" onClick={onBack}>
+    <div className="dc-course">
+      <span className="dc-course-blob dc-course-blob-pink" aria-hidden="true" />
+      <span className="dc-course-blob dc-course-blob-yellow" aria-hidden="true" />
+
+      <div className="dc-course-content">
+        <button className="dc-course-back" onClick={onBack}>
           ← Voltar para escolha de foco
         </button>
 
-        <header className="course-header">
-          <h1>Qual curso você pretende cursar?</h1>
+        <header className="dc-course-header">
+          <div className="dc-course-tag">
+            <span className="dc-course-tag-dot" />
+            Passo 2 — seu curso
+          </div>
+          <h1>
+            Qual curso você pretende <span className="dc-hl-pink">cursar</span>?
+          </h1>
           <p>A UERJ oferece 80 cursos de graduação em 35 unidades acadêmicas.</p>
         </header>
 
-        <div className="search-box">
-          <span className="search-icon">🔍</span>
+        <div className="dc-course-search">
+          <span className="dc-course-search-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </span>
           <input
             type="text"
             placeholder="Procure por curso ou campus (ex: Medicina, Zona Oeste...)"
@@ -176,80 +197,88 @@ const CourseSelectionScreen = ({ onSelect, onBack }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           {searchTerm && (
-            <span className="results-count">{totalResults} resultado{totalResults !== 1 ? 's' : ''}</span>
+            <span className="dc-course-search-count">
+              {totalResults} resultado{totalResults !== 1 ? 's' : ''}
+            </span>
           )}
         </div>
 
-        <div className="course-sections">
+        <div className="dc-course-sections">
           {Object.keys(filteredData).map(category => (
-            <div key={category} className="category-section">
-              <h2 className="category-title">
-                <span className="category-icon">{categoryIcons[category]}</span>
-                {category.toUpperCase()}
-                <span className="category-count"> — {filteredData[category].length} CURSOS</span>
+            <section
+              key={category}
+              className={`dc-course-section dc-theme-${categoryThemes[category]}`}
+            >
+              <h2 className="dc-course-cat">
+                <span className="dc-course-cat-icon">{categoryIcons[category]}</span>
+                <span className="dc-course-cat-name">{category.toUpperCase()}</span>
+                <span className="dc-course-cat-count">{filteredData[category].length} cursos</span>
               </h2>
-              <div className="course-grid">
+              <div className="dc-course-grid">
                 {filteredData[category].map(group => (
                   <button
                     key={group.base}
-                    className="course-card"
+                    className="dc-course-card"
                     onClick={() => handleGroupClick(group)}
                   >
-                    <div className="course-info">
+                    <div className="dc-course-card-info">
                       <h3>{group.base}</h3>
                       {group.options.length > 1 && (
-                        <span className="polo-count">
+                        <span className="dc-course-polo-pill">
                           {group.options.length} opções de polo/ênfase
                         </span>
                       )}
                     </div>
-                    <div className="select-arrow">→</div>
+                    <span className="dc-course-arrow">→</span>
                   </button>
                 ))}
               </div>
-            </div>
+            </section>
           ))}
         </div>
 
         {Object.keys(filteredData).length === 0 && (
-          <div className="no-results">
-            <span className="no-results-icon">🔎</span>
-            <p>Não encontramos nenhum curso com "<strong>{searchTerm}</strong>".</p>
-            <p>Tente buscar algo diferente.</p>
+          <div className="dc-course-empty">
+            <div className="dc-course-empty-icon">🔎</div>
+            <h3>Nada encontrado</h3>
+            <p>Não achamos cursos com "<strong>{searchTerm}</strong>". Tenta uma busca diferente.</p>
           </div>
         )}
       </div>
 
       {groupAberto && (
-        <div className="polo-overlay" onClick={() => setGroupAberto(null)}>
-          <div className="polo-modal" onClick={e => e.stopPropagation()}>
-            <div className="polo-header">
+        <div className="dc-polo-overlay" onClick={() => setGroupAberto(null)}>
+          <div className="dc-polo-modal" onClick={e => e.stopPropagation()}>
+            <div className="dc-polo-modal-head">
               <div>
-                <p className="polo-eyebrow">Escolha o polo</p>
+                <p className="dc-polo-modal-eyebrow">Escolha o polo</p>
                 <h2>{groupAberto.base}</h2>
               </div>
-              <button className="polo-close" onClick={() => setGroupAberto(null)}>
+              <button className="dc-polo-modal-close" onClick={() => setGroupAberto(null)} aria-label="Fechar">
                 ✕
               </button>
             </div>
-            <p className="polo-desc">
+            <p className="dc-polo-modal-desc">
               Este curso está disponível em {groupAberto.options.length} polos ou variantes.
               Selecione a opção que você deseja cursar:
             </p>
-            <div className="polo-list">
+            <div className="dc-polo-list">
               {groupAberto.options.map(option => (
                 <button
                   key={option.fullName}
-                  className="polo-option"
+                  className="dc-polo-option"
                   onClick={() => handlePoloSelect(option)}
                 >
-                  <div className="polo-option-info">
-                    <h3>📍 {option.polo}</h3>
+                  <div className="dc-polo-option-info">
+                    <h3>
+                      <span className="dc-polo-pin">📍</span>
+                      {option.polo}
+                    </h3>
                     {option.variant && (
-                      <span className="polo-variant">Ênfase: {option.variant}</span>
+                      <span className="dc-polo-variant">Ênfase: {option.variant}</span>
                     )}
                   </div>
-                  <span className="select-arrow-static">→</span>
+                  <span className="dc-polo-arrow">→</span>
                 </button>
               ))}
             </div>

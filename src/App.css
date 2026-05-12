@@ -3,28 +3,130 @@
   min-height: 100vh;
 }
 
-/* ── LOADING SCREEN ── */
+/* ═══════════════════════════════════════
+   LOADING SCREEN — Descomplica-inspired
+   ═══════════════════════════════════════ */
 .app-loading {
+  --ld-pink: #FF1A6B;
+  --ld-pink-soft: rgba(255, 26, 107, 0.15);
+  --ld-yellow: #FFC83D;
+
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  width: 100%;
   background: var(--bg-main);
   color: var(--text-main);
   gap: 1.5rem;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  overflow: hidden;
 }
 
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid var(--primary-light);
-  border-top: 4px solid var(--primary);
+/* Blobs decorativos no fundo */
+.app-loading::before,
+.app-loading::after {
+  content: '';
+  position: absolute;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  filter: blur(90px);
+  pointer-events: none;
+  animation: ld-blob 14s ease-in-out infinite;
+}
+.app-loading::before {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, var(--ld-pink) 0%, transparent 70%);
+  top: -140px;
+  right: -120px;
+  opacity: 0.18;
+}
+.app-loading::after {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--ld-yellow) 0%, transparent 70%);
+  bottom: -160px;
+  left: -120px;
+  opacity: 0.14;
+  animation-direction: reverse;
+}
+html[data-theme="dark"] .app-loading::before { opacity: 0.28; }
+html[data-theme="dark"] .app-loading::after  { opacity: 0.22; }
+
+@keyframes ld-blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(20px, 30px) scale(1.08); }
+}
+
+/* Spinner — anel rosa com toque amarelo */
+.loading-spinner {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 4px solid var(--ld-pink-soft);
+  border-top-color: var(--ld-pink);
+  border-right-color: var(--ld-pink);
+  animation: spin 0.9s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+  box-shadow: 0 0 0 0 rgba(255, 26, 107, 0.18);
+  z-index: 1;
+}
+
+/* Pingo amarelo orbital — adiciona personalidade Descomplica */
+.loading-spinner::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: var(--ld-yellow);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(255, 200, 61, 0.7);
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
+  0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Texto */
+.app-loading p {
+  position: relative;
+  z-index: 1;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Dots animados depois do texto */
+.app-loading p::after {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  text-align: left;
+  animation: ld-dots 1.4s steps(4, end) infinite;
+}
+@keyframes ld-dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
+}
+
+/* Respeitar reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .app-loading::before,
+  .app-loading::after,
+  .loading-spinner,
+  .app-loading p::after { animation-duration: 0.01ms; animation-iteration-count: 1; }
 }

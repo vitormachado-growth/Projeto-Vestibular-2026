@@ -12,6 +12,8 @@ const viewTitles = {
   redacao: 'Redação',
   desempenho: 'Desempenho',
   ranking: 'Simulados Semanais',
+  perfil: 'Meu perfil',
+  admin: 'Painel Admin',
 };
 
 const Layout = ({ children, focus, currentView, onViewChange, onNavigateToSubject, darkMode, onToggleDark, user, profile, onLogout }) => {

@@ -15,6 +15,7 @@ import Desempenho from './components/Desempenho';
 import Ranking from './components/Ranking';
 import Inicio from './components/Inicio';
 import Admin from './components/Admin';
+import Perfil from './components/Perfil';
 import './App.css';
 
 function App() {
@@ -151,6 +152,18 @@ function App() {
         return <Redacao />;
       case 'admin':
         return profile?.is_admin ? <Admin /> : <Inicio onNavigate={handleViewChange} focus={focus} />;
+      case 'perfil':
+        return (
+          <Perfil
+            user={user}
+            profile={profile}
+            focus={focus}
+            course={course}
+            onProfileUpdated={setProfile}
+            onChangeFocus={handleSelectFocus}
+            onChangeCourse={() => setCourse(null)}
+          />
+        );
       case 'cronograma':
         return (
           <Cronograma
@@ -170,7 +183,7 @@ function App() {
     return (
       <div className="app-loading">
         <div className="loading-spinner"></div>
-        <p>Carregando VesTibular...</p>
+        <p>Carregando VesTibular</p>
       </div>
     );
   }
@@ -195,7 +208,7 @@ function App() {
     return (
       <div className="app-loading">
         <div className="loading-spinner"></div>
-        <p>Carregando perfil...</p>
+        <p>Carregando perfil</p>
       </div>
     );
   }

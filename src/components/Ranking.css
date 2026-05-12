@@ -14,16 +14,19 @@
   gap: 1rem;
 }
 .rk-header h1 {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--text-main);
-  margin: 0 0 0.2rem;
+  margin: 0 0 0.35rem;
+  line-height: 1.1;
 }
 .rk-header p {
   color: var(--text-muted);
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   margin: 0;
+  font-weight: 500;
 }
 
 /* ── CHALLENGE CARD ──────────────────────────────────────────────────────── */
@@ -153,18 +156,19 @@
 /* ── SECTION ─────────────────────────────────────────────────────────────── */
 .rk-section {
   background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 1.25rem 1.5rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: 20px;
+  padding: 1.4rem 1.65rem;
   margin-bottom: 1.25rem;
 }
 .rk-section h2 {
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  margin: 0 0 1rem;
+  letter-spacing: 0.12em;
+  color: var(--dc-pink);
+  margin: 0 0 1.1rem;
 }
 
 /* ── MY POSITION ─────────────────────────────────────────────────────────── */
@@ -172,22 +176,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: var(--primary-light);
-  border: 1px solid var(--primary);
-  border-radius: 12px;
-  padding: 0.6rem 1.2rem;
+  background: var(--dc-pink-soft);
+  border: 1.5px solid var(--dc-pink);
+  border-radius: 14px;
+  padding: 0.6rem 1.3rem;
+  box-shadow: 0 8px 20px rgba(255, 26, 107, 0.15);
 }
 .rk-my-pos-label {
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 0.66rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--primary);
+  letter-spacing: 0.1em;
+  color: var(--dc-pink);
 }
 .rk-my-pos-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--dc-pink);
   line-height: 1;
 }
 
@@ -215,18 +222,18 @@
 }
 
 .podio-avatar {
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #fff;
   position: relative;
-  background: var(--primary);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  background: var(--dc-pink);
+  box-shadow: 0 6px 18px rgba(255, 26, 107, 0.3);
   overflow: hidden;
 }
 .podio-avatar img {
@@ -236,12 +243,12 @@
 }
 
 .podio-card.first .podio-avatar {
-  width: 76px;
-  height: 76px;
-  font-size: 1.3rem;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.22);
-  outline: 3px solid #f59e0b;
-  outline-offset: 2px;
+  width: 82px;
+  height: 82px;
+  font-size: 1.5rem;
+  box-shadow: 0 10px 26px rgba(255, 200, 61, 0.4);
+  outline: 3px solid var(--dc-yellow);
+  outline-offset: 3px;
 }
 
 .podio-you-badge {
@@ -249,34 +256,39 @@
   bottom: -8px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--primary);
+  background: var(--dc-pink);
   color: #fff;
-  font-size: 0.58rem;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 99px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border-radius: 999px;
   white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(255, 26, 107, 0.4);
 }
 
 .podio-name {
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--text-main);
   text-align: center;
-  margin-top: 0.25rem;
+  margin-top: 0.3rem;
 }
 
 .podio-score {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  margin-bottom: 0.5rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--dc-pink);
+  margin-bottom: 0.6rem;
 }
 
 .podio-block {
   width: 100%;
-  border-radius: 8px 8px 0 0;
-  opacity: 0.85;
+  border-radius: 12px 12px 0 0;
+  opacity: 0.92;
 }
 
 /* ── RANKING LIST ─────────────────────────────────────────────────────────── */
@@ -288,16 +300,22 @@
 .rk-rank-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.7rem 1rem;
-  background: var(--bg-main, #f8fafc);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  font-size: 0.83rem;
+  gap: 0.8rem;
+  padding: 0.75rem 1.1rem;
+  background: var(--bg-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: 14px;
+  font-size: 0.88rem;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.rk-rank-row:hover {
+  transform: translateX(2px);
+  border-color: var(--dc-pink);
 }
 .rk-rank-row.current-week {
-  border-color: var(--primary);
-  background: #eff6ff;
+  border-color: var(--dc-pink);
+  background: var(--dc-pink-soft);
+  box-shadow: 0 6px 16px rgba(255, 26, 107, 0.12);
 }
 .rk-rank-pos {
   font-size: 1rem;
@@ -305,18 +323,19 @@
   text-align: center;
 }
 .rk-rank-avatar {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 800;
   color: #fff;
   flex-shrink: 0;
-  background: var(--primary);
+  background: var(--dc-pink);
   overflow: hidden;
+  box-shadow: 0 4px 10px rgba(255, 26, 107, 0.25);
 }
 .rk-rank-avatar img {
   width: 100%;
@@ -342,14 +361,19 @@
   transition: width var(--duration-crawl) ease;
 }
 .rk-rank-score {
-  font-weight: 700;
-  font-size: 0.9rem;
-  min-width: 60px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  min-width: 64px;
   text-align: right;
+  letter-spacing: -0.01em;
 }
-.rk-rank-score.great { color: #16a34a; }
-.rk-rank-score.good  { color: #ca8a04; }
-.rk-rank-score.bad   { color: #dc2626; }
+.rk-rank-score.great { color: #157A3D; }
+.rk-rank-score.good  { color: #92660E; }
+.rk-rank-score.bad   { color: var(--dc-pink); }
+html[data-theme="dark"] .rk-rank-score.great { color: #86E4B0; }
+html[data-theme="dark"] .rk-rank-score.good  { color: #FFD566; }
+html[data-theme="dark"] .rk-rank-score.bad   { color: #FF9DBF; }
 .rk-rank-detail {
   display: flex;
   gap: 0.5rem;
@@ -663,34 +687,43 @@
 
 /* ── BUTTONS ─────────────────────────────────────────────────────────────── */
 .rk-btn-primary {
-  background: var(--primary);
+  background: var(--dc-pink);
   color: #fff;
   border: none;
-  border-radius: 10px;
-  padding: 0.65rem 1.4rem;
-  font-size: 0.9rem;
-  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 800;
   cursor: pointer;
-  transition: opacity var(--duration-fast) var(--ease-standard);
   font-family: inherit;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 22px rgba(255, 26, 107, 0.3);
 }
-.rk-btn-primary:hover { opacity: 0.88; }
-.rk-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-.rk-btn-primary.small { padding: 0.4rem 0.85rem; font-size: 0.78rem; }
-.rk-btn-primary.disabled { opacity: 0.4; cursor: not-allowed; }
+.rk-btn-primary:hover:not(:disabled) {
+  background: var(--dc-pink-2);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(255, 26, 107, 0.4);
+}
+.rk-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+.rk-btn-primary.small { padding: 0.5rem 1.1rem; font-size: 0.82rem; box-shadow: 0 6px 16px rgba(255, 26, 107, 0.28); }
+.rk-btn-primary.disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 .rk-btn-secondary {
-  background: none;
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 0.65rem 1.4rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-standard);
   font-family: inherit;
+  transition: all 0.2s ease;
 }
-.rk-btn-secondary:hover { border-color: var(--text-muted); color: var(--text-main); }
+.rk-btn-secondary:hover {
+  border-color: var(--dc-pink);
+  color: var(--dc-pink);
+  background: var(--dc-pink-soft);
+}
 
 /* ── SIMULADO CARDS (admin-driven) ───────────────────────────────────────── */
 .rk-simulados-grid {
@@ -700,20 +733,26 @@
 }
 
 .rk-sim-card {
-  background: var(--bg-main, #f8fafc);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 1.1rem 1.25rem;
+  background: var(--bg-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: 18px;
+  padding: 1.2rem 1.35rem;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
-  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  gap: 0.75rem;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.rk-sim-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--dc-pink);
+  box-shadow: 0 16px 32px rgba(255, 26, 107, 0.1);
 }
 
 .rk-sim-card.destacado {
   background: var(--card-bg);
-  border: 2px solid var(--primary);
-  box-shadow: 0 8px 24px -12px rgba(37, 99, 235, 0.3);
+  border: 2px solid var(--dc-pink);
+  box-shadow: 0 14px 32px rgba(255, 26, 107, 0.18);
   margin-bottom: 1.5rem;
   padding: 1.5rem;
 }
@@ -728,40 +767,52 @@
 }
 
 .rk-sim-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--text-main);
   margin: 0.2rem 0 0;
   line-height: 1.3;
 }
 
-.rk-sim-card.destacado .rk-sim-title { font-size: 1.2rem; }
+.rk-sim-card.destacado .rk-sim-title { font-size: 1.25rem; }
 
 .rk-sim-status {
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0.25rem 0.6rem;
-  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.32rem 0.78rem;
+  border-radius: 999px;
   white-space: nowrap;
   flex-shrink: 0;
+  letter-spacing: 0.02em;
 }
 
 .rk-sim-status.ativa {
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #16a34a;
+  background: #D2F4E4;
+  color: #157A3D;
+  border: 1px solid transparent;
 }
 
 .rk-sim-status.futura {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #d97706;
+  background: #FFF1CC;
+  color: #92660E;
+  border: 1px solid transparent;
 }
 
 .rk-sim-status.finalizada {
-  background: var(--border-color);
+  background: var(--bg-main);
   color: var(--text-muted);
   border: 1px solid var(--border-color);
+}
+
+html[data-theme="dark"] .rk-sim-status.ativa {
+  background: rgba(37, 206, 137, 0.18);
+  color: #86E4B0;
+}
+html[data-theme="dark"] .rk-sim-status.futura {
+  background: rgba(255, 200, 61, 0.18);
+  color: #FFD566;
 }
 
 .rk-sim-meta {
@@ -774,8 +825,8 @@
 }
 
 .rk-sim-tag {
-  font-weight: 600;
-  color: var(--primary);
+  font-weight: 800;
+  color: var(--dc-pink);
 }
 
 .rk-sim-dot { opacity: 0.5; }

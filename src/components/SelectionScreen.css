@@ -1,109 +1,260 @@
-.selection-container {
+/* ═══════════════════════════════════════
+   SELECTION SCREEN — Descomplica-inspired
+   (mesma estética da landing/login)
+   ═══════════════════════════════════════ */
+
+.dc-selection {
+  --dc-pink: #FF1A6B;
+  --dc-pink-2: #E61560;
+  --dc-pink-soft: #FFE3EE;
+  --dc-yellow: #FFC83D;
+  --dc-yellow-2: #F0B41F;
+  --dc-yellow-soft: #FFF1CC;
+  --dc-violet: #7C5DFA;
+  --dc-violet-soft: #ECE6FF;
+  --dc-dark: #0E0D2C;
+  --dc-text: #0E0D2C;
+  --dc-text-muted: #5F6280;
+  --dc-bg: #FFFFFF;
+  --dc-bg-soft: #F7F7FB;
+  --dc-border: #ECECF2;
+
   min-height: 100vh;
+  background: var(--dc-bg);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--dc-text);
+  padding: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
-  padding: 2rem;
 }
 
-.selection-content {
-  max-width: 1000px;
+html[data-theme="dark"] .dc-selection {
+  --dc-text: #F2F2FB;
+  --dc-text-muted: #A5A8C2;
+  --dc-bg: #07071A;
+  --dc-bg-soft: #11112E;
+  --dc-border: #25254A;
+  --dc-pink-soft: #3A1428;
+  --dc-yellow-soft: #3A2E10;
+  --dc-violet-soft: #211B4A;
+}
+
+/* ── Blobs decorativos ──────────────── */
+.dc-sel-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+.dc-sel-blob-pink {
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, var(--dc-pink) 0%, transparent 70%);
+  top: -120px;
+  right: -160px;
+  opacity: 0.3;
+}
+.dc-sel-blob-yellow {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, var(--dc-yellow) 0%, transparent 70%);
+  bottom: -140px;
+  left: -120px;
+  opacity: 0.25;
+}
+
+/* ── Logout no canto ────────────────── */
+.dc-sel-logout {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: var(--dc-bg-soft);
+  border: 1px solid var(--dc-border);
+  padding: 0.6rem 1.15rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--dc-text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  z-index: 3;
+}
+.dc-sel-logout:hover {
+  background: var(--dc-pink-soft);
+  color: var(--dc-pink);
+  border-color: var(--dc-pink);
+  transform: translateY(-1px);
+}
+
+/* ── Conteúdo central ───────────────── */
+.dc-sel-content {
+  max-width: 1100px;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
-.selection-header {
+.dc-sel-header {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 3.5rem;
 }
 
-.selection-header h1 {
-  font-size: 2.5rem;
-  color: var(--text-main);
-  margin-bottom: 1rem;
+.dc-sel-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--dc-pink-soft);
+  color: var(--dc-pink);
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.5rem;
+}
+.dc-sel-tag-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dc-pink);
+  box-shadow: 0 0 0 4px rgba(255, 26, 107, 0.18);
+}
+
+.dc-sel-header h1 {
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.85rem;
+  color: var(--dc-text);
+  font-family: inherit;
+}
+
+.dc-brand-name { white-space: nowrap; }
+.dc-brand-mark { color: var(--dc-pink); }
+
+.dc-sel-header p {
+  font-size: 1.1rem;
+  color: var(--dc-text-muted);
+  font-weight: 500;
+}
+
+/* ── Grid de cards ──────────────────── */
+.dc-sel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.dc-sel-card {
+  position: relative;
+  padding: 2rem 1.75rem;
+  border-radius: 24px;
+  border: 2px solid transparent;
+  background: var(--dc-bg-soft);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  color: var(--dc-text);
+}
+
+.dc-sel-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 24px 50px rgba(14, 13, 44, 0.12);
+}
+
+.dc-sel-card-icon {
+  width: 64px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 18px;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 6px 18px rgba(14, 13, 44, 0.1);
+}
+html[data-theme="dark"] .dc-sel-card-icon {
+  background: var(--dc-bg);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.dc-sel-card h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--dc-text);
+  font-family: inherit;
   letter-spacing: -0.02em;
 }
 
-.selection-header h1 span {
-  color: var(--primary);
-}
-
-.selection-header p {
-  font-size: 1.125rem;
-  color: var(--text-muted);
-}
-
-.selection-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-}
-
-.selection-card {
-  background: var(--bg-card);
-  border: 2px solid transparent;
-  padding: 2.5rem;
-  border-radius: var(--border-radius);
-  text-align: center;
-  transition: all var(--duration-slow) var(--ease-standard);
-  box-shadow: var(--shadow-md);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.selection-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-}
-
-.card-icon {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
-  background: var(--bg-main);
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-}
-
-.selection-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: var(--text-main);
-}
-
-.selection-card p {
-  color: var(--text-muted);
+.dc-sel-card p {
   font-size: 0.95rem;
+  color: var(--dc-text-muted);
+  line-height: 1.55;
+  flex: 1;
+  margin: 0;
 }
 
-/* Modifier Styles */
-.selection-card.enem:hover {
-  border-color: var(--accent-enem);
+.dc-sel-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin-top: 0.4rem;
+  transition: transform 0.25s ease;
 }
-.selection-card.uerj:hover {
-  border-color: var(--accent-uerj);
+
+.dc-sel-card:hover .dc-sel-card-cta {
+  transform: translateX(6px);
 }
-.selection-card.both:hover {
-  border-color: var(--primary);
+
+.dc-sel-card-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--dc-yellow);
+  color: var(--dc-dark);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 12px rgba(255, 200, 61, 0.4);
+}
+
+/* ── Variantes de cor ───────────────── */
+.dc-sel-card-pink   { background: var(--dc-pink-soft); }
+.dc-sel-card-pink:hover { border-color: var(--dc-pink); }
+.dc-sel-card-pink .dc-sel-card-cta { color: var(--dc-pink); }
+
+.dc-sel-card-yellow { background: var(--dc-yellow-soft); }
+.dc-sel-card-yellow:hover { border-color: var(--dc-yellow-2); }
+.dc-sel-card-yellow .dc-sel-card-cta { color: var(--dc-yellow-2); }
+
+.dc-sel-card-violet { background: var(--dc-violet-soft); }
+.dc-sel-card-violet:hover { border-color: var(--dc-violet); }
+.dc-sel-card-violet .dc-sel-card-cta { color: var(--dc-violet); }
+
+/* ── Responsive ─────────────────────── */
+@media (max-width: 900px) {
+  .dc-sel-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .dc-sel-card { padding: 1.5rem 1.4rem; }
+  .dc-sel-card-icon { width: 56px; height: 56px; font-size: 1.7rem; }
 }
 
 @media (max-width: 640px) {
-  .selection-header h1 {
-    font-size: 2rem;
-  }
-}
-
-/* ── Dark Mode Fixes ── */
-html[data-theme="dark"] .selection-container {
-  background: radial-gradient(circle at top left, var(--primary-light), transparent),
-              radial-gradient(circle at bottom right, var(--secondary-light), var(--bg-main));
-}
-
-html[data-theme="dark"] .card-icon {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  .dc-selection { padding: 1.25rem 1rem; }
+  .dc-sel-header { margin-bottom: 2rem; }
+  .dc-sel-logout { top: 1rem; right: 1rem; padding: 0.5rem 0.95rem; font-size: 0.82rem; }
 }

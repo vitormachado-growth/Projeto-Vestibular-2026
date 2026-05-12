@@ -1,6 +1,47 @@
+/* ═══════════════════════════════════════
+   DASHBOARD LAYOUT — Descomplica-inspired
+   Sobrescreve os tokens globais dentro da
+   área logada para herdar a paleta da landing.
+   ═══════════════════════════════════════ */
+
 .app-layout {
+  /* Tokens base Descomplica */
+  --dc-pink: #FF1A6B;
+  --dc-pink-2: #E61560;
+  --dc-pink-soft: #FFE3EE;
+  --dc-yellow: #FFC83D;
+  --dc-yellow-2: #F0B41F;
+  --dc-yellow-soft: #FFF1CC;
+  --dc-violet: #7C5DFA;
+  --dc-violet-soft: #ECE6FF;
+
+  /* Sobrescreve tokens globais usados pelos componentes da dashboard */
+  --primary: var(--dc-pink);
+  --primary-dark: var(--dc-pink-2);
+  --primary-light: var(--dc-pink-soft);
+  --secondary: var(--dc-violet);
+  --secondary-light: var(--dc-violet-soft);
+
+  /* Tipografia */
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+
   display: flex;
   min-height: 100vh;
+}
+
+html[data-theme="dark"] .app-layout {
+  --dc-pink-soft: #3A1428;
+  --dc-yellow-soft: #3A2E10;
+  --dc-violet-soft: #211B4A;
+  --primary-light: #3A1428;
+  --secondary-light: #211B4A;
+}
+
+/* Aplica tipografia bold da landing em headings */
+.app-layout h1, .app-layout h2, .app-layout h3, .app-layout h4 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 800;
 }
 
 .main-wrapper {
@@ -20,6 +61,31 @@
   flex: 1;
   background: var(--bg-main);
   min-height: calc(100vh - var(--header-height));
+  position: relative;
+}
+
+/* Blobs decorativos sutis no fundo da área de conteúdo */
+.content-area::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -160px;
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle, var(--dc-pink) 0%, transparent 70%);
+  filter: blur(80px);
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+}
+
+html[data-theme="dark"] .content-area::before {
+  opacity: 0.18;
+}
+
+.content-area > * {
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
@@ -38,7 +104,8 @@
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(14, 13, 44, 0.55);
+    backdrop-filter: blur(4px);
     z-index: 99;
   }
 }

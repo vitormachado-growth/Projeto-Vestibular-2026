@@ -63,7 +63,7 @@ function CountdownCard({ prova, showSeg }) {
                 <span className="cd-num">{String(u.val).padStart(2, '0')}</span>
                 <span className="cd-label">{u.label}</span>
               </div>
-              {i < 3 && <span className="cd-sep">:</span>}
+              {i < units.length - 1 && <span className="cd-sep">:</span>}
             </div>
           ))}
         </div>
