@@ -20,6 +20,7 @@ Apresentação profissional do site com uma estética moderna, destacando a prop
 ### 4. Banco de Questões e Matérias
 - **Organização por Tópicos**: Matérias divididas ponto a ponto seguindo os editais de 2026.
 - **Prática Direta**: Filtros de questões por disciplina e tema para reforço imediato.
+- **Explicação por IA + Aula em vídeo**: Cada tópico abre uma tela dedicada com explicação gerada em tempo real por LLM (Groq / Llama) e um vídeo do YouTube recomendado automaticamente — tudo proxied por uma Supabase Edge Function para manter as chaves seguras.
 
 ### 5. Simulados e Ranking
 - **Simulados Semanais**: Provas cronometradas para testar o conhecimento em condições de exame.
@@ -43,26 +44,47 @@ Acompanhamento detalhado da evolução através de:
 
 ## 🛠️ Tecnologias Utilizadas
 
+### Frontend
 - **React 19**: Biblioteca principal para construção da interface.
 - **Vite**: Build tool ultrarrápido para desenvolvimento.
 - **Vanilla CSS**: Estilização personalizada de alta performance, sem dependências de frameworks pesados.
 - **Lucide Icons / Emoji Branding**: Identidade visual rica e moderna.
 
+### Backend & APIs externas
+- **Supabase**: Autenticação, banco de dados (Postgres) e **Edge Functions** (Deno) usadas como proxy seguro para as APIs externas — as chaves nunca trafegam pelo browser.
+- **Groq API** (`llama-3.1-8b-instant`): LLM gratuito que gera as explicações didáticas de cada tópico em tempo real.
+- **YouTube Data API v3**: Busca automaticamente uma aula em vídeo relevante para cada tópico clicado.
+
 ---
 
 ## ⚡ Como rodar o projeto
 
-1. Instale as dependências:
-   ```bash
-   npm install
-   ```
+### 1. Instalação local
+```bash
+npm install
+npm run dev
+```
+Acesse em `http://localhost:5173`.
 
-2. Inicie o servidor de desenvolvimento:
-   ```bash
-   npm run dev
-   ```
+### 2. Configuração das chaves de API (opcional, mas necessário para a explicação de tópicos)
 
-3. Acesse no navegador em `http://localhost:5173`
+A funcionalidade de **explicação por IA + vídeo** depende de uma Edge Function do Supabase com três chaves configuradas como secrets:
+
+| Variável            | Onde obter                                                                 |
+| ------------------- | -------------------------------------------------------------------------- |
+| `GROQ_API_KEY`      | [console.groq.com](https://console.groq.com) — gratuita                    |
+| `YOUTUBE_API_KEY`   | [console.cloud.google.com](https://console.cloud.google.com) — habilitar "YouTube Data API v3" |
+| `ANTHROPIC_API_KEY` | (opcional) — alternativa paga ao Groq, caso queira usar Claude             |
+
+Depois de obter as chaves, faça login e deploy da função:
+```bash
+npx supabase login
+npx supabase link --project-ref <seu-project-ref>
+npx supabase secrets set GROQ_API_KEY=... YOUTUBE_API_KEY=...
+npx supabase functions deploy explain-topic --no-verify-jwt
+```
+
+O código da Edge Function fica em [`supabase/functions/explain-topic/index.ts`](supabase/functions/explain-topic/index.ts).
 
 ---
 
