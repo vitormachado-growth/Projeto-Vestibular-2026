@@ -130,7 +130,7 @@ html[data-theme="dark"] .dc-landing {
 .dc-btn-link:hover::after { transform: scaleX(1); }
 .dc-btn-white {
   background: #fff;
-  color: var(--dc-pink);
+  color: #0E0D2C;
   padding: 1.05rem 2rem;
   border-radius: 999px;
   font-weight: 800;
