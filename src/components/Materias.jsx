@@ -1,7 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { uerjSpecifics } from '../data/uerjSpecifics';
 import { questoes as questoesBase } from '../data/questoesData';
 import { TOPICOS } from '../utils/geradorCronograma';
+import { supabase } from '../lib/supabase';
 import './Materias.css';
 
 const SUBJECTS = [
@@ -167,6 +169,7 @@ const DICAS_TOPICOS = {
 export default function Materias({ focus, course, onPraticarMateria }) {
   const [materiaAberta, setMateriaAberta] = useState(null);
   const [busca, setBusca] = useState('');
+  const [explicacaoModal, setExplicacaoModal] = useState(null);
   const [progresso, setProgresso] = useState(() => {
     try {
       const raw = localStorage.getItem(STORAGE_ESTUDADOS);
@@ -218,6 +221,63 @@ export default function Materias({ focus, course, onPraticarMateria }) {
     setProgresso(prev => ({ ...prev, [k]: { status: novo, updatedAt: new Date().toISOString() } }));
   }
 
+  function parseExplicacao(texto) {
+    const blocos = [];
+    let bulletGroup = null;
+    const linhas = texto.split('\n');
+
+    for (const raw of linhas) {
+      const linha = raw.trim();
+      if (!linha) {
+        if (bulletGroup) { blocos.push(bulletGroup); bulletGroup = null; }
+        continue;
+      }
+
+      // Cabeçalho de seção: **Título:** ou **Título:** texto inline
+      const secMatch = linha.match(/^\*\*([^*]+):\*\*\s*(.*)$/);
+      if (secMatch) {
+        if (bulletGroup) { blocos.push(bulletGroup); bulletGroup = null; }
+        blocos.push({ tipo: 'titulo', texto: secMatch[1].trim() });
+        if (secMatch[2].trim()) {
+          blocos.push({ tipo: 'paragrafo', texto: secMatch[2].trim() });
+        }
+        continue;
+      }
+
+      // Item de lista: "- ..." ou "* ..."
+      const bulletMatch = linha.match(/^[-*]\s+(.+)$/);
+      if (bulletMatch) {
+        if (!bulletGroup) bulletGroup = { tipo: 'lista', itens: [] };
+        bulletGroup.itens.push(bulletMatch[1]);
+        continue;
+      }
+
+      if (bulletGroup) { blocos.push(bulletGroup); bulletGroup = null; }
+      blocos.push({ tipo: 'paragrafo', texto: linha });
+    }
+    if (bulletGroup) blocos.push(bulletGroup);
+    return blocos;
+  }
+
+  function renderInline(texto) {
+    const html = texto.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    return { __html: html };
+  }
+
+  const abrirExplicacao = useCallback(async (materia, topico) => {
+    setExplicacaoModal({ materia, topico, texto: null, videoId: null, loading: true, erro: null });
+    try {
+      const { data, error } = await supabase.functions.invoke('explain-topic', {
+        body: { materia, topico },
+      });
+      if (error) throw error;
+      if (data?.erro) throw new Error(data.erro);
+      setExplicacaoModal(prev => prev ? { ...prev, loading: false, texto: data.explicacao, videoId: data.videoId ?? null } : prev);
+    } catch (e) {
+      setExplicacaoModal(prev => prev ? { ...prev, loading: false, erro: e.message ?? 'Erro desconhecido.' } : prev);
+    }
+  }, []);
+
   function formatDate(iso) {
     if (!iso) return null;
     const d = new Date(iso);
@@ -255,6 +315,101 @@ export default function Materias({ focus, course, onPraticarMateria }) {
         <button className="back-link" onClick={() => { setMateriaAberta(null); setFiltroStatus('todos'); }}>
           ← Voltar para matérias
         </button>
+
+        {/* ── Tela de explicação ── */}
+        {explicacaoModal && createPortal(
+          <div className="exp-screen">
+            <span className="exp-blob exp-blob-pink" aria-hidden="true" />
+            <span className="exp-blob exp-blob-yellow" aria-hidden="true" />
+
+            <header className="exp-header">
+              <button className="exp-back" onClick={() => setExplicacaoModal(null)}>
+                <span className="exp-back-arrow">←</span>
+                <span>Voltar</span>
+              </button>
+              <div className="exp-header-title">
+                <span className="exp-tag">{explicacaoModal.materia}</span>
+                <h1>{explicacaoModal.topico}</h1>
+              </div>
+              <div className="exp-header-spacer" />
+            </header>
+
+            <main className="exp-main">
+              {explicacaoModal.loading && (
+                <div className="exp-loading">
+                  <div className="exp-spinner" />
+                  <p>Preparando sua aula sobre <strong>{explicacaoModal.topico}</strong>…</p>
+                </div>
+              )}
+
+              {explicacaoModal.erro && (
+                <div className="exp-erro">
+                  <div className="exp-erro-icon">!</div>
+                  <h3>Não foi possível gerar a explicação</h3>
+                  <p>{explicacaoModal.erro}</p>
+                </div>
+              )}
+
+              {explicacaoModal.texto && (
+                <div className="exp-grid">
+                  <article className="exp-content">
+                    {parseExplicacao(explicacaoModal.texto).map((bloco, i) => {
+                      if (bloco.tipo === 'titulo') {
+                        return <h3 key={i} className="exp-section-title">{bloco.texto}</h3>;
+                      }
+                      if (bloco.tipo === 'lista') {
+                        return (
+                          <ul key={i} className="exp-list">
+                            {bloco.itens.map((item, j) => (
+                              <li key={j} dangerouslySetInnerHTML={renderInline(item)} />
+                            ))}
+                          </ul>
+                        );
+                      }
+                      return <p key={i} className="exp-paragraph" dangerouslySetInnerHTML={renderInline(bloco.texto)} />;
+                    })}
+                  </article>
+
+                  <aside className="exp-sidebar">
+                    {explicacaoModal.videoId ? (
+                      <div className="exp-video-card">
+                        <div className="exp-video-header">
+                          <span className="exp-video-badge">▶ Aula recomendada</span>
+                        </div>
+                        <div className="exp-video-frame">
+                          <iframe
+                            src={`https://www.youtube.com/embed/${explicacaoModal.videoId}`}
+                            title={`Aula de ${explicacaoModal.topico}`}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                        <a
+                          className="exp-video-link"
+                          href={`https://www.youtube.com/watch?v=${explicacaoModal.videoId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Abrir no YouTube ↗
+                        </a>
+                      </div>
+                    ) : (
+                      <div className="exp-video-empty">
+                        <p>Nenhum vídeo encontrado para este tópico.</p>
+                      </div>
+                    )}
+
+                    <div className="exp-tip-card">
+                      <span className="exp-tip-label">Dica rápida</span>
+                      <p>Releia a explicação, assista o vídeo e depois pratique questões sobre <strong>{explicacaoModal.topico}</strong> para fixar o conteúdo.</p>
+                    </div>
+                  </aside>
+                </div>
+              )}
+            </main>
+          </div>,
+          document.body
+        )}
 
         <header className="materia-detail-header" style={{ '--materia-cor': subj.color }}>
           <div className="materia-detail-icon">{subj.icon}</div>
@@ -316,6 +471,12 @@ export default function Materias({ focus, course, onPraticarMateria }) {
                     {quando && <span className="topico-quando">{quando}</span>}
                   </div>
                   {dica && <p className="topico-dica">{dica}</p>}
+                  <button
+                    className="topico-explicar-btn"
+                    onClick={() => abrirExplicacao(materiaAberta, topico)}
+                  >
+                    Ver explicação
+                  </button>
                 </div>
                 {onPraticarMateria && (
                   <button
