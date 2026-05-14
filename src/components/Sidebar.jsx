@@ -115,7 +115,25 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
         {showFull ? (
           <h2><span>V</span>es<span>T</span>ibular</h2>
         ) : (
-          <h2 className="logo-mini"><span>V</span><span>T</span></h2>
+          <span className="logo-mark" aria-label="VesTibular">
+            <svg
+              className="logo-mark-cap"
+              width="28"
+              height="18"
+              viewBox="0 0 24 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M22 6L12 1 2 6l10 5 10-5z" />
+              <path d="M6 8v4c2.5 2 9 2 12 0V8" />
+              <path d="M22 6v5" />
+            </svg>
+            <span className="logo-mark-text">VT</span>
+          </span>
         )}
       </button>
 
