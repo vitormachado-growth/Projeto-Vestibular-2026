@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { RenderConteudo } from './Admin';
+import SimuladoShareCard from './SimuladoShareCard';
+import { toPng } from 'html-to-image';
 import './SimuladoPlayer.css';
 
 const AREA_LABELS = {
@@ -39,6 +41,14 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [notasRedacao, setNotasRedacao] = useState({ c1: 0, c2: 0, c3: 0, c4: 0, c5: 0 });
   const [saving, setSaving] = useState(false);
+
+  // Share state
+  const [shareOpen, setShareOpen] = useState(false);
+  const [ranking, setRanking] = useState(null);
+  const [loadingRanking, setLoadingRanking] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [userName, setUserName] = useState(null);
+  const cardRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -135,6 +145,107 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
     setFase('finalizado');
   };
 
+  const abrirCompartilhar = async () => {
+    setShareOpen(true);
+    setLoadingRanking(true);
+
+    try {
+      // Pega o nome do usuário do profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, username')
+        .eq('id', userId)
+        .maybeSingle();
+      if (profile) {
+        setUserName(profile.username || profile.full_name?.split(' ')[0] || null);
+      }
+
+      // Calcula posição usando a view pública simulado_leaderboard
+      const { data: lb } = await supabase
+        .from('simulado_leaderboard')
+        .select('*')
+        .eq('simulado_id', simuladoId);
+
+      if (lb && lb.length) {
+        const calcPts = (r) => {
+          if (!r.total_questoes) return 0;
+          const pctQ = r.acertos / r.total_questoes;
+          if (r.redacao_total != null) {
+            return Math.round(pctQ * 800 + r.redacao_total * 0.2);
+          }
+          return Math.round(pctQ * 1000);
+        };
+        const sorted = [...lb].sort((a, b) => calcPts(b) - calcPts(a));
+        const minhaPos = sorted.findIndex(r => r.user_id === userId) + 1;
+        setRanking({
+          posicao: minhaPos > 0 ? minhaPos : sorted.length,
+          total: sorted.length,
+        });
+      } else {
+        setRanking(null);
+      }
+    } catch (e) {
+      console.error('ranking:', e);
+      setRanking(null);
+    } finally {
+      setLoadingRanking(false);
+    }
+  };
+
+  const baixarImagem = async () => {
+    if (!cardRef.current) return;
+    setDownloading(true);
+    try {
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        pixelRatio: 1,
+        width: 1080,
+        height: 1920,
+      });
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `vestibular-${simulado.titulo.replace(/\s+/g, '-').toLowerCase()}.png`;
+      link.click();
+    } catch (e) {
+      console.error('download:', e);
+      alert('Erro ao gerar imagem: ' + e.message);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const compartilharNativo = async () => {
+    if (!cardRef.current || !navigator.share) {
+      baixarImagem();
+      return;
+    }
+    setDownloading(true);
+    try {
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        pixelRatio: 1,
+        width: 1080,
+        height: 1920,
+      });
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], 'vestibular-resultado.png', { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Meu resultado no VesTibular',
+          text: `Acabei o simulado ${simulado.titulo}!`,
+        });
+      } else {
+        baixarImagem();
+      }
+    } catch (e) {
+      if (e.name !== 'AbortError') console.error('share:', e);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   const handleFinalizarQuestoes = () => {
     if (simulado.tem_redacao && redacao) {
       setFase('redacao');
@@ -205,7 +316,62 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
               <span className="sp-redacao-value">{r.redacao_total} / 1000</span>
             </div>
           )}
+
+          <button className="sp-share-btn" onClick={abrirCompartilhar}>
+            <span className="sp-share-icon">📸</span>
+            <span className="sp-share-text">
+              <strong>Compartilhar resultado</strong>
+              <small>Gere uma imagem pro Stories</small>
+            </span>
+            <span className="sp-share-arrow">→</span>
+          </button>
         </div>
+
+        {shareOpen && (
+          <div className="sp-share-overlay" onClick={() => setShareOpen(false)}>
+            <div className="sp-share-modal" onClick={e => e.stopPropagation()}>
+              <button className="sp-share-close" onClick={() => setShareOpen(false)}>✕</button>
+
+              <div className="sp-share-preview">
+                {loadingRanking ? (
+                  <div className="sp-share-loading">
+                    <div className="sp-share-spinner" />
+                    <p>Calculando sua posição…</p>
+                  </div>
+                ) : (
+                  <div className="sp-share-card-wrap">
+                    <SimuladoShareCard
+                      ref={cardRef}
+                      simulado={simulado}
+                      resultado={r}
+                      areas={areas}
+                      ranking={ranking}
+                      userName={userName}
+                      redacaoTotal={r.redacao_total}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="sp-share-actions">
+                <button
+                  className="sp-share-action sp-share-action-primary"
+                  onClick={compartilharNativo}
+                  disabled={downloading || loadingRanking}
+                >
+                  {downloading ? 'Gerando…' : '📤 Compartilhar'}
+                </button>
+                <button
+                  className="sp-share-action"
+                  onClick={baixarImagem}
+                  disabled={downloading || loadingRanking}
+                >
+                  ⬇️ Baixar imagem
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
