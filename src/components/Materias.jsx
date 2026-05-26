@@ -399,6 +399,24 @@ export default function Materias({ focus, course, onPraticarMateria }) {
                       </div>
                     )}
 
+                    {onPraticarMateria && (
+                      <button
+                        className="exp-praticar-btn"
+                        onClick={() => {
+                          const { materia, topico } = explicacaoModal;
+                          setExplicacaoModal(null);
+                          onPraticarMateria(materia, topico);
+                        }}
+                      >
+                        <span className="exp-praticar-icon">✍️</span>
+                        <span className="exp-praticar-text">
+                          <strong>Praticar questões</strong>
+                          <small>de {explicacaoModal.topico}</small>
+                        </span>
+                        <span className="exp-praticar-arrow">→</span>
+                      </button>
+                    )}
+
                     <div className="exp-tip-card">
                       <span className="exp-tip-label">Dica rápida</span>
                       <p>Releia a explicação, assista o vídeo e depois pratique questões sobre <strong>{explicacaoModal.topico}</strong> para fixar o conteúdo.</p>
