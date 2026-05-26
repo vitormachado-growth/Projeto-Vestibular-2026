@@ -116,23 +116,28 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
           <h2><span>V</span>es<span>T</span>ibular</h2>
         ) : (
           <span className="logo-mark" aria-label="VesTibular">
+            <span className="logo-mark-text">VT</span>
             <svg
               className="logo-mark-cap"
-              width="28"
-              height="18"
-              viewBox="0 0 24 16"
+              width="26"
+              height="20"
+              viewBox="0 0 32 28"
               fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
               aria-hidden="true"
             >
-              <path d="M22 6L12 1 2 6l10 5 10-5z" />
-              <path d="M6 8v4c2.5 2 9 2 12 0V8" />
-              <path d="M22 6v5" />
+              <path d="M16 3 L30 11 L16 19 L2 11 Z" fill="currentColor" />
+              <path
+                d="M7 14 L7 19 C7 21.2 10.5 22.5 16 22.5 C21.5 22.5 25 21.2 25 19 L25 14 L16 19 Z"
+                fill="currentColor"
+              />
+              <path
+                d="M30 11 L30 18.5"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+              />
+              <circle cx="30" cy="20.5" r="1.8" fill="currentColor" />
             </svg>
-            <span className="logo-mark-text">VT</span>
           </span>
         )}
       </button>
