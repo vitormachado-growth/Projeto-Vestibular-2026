@@ -192,16 +192,20 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
     }
   };
 
+  const capturarCard = async () => {
+    return toPng(cardRef.current, {
+      cacheBust: true,
+      pixelRatio: 1,
+      width: 1080,
+      height: 1920,
+    });
+  };
+
   const baixarImagem = async () => {
     if (!cardRef.current) return;
     setDownloading(true);
     try {
-      const dataUrl = await toPng(cardRef.current, {
-        cacheBust: true,
-        pixelRatio: 1,
-        width: 1080,
-        height: 1920,
-      });
+      const dataUrl = await capturarCard();
       const link = document.createElement('a');
       link.href = dataUrl;
       link.download = `vestibular-${simulado.titulo.replace(/\s+/g, '-').toLowerCase()}.png`;
@@ -221,12 +225,7 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
     }
     setDownloading(true);
     try {
-      const dataUrl = await toPng(cardRef.current, {
-        cacheBust: true,
-        pixelRatio: 1,
-        width: 1080,
-        height: 1920,
-      });
+      const dataUrl = await capturarCard();
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], 'vestibular-resultado.png', { type: 'image/png' });
 
@@ -341,7 +340,6 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
                 ) : (
                   <div className="sp-share-card-wrap">
                     <SimuladoShareCard
-                      ref={cardRef}
                       simulado={simulado}
                       resultado={r}
                       areas={areas}
@@ -352,6 +350,21 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
                   </div>
                 )}
               </div>
+
+              {/* Card off-screen em tamanho real, usado apenas para captura */}
+              {!loadingRanking && (
+                <div className="sp-share-capture-host" aria-hidden="true">
+                  <SimuladoShareCard
+                    ref={cardRef}
+                    simulado={simulado}
+                    resultado={r}
+                    areas={areas}
+                    ranking={ranking}
+                    userName={userName}
+                    redacaoTotal={r.redacao_total}
+                  />
+                </div>
+              )}
 
               <div className="sp-share-actions">
                 <button

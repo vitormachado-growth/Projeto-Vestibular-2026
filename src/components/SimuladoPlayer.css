@@ -603,6 +603,18 @@ html[data-theme="dark"] .sp-intro-warn {
   color: var(--text-main);
 }
 
+/* ── Host de captura (off-screen, tamanho real 1080x1920) ───────────── */
+.sp-share-capture-host {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  width: 1080px;
+  height: 1920px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+}
+
 /* ── Preview do card (escalado) ──────────────────────────────────────── */
 .sp-share-preview {
   display: flex;
