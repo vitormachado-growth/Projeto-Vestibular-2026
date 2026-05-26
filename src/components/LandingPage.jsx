@@ -150,14 +150,18 @@ const LandingPage = ({ onGetStarted, onLogin, darkMode, onToggleDark }) => {
       {/* ── Marquee de Aprovação ── */}
       <div className="dc-marquee" aria-hidden="true">
         <div className="dc-marquee-track">
-          {Array.from({ length: 2 }).flatMap((_, k) => [
-            <span key={`a-${k}`}>ENEM 2026 ★</span>,
-            <span key={`b-${k}`}>UERJ 2026 ★</span>,
-            <span key={`c-${k}`}>Medicina ★</span>,
-            <span key={`d-${k}`}>Engenharia ★</span>,
-            <span key={`e-${k}`}>Direito ★</span>,
-            <span key={`f-${k}`}>Aprovação ★</span>,
-          ])}
+          {Array.from({ length: 4 }).map((_, k) => (
+            <div key={k} className="dc-marquee-set">
+              <span>ENEM 2026 ★</span>
+              <span>UERJ 2026 ★</span>
+              <span>Medicina ★</span>
+              <span>Engenharia ★</span>
+              <span>Direito ★</span>
+              <span>Aprovação ★</span>
+              <span>Foco total ★</span>
+              <span>Estudo inteligente ★</span>
+            </div>
+          ))}
         </div>
       </div>
 
