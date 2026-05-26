@@ -3,6 +3,7 @@ import { questoes as questoesBase } from '../data/questoesData';
 import ImportarQuestoes from './ImportarQuestoes';
 import CoberturaPanel from './CoberturaPanel';
 import { reclassificarQuestoes } from '../utils/classificadorTopicos';
+import { supabase } from '../lib/supabase';
 import './Questoes.css';
 
 const SUBJECTS = [
@@ -12,6 +13,16 @@ const SUBJECTS = [
 ];
 
 const STORAGE_IMPORTADAS = 'questoes_importadas_v1';
+const STORAGE_QUALIFICACAO = 'questoes_qualificacao_v1';
+
+const CATEGORIAS_ERRO = [
+  { id: 'falta_atencao', icon: '😕', label: 'Falta de atenção' },
+  { id: 'nao_sabia',     icon: '📚', label: 'Não sabia o conteúdo' },
+  { id: 'calculo',       icon: '🧮', label: 'Errei o cálculo' },
+  { id: 'enunciado',     icon: '📝', label: 'Não entendi o enunciado' },
+  { id: 'confusao',      icon: '🔀', label: 'Confundi conceitos' },
+  { id: 'chutei',        icon: '🎲', label: 'Chutei' },
+];
 const TYPES = [
   { value: 'enem', label: 'ENEM' },
   { value: 'uerj', label: 'UERJ' },
@@ -35,6 +46,7 @@ export default function Questoes({ initialFilter }) {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showResult, setShowResult] = useState(false);
+  const [explicacaoIA, setExplicacaoIA] = useState(null);
   const [importarAberto, setImportarAberto] = useState(false);
   const [coberturaAberta, setCoberturaAberta] = useState(false);
   const [questoesImportadas, setQuestoesImportadas] = useState(() => {
@@ -43,6 +55,27 @@ export default function Questoes({ initialFilter }) {
       return raw ? JSON.parse(raw) : [];
     } catch { return []; }
   });
+  const [qualificacoes, setQualificacoes] = useState(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_QUALIFICACAO);
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_QUALIFICACAO, JSON.stringify(qualificacoes));
+  }, [qualificacoes]);
+
+  function toggleQualificacao(questaoId, categoriaId) {
+    setQualificacoes(prev => {
+      const atual = prev[questaoId];
+      if (atual === categoriaId) {
+        const { [questaoId]: _, ...resto } = prev;
+        return resto;
+      }
+      return { ...prev, [questaoId]: categoriaId };
+    });
+  }
 
   const questoes = useMemo(
     () => [...questoesBase, ...questoesImportadas],
@@ -112,6 +145,7 @@ export default function Questoes({ initialFilter }) {
     setSelectedId(q.id);
     setSelectedAnswer(null);
     setShowResult(false);
+    setExplicacaoIA(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -119,6 +153,7 @@ export default function Questoes({ initialFilter }) {
     setSelectedId(null);
     setSelectedAnswer(null);
     setShowResult(false);
+    setExplicacaoIA(null);
   }
 
   function handleConfirm() {
@@ -129,7 +164,29 @@ export default function Questoes({ initialFilter }) {
     setSelectedId(q.id);
     setSelectedAnswer(null);
     setShowResult(false);
+    setExplicacaoIA(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function gerarExplicacaoIA(question, respostaUsuario) {
+    setExplicacaoIA({ loading: true, texto: null, erro: null });
+    try {
+      const { data, error } = await supabase.functions.invoke('explain-question', {
+        body: {
+          enunciado: question.statement,
+          alternativas: question.alternatives,
+          respostaCorreta: question.answer,
+          respostaUsuario,
+          materia: question.subject,
+          topico: question.topic,
+        },
+      });
+      if (error) throw error;
+      if (data?.erro) throw new Error(data.erro);
+      setExplicacaoIA({ loading: false, texto: data.explicacao, erro: null });
+    } catch (e) {
+      setExplicacaoIA({ loading: false, texto: null, erro: e.message ?? 'Erro desconhecido.' });
+    }
   }
 
   // ── QUESTION DETAIL VIEW ──────────────────────────────────────────────────
@@ -210,17 +267,83 @@ export default function Questoes({ initialFilter }) {
               </button>
             </div>
           ) : (
-            <div className={`questao-result ${isCorrect ? 'result-ok' : 'result-err'}`}>
-              <div className="result-headline">
-                <span className="result-icon">{isCorrect ? '✓' : '✗'}</span>
-                <span className="result-label">
-                  {isCorrect
-                    ? 'Resposta correta!'
-                    : `Incorreta — gabarito: ${selectedQuestion.answer.toUpperCase()}`}
-                </span>
+            <>
+              <div className={`questao-result ${isCorrect ? 'result-ok' : 'result-err'}`}>
+                <div className="result-headline">
+                  <span className="result-icon">{isCorrect ? '✓' : '✗'}</span>
+                  <span className="result-label">
+                    {isCorrect
+                      ? 'Resposta correta!'
+                      : `Incorreta — gabarito: ${selectedQuestion.answer.toUpperCase()}`}
+                  </span>
+                </div>
+                <p className="result-explanation">{selectedQuestion.explanation}</p>
               </div>
-              <p className="result-explanation">{selectedQuestion.explanation}</p>
-            </div>
+
+              {!isCorrect && (
+                <div className="qualificacao-erro">
+                  <p className="qualificacao-label">Por que você errou?</p>
+                  <div className="qualificacao-chips">
+                    {CATEGORIAS_ERRO.map(cat => {
+                      const ativo = qualificacoes[selectedQuestion.id] === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          className={`qualificacao-chip ${ativo ? 'ativo' : ''}`}
+                          onClick={() => toggleQualificacao(selectedQuestion.id, cat.id)}
+                        >
+                          <span className="chip-icon">{cat.icon}</span>
+                          <span className="chip-label">{cat.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {!isCorrect && !explicacaoIA && (
+                <button
+                  className="btn-explicar-ia"
+                  onClick={() => gerarExplicacaoIA(selectedQuestion, selectedAnswer)}
+                >
+                  <span className="explicar-ia-icon">💡</span>
+                  <span className="explicar-ia-text">
+                    <strong>Não entendeu? Veja a explicação detalhada</strong>
+                    <small>Resolução passo a passo gerada por IA</small>
+                  </span>
+                  <span className="explicar-ia-arrow">→</span>
+                </button>
+              )}
+
+              {explicacaoIA && (
+                <div className="explicacao-ia-bloco">
+                  {explicacaoIA.loading && (
+                    <div className="explicacao-ia-loading">
+                      <div className="explicacao-ia-spinner" />
+                      <p>Gerando explicação detalhada…</p>
+                    </div>
+                  )}
+                  {explicacaoIA.erro && (
+                    <div className="explicacao-ia-erro">
+                      <p><strong>Não foi possível gerar a explicação.</strong></p>
+                      <small>{explicacaoIA.erro}</small>
+                    </div>
+                  )}
+                  {explicacaoIA.texto && (
+                    <div className="explicacao-ia-texto">
+                      <div className="explicacao-ia-header">
+                        <span className="explicacao-ia-badge">✨ Explicação detalhada por IA</span>
+                      </div>
+                      {explicacaoIA.texto.split('\n').map((linha, i) => {
+                        if (!linha.trim()) return <br key={i} />;
+                        const bold = linha.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                        return <p key={i} dangerouslySetInnerHTML={{ __html: bold }} />;
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
 
           <div className="questao-footer-nav">
