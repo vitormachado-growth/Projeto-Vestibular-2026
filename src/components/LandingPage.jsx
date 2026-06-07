@@ -21,7 +21,7 @@ const LandingPage = ({ onGetStarted, onLogin, darkMode, onToggleDark }) => {
       <nav className={`dc-nav ${scrolled ? 'is-scrolled' : ''}`}>
         <div className="dc-nav-inner">
           <button className="dc-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <span className="dc-logo-mark">V</span>es<span className="dc-logo-mark">T</span>ibular
+            <img src="/logohorizontal.png" alt="VesTibular" className="dc-logo-wordmark" />
           </button>
 
           <div className="dc-nav-links">
@@ -312,7 +312,7 @@ const LandingPage = ({ onGetStarted, onLogin, darkMode, onToggleDark }) => {
         <div className="dc-footer-inner">
           <div className="dc-footer-brand">
             <div className="dc-logo dc-logo-footer">
-              <span className="dc-logo-mark">V</span>es<span className="dc-logo-mark">T</span>ibular
+              <img src="/logohorizontal.png" alt="VesTibular" className="dc-logo-wordmark" />
             </div>
             <p>Sua jornada rumo à universidade começa aqui.</p>
           </div>

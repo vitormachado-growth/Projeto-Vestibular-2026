@@ -127,7 +127,7 @@ const LoginScreen = ({ onBack }) => {
 
           <div className="auth-brand-content">
             <div className="auth-logo">
-              <span>V</span>es<span>T</span>ibular
+              <img src="/logohorizontal.png" alt="VesTibular" className="auth-logo-img" />
             </div>
 
             <h1 className="auth-tagline">

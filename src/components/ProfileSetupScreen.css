@@ -40,6 +40,12 @@
 
 .profile-logo span { color: var(--primary); }
 
+.profile-logo-img {
+  height: 30px;
+  width: auto;
+  display: block;
+}
+
 .profile-setup-header h1 {
   font-size: 1.75rem;
   font-weight: 800;

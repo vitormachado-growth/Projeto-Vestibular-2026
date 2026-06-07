@@ -153,6 +153,12 @@ html[data-theme="dark"] .auth-shell {
   color: var(--auth-pink);
 }
 
+.auth-logo-img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
 .auth-tagline {
   font-size: 2.1rem;
   font-weight: 800;

@@ -177,6 +177,23 @@ html[data-theme="dark"] .dc-nav.is-scrolled { background: rgba(7, 7, 26, 0.92); 
   color: var(--dc-text);
   background: none;
   padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.dc-logo-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+}
+.dc-logo-wordmark {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+.dc-logo-footer .dc-logo-wordmark {
+  height: 36px;
 }
 .dc-logo-mark { color: var(--dc-pink); }
 

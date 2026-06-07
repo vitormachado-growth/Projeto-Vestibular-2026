@@ -1,118 +1,84 @@
 import { forwardRef } from 'react';
 import './SimuladoShareCard.css';
 
-const AREA_LABELS = {
-  humanas: 'Humanas',
-  linguagens: 'Linguagens',
-  matematica: 'Matemática',
-  naturezas: 'Naturezas',
-};
-
 const SimuladoShareCard = forwardRef(function SimuladoShareCard(
-  { simulado, resultado, areas, ranking, userName, redacaoTotal },
+  { simulado, resultado, ranking, redacaoTotal, bgImage, textColor = 'light' },
   ref
 ) {
   const pct = resultado.total_questoes > 0
     ? Math.round((resultado.acertos / resultado.total_questoes) * 100)
     : 0;
 
-  const dataFormatada = new Date().toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  });
-
-  const performanceLabel =
-    pct >= 80 ? 'Mandou bem!' :
-    pct >= 60 ? 'Tá no caminho!' :
-    pct >= 40 ? 'Bora estudar!' :
-    'Vamos com tudo!';
+  const dataFormatada = new Date()
+    .toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+    .toLowerCase();
 
   const topPct = ranking?.total
     ? Math.max(1, Math.round((ranking.posicao / ranking.total) * 100))
     : null;
 
   return (
-    <div ref={ref} className="share-card">
-      {/* Blobs decorativos */}
-      <span className="share-blob share-blob-1" />
-      <span className="share-blob share-blob-2" />
-      <span className="share-blob share-blob-3" />
+    <div
+      ref={ref}
+      className={`share-card${bgImage ? ' has-bg' : ''}${textColor === 'dark' ? ' text-dark' : ''}`}
+      style={bgImage ? { backgroundImage: `url(${bgImage})` } : undefined}
+    >
+      {/* Overlay escuro pra legibilidade do texto */}
+      <div className="share-overlay" />
 
-      {/* Header */}
-      <header className="share-header">
-        <div className="share-brand">
-          <span className="share-brand-mark">V</span>es<span className="share-brand-mark">T</span>ibular
+      <div className="share-content">
+        {/* Sticker top — estilo location pill do Strava */}
+        <div className="share-top">
+          <div className="share-sticker">
+            <span className="share-sticker-dot">●</span>
+            <span>{dataFormatada}</span>
+          </div>
         </div>
-        <span className="share-date">{dataFormatada}</span>
-      </header>
 
-      {/* Título */}
-      <div className="share-title-block">
-        <span className="share-eyebrow">Simulado concluído</span>
-        <h1 className="share-simulado-name">{simulado?.titulo || 'Simulado'}</h1>
+        {/* Stats centralizados */}
+        <div className="share-stats">
+          <div className="share-simulado-name">
+            {simulado?.titulo || 'Simulado'}
+          </div>
+
+          <div className="share-stat share-stat-hero">
+            <span className="share-stat-label">Aproveitamento</span>
+            <span className="share-stat-value">{pct}%</span>
+          </div>
+
+          <div className="share-stat">
+            <span className="share-stat-label">Acertos</span>
+            <span className="share-stat-value">
+              {resultado.acertos} <span className="share-stat-unit">/ {resultado.total_questoes}</span>
+            </span>
+          </div>
+
+          {ranking && (
+            <div className="share-stat">
+              <span className="share-stat-label">Posição</span>
+              <span className="share-stat-value">
+                #{ranking.posicao} <span className="share-stat-unit">/ {ranking.total}</span>
+              </span>
+              {topPct && <span className="share-stat-sub">Top {topPct}%</span>}
+            </div>
+          )}
+
+          {redacaoTotal != null && (
+            <div className="share-stat">
+              <span className="share-stat-label">Redação</span>
+              <span className="share-stat-value">
+                {redacaoTotal} <span className="share-stat-unit">/ 1000</span>
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom bar */}
+        <div className="share-brand-bar">
+          <img src="/logohorizontal.png" alt="VesTibular" className="share-brand-wordmark" />
+          <span className="share-brand-url">vestibular.app</span>
+        </div>
       </div>
-
-      {/* Score gigante */}
-      <div className="share-score">
-        <div className="share-score-number">
-          <span className="share-pct">{pct}</span>
-          <span className="share-percent-sign">%</span>
-        </div>
-        <p className="share-score-label">{performanceLabel}</p>
-        <p className="share-score-detail">
-          <strong>{resultado.acertos}</strong> de {resultado.total_questoes} questões
-        </p>
-      </div>
-
-      {/* Ranking */}
-      {ranking && (
-        <div className="share-ranking">
-          <div className="share-ranking-pos">
-            <span className="share-hash">#</span>
-            <span className="share-pos-number">{ranking.posicao}</span>
-          </div>
-          <div className="share-ranking-info">
-            <p>de <strong>{ranking.total}</strong> alunos</p>
-            {topPct && <p className="share-top-tag">Top {topPct}%</p>}
-          </div>
-        </div>
-      )}
-
-      {/* Breakdown por área */}
-      {areas && Object.keys(areas).length > 0 && (
-        <div className="share-areas">
-          {Object.entries(areas).map(([area, v]) => {
-            const areaPct = v.total > 0 ? Math.round((v.acertos / v.total) * 100) : 0;
-            return (
-              <div key={area} className="share-area-row">
-                <span className="share-area-label">{AREA_LABELS[area] || area}</span>
-                <div className="share-area-bar">
-                  <div className="share-area-fill" style={{ width: `${areaPct}%` }} />
-                </div>
-                <span className="share-area-pct">{areaPct}%</span>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Redação */}
-      {redacaoTotal != null && (
-        <div className="share-redacao">
-          <span className="share-redacao-icon">✍️</span>
-          <div>
-            <span className="share-redacao-label">Redação</span>
-            <strong>{redacaoTotal} / 1000</strong>
-          </div>
-        </div>
-      )}
-
-      {/* Footer */}
-      <footer className="share-footer">
-        {userName && <p className="share-user">@{userName}</p>}
-        <p className="share-cta">Faça você também → <strong>vestibular.app</strong></p>
-      </footer>
     </div>
   );
 });

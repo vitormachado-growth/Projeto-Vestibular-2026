@@ -69,15 +69,19 @@
 
 /* ── LOGO ───────────────────────────────── */
 .sidebar-logo-btn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 100px;
+  max-height: 260px;
   width: 100%;
-  padding: 1.75rem 1.75rem 1.5rem;
+  padding: 1.5rem 1.75rem;
   background: none;
   border: none;
   cursor: pointer;
-  text-align: left;
   font-family: inherit;
-  transition: padding var(--duration-base) var(--ease-standard), opacity 0.18s ease;
+  transition: opacity 0.18s ease;
 }
 
 .sidebar-logo-btn:hover {
@@ -85,8 +89,10 @@
 }
 
 .sidebar.collapsed .sidebar-logo-btn {
+  flex: 0 0 auto;
+  min-height: 0;
+  max-height: none;
   padding: 1.5rem 0.75rem;
-  text-align: center;
 }
 
 .sidebar-logo-btn h2 {
@@ -99,18 +105,33 @@
   letter-spacing: -0.03em;
 }
 
+.sidebar-logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
 .sidebar-logo-btn span {
   color: var(--dc-pink);
 }
 
 /* ── LOGO MARK (sidebar colapsada) — VT com chapéu jogado em cima ────── */
+.logo-mark-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  display: block;
+}
+
 .logo-mark {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  padding-top: 8px;
   color: var(--dc-pink, #FF1A6B);
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -164,7 +185,7 @@
 
 /* ── NAV ────────────────────────────────── */
 .sidebar-nav {
-  flex: 1;
+  flex: 0 1 auto;
   padding: 0.5rem 1rem 1rem;
   overflow-y: auto;
   overflow-x: hidden;

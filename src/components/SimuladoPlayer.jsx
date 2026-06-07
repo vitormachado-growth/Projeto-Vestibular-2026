@@ -47,8 +47,18 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
   const [ranking, setRanking] = useState(null);
   const [loadingRanking, setLoadingRanking] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [userName, setUserName] = useState(null);
+  const [bgImage, setBgImage] = useState(null);
+  const [textColor, setTextColor] = useState('light');
   const cardRef = useRef(null);
+  const bgFileInputRef = useRef(null);
+
+  const onPickBgImage = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setBgImage(reader.result);
+    reader.readAsDataURL(file);
+  };
 
   useEffect(() => {
     (async () => {
@@ -150,16 +160,6 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
     setLoadingRanking(true);
 
     try {
-      // Pega o nome do usuário do profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name, username')
-        .eq('id', userId)
-        .maybeSingle();
-      if (profile) {
-        setUserName(profile.username || profile.full_name?.split(' ')[0] || null);
-      }
-
       // Calcula posição usando a view pública simulado_leaderboard
       const { data: lb } = await supabase
         .from('simulado_leaderboard')
@@ -342,10 +342,10 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
                     <SimuladoShareCard
                       simulado={simulado}
                       resultado={r}
-                      areas={areas}
                       ranking={ranking}
-                      userName={userName}
                       redacaoTotal={r.redacao_total}
+                      bgImage={bgImage}
+                      textColor={textColor}
                     />
                   </div>
                 )}
@@ -358,13 +358,48 @@ export default function SimuladoPlayer({ simuladoId, temporadaId, onClose }) {
                     ref={cardRef}
                     simulado={simulado}
                     resultado={r}
-                    areas={areas}
                     ranking={ranking}
-                    userName={userName}
                     redacaoTotal={r.redacao_total}
+                    bgImage={bgImage}
+                    textColor={textColor}
                   />
                 </div>
               )}
+
+              <input
+                ref={bgFileInputRef}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={onPickBgImage}
+              />
+              <button
+                className="sp-share-bg-btn"
+                onClick={() => bgFileInputRef.current?.click()}
+                disabled={loadingRanking}
+              >
+                📷 {bgImage ? 'Trocar foto de fundo' : 'Escolher foto de fundo'}
+              </button>
+
+              <div className="sp-share-color-toggle">
+                <span className="sp-share-color-label">Cor do texto</span>
+                <div className="sp-share-color-buttons" role="group">
+                  <button
+                    type="button"
+                    className={`sp-share-color-btn ${textColor === 'light' ? 'is-active' : ''}`}
+                    onClick={() => setTextColor('light')}
+                  >
+                    Claro
+                  </button>
+                  <button
+                    type="button"
+                    className={`sp-share-color-btn ${textColor === 'dark' ? 'is-active' : ''}`}
+                    onClick={() => setTextColor('dark')}
+                  >
+                    Escuro
+                  </button>
+                </div>
+              </div>
 
               <div className="sp-share-actions">
                 <button

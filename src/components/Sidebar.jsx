@@ -113,31 +113,10 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
     <aside className={`sidebar ${!showFull ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
       <button className="sidebar-logo-btn" onClick={() => onViewChange('inicio')} title="Ir para o Início">
         {showFull ? (
-          <h2><span>V</span>es<span>T</span>ibular</h2>
+          <img src="/logohorizontal.png" alt="VesTibular" className="sidebar-logo-img" />
         ) : (
           <span className="logo-mark" aria-label="VesTibular">
-            <span className="logo-mark-text">VT</span>
-            <svg
-              className="logo-mark-cap"
-              width="26"
-              height="20"
-              viewBox="0 0 32 28"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path d="M16 3 L30 11 L16 19 L2 11 Z" fill="currentColor" />
-              <path
-                d="M7 14 L7 19 C7 21.2 10.5 22.5 16 22.5 C21.5 22.5 25 21.2 25 19 L25 14 L16 19 Z"
-                fill="currentColor"
-              />
-              <path
-                d="M30 11 L30 18.5"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              />
-              <circle cx="30" cy="20.5" r="1.8" fill="currentColor" />
-            </svg>
+            <img src="/logo.png" alt="VesTibular" className="logo-mark-img" />
           </span>
         )}
       </button>

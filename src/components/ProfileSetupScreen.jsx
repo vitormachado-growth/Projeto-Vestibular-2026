@@ -99,7 +99,7 @@ const ProfileSetupScreen = ({ user, onComplete, onLogout }) => {
       <div className="profile-setup-card">
         <header className="profile-setup-header">
           <div className="profile-logo">
-            <span>V</span>es<span>T</span>ibular
+            <img src="/logohorizontal.png" alt="VesTibular" className="profile-logo-img" />
           </div>
           <h1>Complete seu perfil</h1>
           <p>Só mais alguns dados pra personalizar sua jornada de estudos.</p>
