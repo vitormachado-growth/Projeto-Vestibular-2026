@@ -123,6 +123,91 @@
   justify-content: flex-end;
 }
 
+/* ── Tabs de modo (JSON vs IA) ────────────────────────────────────────── */
+.uerj-admin-modo-tabs {
+  display: flex;
+  gap: 0.35rem;
+  background: var(--bg-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  padding: 3px;
+  margin-bottom: 1.25rem;
+}
+.uerj-admin-modo-tab {
+  flex: 1;
+  padding: 0.55rem 0.85rem;
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.uerj-admin-modo-tab:hover:not(.is-active) {
+  color: var(--text-main);
+}
+.uerj-admin-modo-tab.is-active {
+  background: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Modo IA: helpers ─────────────────────────────────────────────────── */
+.uerj-admin-help {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.uerj-admin-ia-meta {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+.uerj-admin-ia-meta label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.uerj-admin-ia-meta span {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.uerj-admin-ia-meta input {
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-main);
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  transition: border-color 0.18s ease;
+}
+.uerj-admin-ia-meta input:focus {
+  outline: none;
+  border-color: var(--dc-pink, #FF1A6B);
+}
+
+.uerj-admin-ia-resultado {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed var(--border-color);
+}
+.uerj-admin-ia-resultado h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-main);
+}
+
 /* ── Lista de provas ──────────────────────────────────────────────────── */
 .uerj-admin-empty {
   text-align: center;

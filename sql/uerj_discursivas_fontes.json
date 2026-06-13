@@ -1,0 +1,61 @@
+{
+  "_comment": "URLs diretas pra cadernos de prova e padroes de resposta do Exame Discursivo da UERJ, hospedados pelo Estrategia Vestibulares. Use pra baixar PDFs e copiar conteudo no admin > Importar com IA. Provas mais antigas (<=2024) ainda nao mapeadas aqui.",
+
+  "uerj_2026": {
+    "ano": 2026,
+    "post_origem": "https://vestibulares.estrategia.com/portal/noticias/vestibular-uerj-2026-confira-os-cadernos-de-prova-e-o-padrao-de-respostas-do-exame-discursivo/",
+    "cadernos": {
+      "redacao": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Redacaouerjcaderno.pdf",
+      "fisica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Fisicauerjcaderno.pdf",
+      "historia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Historiauerjcaderno.pdf",
+      "biologia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Biologiauerjcaderno.pdf",
+      "geografia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Geografiauerjcaderno.pdf",
+      "lingua_portuguesa": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/LPLuerjcaderno.pdf",
+      "lingua_estrangeira": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Linguas_estrangeirasuerjcaderno.pdf",
+      "matematica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Matematicauerjcaderno.pdf",
+      "quimica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Quimicauerjcaderno.pdf"
+    },
+    "padroes_resposta": {
+      "redacao": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Redacaouerjpadraoresp.pdf",
+      "fisica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Fisicauerjpadraoresp.pdf",
+      "historia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Historiauerjpadraoresp.pdf",
+      "biologia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Biologiauerjpadraoresp.pdf",
+      "geografia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Geografiauerjpadraoresp.pdf",
+      "lingua_portuguesa": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/LPLuerjpadraoresp.pdf",
+      "espanhol": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Espanholuerjpadraoresp.pdf",
+      "frances": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/FrancesEspanholuerjpadraoresp.pdf",
+      "ingles": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Inglesuerjpadraoresp.pdf",
+      "matematica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Matematicauerjpadraoresp.pdf",
+      "quimica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2025/11/Quimicauerjpadraoresp.pdf"
+    }
+  },
+
+  "uerj_2025": {
+    "ano": 2025,
+    "post_origem": "https://vestibulares.estrategia.com/portal/noticias/uerj-2025-cadernos-de-prova-padroes-de-resposta-exame-discursivo/",
+    "cadernos": {
+      "redacao": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/uerj-redacao.pdf",
+      "fisica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/uerj-fisica.pdf",
+      "historia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/uerj-historia.pdf",
+      "biologia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/uerj-biologia.pdf",
+      "geografia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/uerj-geografia.pdf",
+      "lingua_portuguesa": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/uerj-portugues.pdf",
+      "lingua_estrangeira": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/uerj-lingua-estrangeira.pdf",
+      "matematica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/uerj-matematica.pdf",
+      "quimica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/uerj-quimica.pdf"
+    },
+    "padroes_resposta": {
+      "redacao": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-redacao.pdf",
+      "fisica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-fisica.pdf",
+      "historia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-historia.pdf",
+      "biologia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-biologia.pdf",
+      "geografia": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-geografia.pdf",
+      "lingua_portuguesa": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-portugues-1.pdf",
+      "espanhol": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-portugues.pdf",
+      "frances": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-frances.pdf",
+      "ingles": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-ingles.pdf",
+      "matematica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-matematica.pdf",
+      "quimica": "https://vestibulares.estrategia.com/portal/wp-content/uploads/2024/12/respostas-quimica.pdf"
+    }
+  }
+}
