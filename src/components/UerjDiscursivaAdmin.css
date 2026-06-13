@@ -208,6 +208,38 @@
   color: var(--text-main);
 }
 
+/* ── Drop de PDFs ─────────────────────────────────────────────────────── */
+.uerj-admin-pdf-drop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem;
+  border: 1.5px dashed var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-main);
+  margin-bottom: 0.85rem;
+}
+.uerj-admin-pdf-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 200px;
+}
+.uerj-admin-pdf-lista li {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 0.6rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  color: var(--text-main);
+}
+
 /* ── Lista de provas ──────────────────────────────────────────────────── */
 .uerj-admin-empty {
   text-align: center;

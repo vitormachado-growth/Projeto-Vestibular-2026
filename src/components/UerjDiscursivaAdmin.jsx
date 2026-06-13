@@ -1,6 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import './UerjDiscursivaAdmin.css';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+
+const extrairTextoDoPdf = async (file) => {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  const paginas = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    // Junta itens da pagina respeitando quebras de linha aproximadas pelo eixo Y
+    let ultimaLinha = null;
+    let linha = [];
+    const linhas = [];
+    content.items.forEach((item) => {
+      const y = item.transform?.[5];
+      if (ultimaLinha != null && Math.abs(y - ultimaLinha) > 4) {
+        if (linha.length) linhas.push(linha.join(' '));
+        linha = [];
+      }
+      linha.push(item.str);
+      ultimaLinha = y;
+    });
+    if (linha.length) linhas.push(linha.join(' '));
+    paginas.push(linhas.join('\n'));
+  }
+  return paginas.join('\n\n');
+};
 
 const DISCIPLINAS_VALIDAS = [
   'biologia',
@@ -56,6 +86,37 @@ export default function UerjDiscursivaAdmin() {
   const [iaEstruturando, setIaEstruturando] = useState(false);
   const [iaErro, setIaErro] = useState(null);
   const [iaJsonGerado, setIaJsonGerado] = useState('');
+  const [pdfExtraindo, setPdfExtraindo] = useState(false);
+  const [arquivosCarregados, setArquivosCarregados] = useState([]);
+  const pdfInputRef = useRef(null);
+
+  const onCarregarPdfs = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    setIaErro(null);
+    setPdfExtraindo(true);
+    try {
+      const pedacos = [];
+      for (const file of files) {
+        const texto = await extrairTextoDoPdf(file);
+        pedacos.push(`### Arquivo: ${file.name}\n\n${texto}`);
+      }
+      const novoTexto = pedacos.join('\n\n---\n\n');
+      setIaRawText((cur) => (cur.trim() ? cur + '\n\n---\n\n' + novoTexto : novoTexto));
+      setArquivosCarregados((cur) => [...cur, ...files.map((f) => f.name)]);
+    } catch (err) {
+      console.error('extrair pdf:', err);
+      setIaErro('Erro ao ler PDF: ' + (err.message || String(err)));
+    } finally {
+      setPdfExtraindo(false);
+      if (pdfInputRef.current) pdfInputRef.current.value = '';
+    }
+  };
+
+  const limparArquivos = () => {
+    setArquivosCarregados([]);
+    setIaRawText('');
+  };
 
   const carregar = async () => {
     setLoading(true);
@@ -269,9 +330,10 @@ export default function UerjDiscursivaAdmin() {
                 <h2>Estruturar prova com IA</h2>
               </div>
               <p className="uerj-admin-help">
-                Cola o texto bruto do caderno UERJ (questões + padrões + redação) abaixo.
-                A IA identifica disciplinas, separa cada questão com seu padrão de resposta
-                e devolve um JSON pronto pra revisar.
+                Carrega os PDFs do caderno UERJ (você pode jogar vários de uma vez —
+                cadernos + padrões de resposta + redação). O texto vai ser extraído e
+                a IA estrutura no JSON do banco. Você também pode colar texto direto
+                no campo abaixo.
               </p>
               <div className="uerj-admin-ia-meta">
                 <label>
@@ -293,9 +355,45 @@ export default function UerjDiscursivaAdmin() {
                   />
                 </label>
               </div>
+
+              <input
+                ref={pdfInputRef}
+                type="file"
+                accept="application/pdf"
+                multiple
+                hidden
+                onChange={onCarregarPdfs}
+              />
+              <div className="uerj-admin-pdf-drop">
+                <button
+                  type="button"
+                  className="uerj-admin-btn-primary"
+                  onClick={() => pdfInputRef.current?.click()}
+                  disabled={pdfExtraindo}
+                >
+                  {pdfExtraindo ? 'Extraindo…' : '📄 Adicionar PDF(s)'}
+                </button>
+                {arquivosCarregados.length > 0 && (
+                  <>
+                    <ul className="uerj-admin-pdf-lista">
+                      {arquivosCarregados.map((nome, i) => (
+                        <li key={i}>📎 {nome}</li>
+                      ))}
+                    </ul>
+                    <button
+                      type="button"
+                      className="uerj-admin-btn-ghost"
+                      onClick={limparArquivos}
+                    >
+                      Limpar tudo
+                    </button>
+                  </>
+                )}
+              </div>
+
               <textarea
                 className="uerj-admin-json"
-                placeholder="Cola aqui o texto extraído do PDF (questões, padrões de resposta, redação...)"
+                placeholder="Texto extraído dos PDFs aparece aqui. Você pode editar ou colar texto manualmente também."
                 value={iaRawText}
                 onChange={(e) => setIaRawText(e.target.value)}
                 rows={18}
