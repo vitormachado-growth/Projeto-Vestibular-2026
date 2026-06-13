@@ -69,6 +69,15 @@ const Icon = ({ name }) => {
           <path d="M17 6h3a2 2 0 0 1 0 4h-3M7 6H4a2 2 0 0 0 0 4h3" />
         </svg>
       );
+    case 'uerj-discursiva':
+    case 'uerj-discursiva-admin':
+      return (
+        <svg {...common}>
+          <path d="M6 4h9l5 5v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+          <path d="M14 4v6h6" />
+          <path d="M8 14h7M8 17h5" />
+        </svg>
+      );
     case 'admin':
       return (
         <svg {...common}>
@@ -98,9 +107,13 @@ const Sidebar = ({ user, profile, focus, currentView, onViewChange, collapsed, o
     { id: 'questoes',   label: 'Questões',            group: 'Estudos'   },
     { id: 'simulados',  label: 'Simulados',           group: 'Estudos'   },
     { id: 'redacao',    label: 'Redação',             group: 'Estudos'   },
+    { id: 'uerj-discursiva', label: 'UERJ Discursiva', group: 'Estudos' },
     { id: 'desempenho', label: 'Desempenho',          group: 'Evolução'  },
     { id: 'ranking',    label: 'Simulados Semanais',  group: 'Evolução'  },
-    ...(profile?.is_admin ? [{ id: 'admin', label: 'Painel Admin', group: 'Admin' }] : []),
+    ...(profile?.is_admin ? [
+      { id: 'admin',                label: 'Painel Admin',         group: 'Admin' },
+      { id: 'uerj-discursiva-admin', label: 'UERJ Discursiva (admin)', group: 'Admin' },
+    ] : []),
   ];
 
   const groups = profile?.is_admin

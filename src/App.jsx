@@ -16,6 +16,10 @@ import Ranking from './components/Ranking';
 import Inicio from './components/Inicio';
 import Admin from './components/Admin';
 import Perfil from './components/Perfil';
+import UerjDiscursivaList from './components/UerjDiscursivaList';
+import UerjDiscursivaPlayer from './components/UerjDiscursivaPlayer';
+import UerjDiscursivaResultado from './components/UerjDiscursivaResultado';
+import UerjDiscursivaAdmin from './components/UerjDiscursivaAdmin';
 import './App.css';
 
 function App() {
@@ -31,6 +35,8 @@ function App() {
   
   const [currentView, setCurrentView] = useState('inicio');
   const [questoesFilter, setQuestoesFilter] = useState(null);
+  const [discursivaParams, setDiscursivaParams] = useState(null);     // { provaId, disciplinas }
+  const [discursivaResultadoId, setDiscursivaResultadoId] = useState(null);
 
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('dark_mode');
@@ -152,6 +158,45 @@ function App() {
         return <Redacao />;
       case 'admin':
         return profile?.is_admin ? <Admin /> : <Inicio onNavigate={handleViewChange} focus={focus} />;
+      case 'uerj-discursiva':
+        return (
+          <UerjDiscursivaList
+            onComecarProva={(provaId, disciplinas) => {
+              setDiscursivaParams({ provaId, disciplinas });
+              setCurrentView('uerj-discursiva-player');
+            }}
+          />
+        );
+      case 'uerj-discursiva-player':
+        if (!discursivaParams) return <UerjDiscursivaList onComecarProva={() => {}} />;
+        return (
+          <UerjDiscursivaPlayer
+            provaId={discursivaParams.provaId}
+            disciplinas={discursivaParams.disciplinas}
+            onSubmetido={(resultadoId) => {
+              setDiscursivaResultadoId(resultadoId);
+              setDiscursivaParams(null);
+              setCurrentView('uerj-discursiva-resultado');
+            }}
+            onCancelar={() => {
+              setDiscursivaParams(null);
+              setCurrentView('uerj-discursiva');
+            }}
+          />
+        );
+      case 'uerj-discursiva-resultado':
+        if (!discursivaResultadoId) return <UerjDiscursivaList onComecarProva={() => {}} />;
+        return (
+          <UerjDiscursivaResultado
+            resultadoId={discursivaResultadoId}
+            onVoltar={() => {
+              setDiscursivaResultadoId(null);
+              setCurrentView('uerj-discursiva');
+            }}
+          />
+        );
+      case 'uerj-discursiva-admin':
+        return profile?.is_admin ? <UerjDiscursivaAdmin /> : <Inicio onNavigate={handleViewChange} focus={focus} />;
       case 'perfil':
         return (
           <Perfil

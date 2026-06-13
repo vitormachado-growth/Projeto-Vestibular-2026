@@ -1,0 +1,162 @@
+.uerj-admin {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.uerj-admin-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.uerj-admin-header h1 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+.uerj-admin-header p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ── Botões ───────────────────────────────────────────────────────────── */
+.uerj-admin-btn-primary,
+.uerj-admin-btn-ghost,
+.uerj-admin-btn-danger {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+.uerj-admin-btn-primary {
+  background: linear-gradient(135deg, #FF1A6B 0%, #E61560 100%);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(255, 26, 107, 0.28);
+}
+.uerj-admin-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(255, 26, 107, 0.38);
+}
+.uerj-admin-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.uerj-admin-btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-color);
+}
+.uerj-admin-btn-ghost:hover {
+  border-color: var(--dc-pink, #FF1A6B);
+  color: var(--dc-pink, #FF1A6B);
+}
+.uerj-admin-btn-danger {
+  background: transparent;
+  color: #c92b3c;
+  border-color: rgba(201, 43, 60, 0.3);
+}
+.uerj-admin-btn-danger:hover {
+  background: rgba(201, 43, 60, 0.08);
+  border-color: #c92b3c;
+}
+
+/* ── Importer ─────────────────────────────────────────────────────────── */
+.uerj-admin-importer {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+.uerj-admin-importer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.uerj-admin-importer-header h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-main);
+}
+.uerj-admin-json {
+  width: 100%;
+  font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  padding: 1rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-main);
+  color: var(--text-main);
+  resize: vertical;
+  box-sizing: border-box;
+}
+.uerj-admin-json:focus {
+  outline: none;
+  border-color: var(--dc-pink, #FF1A6B);
+}
+.uerj-admin-erro {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(201, 43, 60, 0.08);
+  border: 1px solid rgba(201, 43, 60, 0.3);
+  border-radius: 10px;
+  color: #c92b3c;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.uerj-admin-importer-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── Lista de provas ──────────────────────────────────────────────────── */
+.uerj-admin-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.uerj-admin-lista ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.uerj-admin-prova {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+.uerj-admin-prova strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.uerj-admin-meta {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}

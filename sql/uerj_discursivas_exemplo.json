@@ -1,0 +1,42 @@
+{
+  "_comment": "Template de prova discursiva da UERJ. Cole no admin UERJ Discursiva > Importar prova. Campos obrigatorios: ano (int), titulo (string), questoes (array). Disciplinas validas: biologia, fisica, geografia, historia, lingua_portuguesa, lingua_estrangeira, matematica, quimica.",
+
+  "ano": 2024,
+  "titulo": "UERJ 2024 — Exame Discursivo",
+  "data_aplicacao": "2024-12-01",
+
+  "redacao": {
+    "tema": "O tema da redacao da prova, conforme proposta da banca.",
+    "textos_motivadores": "Texto 1: ...\n\nTexto 2: ...\n\nTexto 3: ...",
+    "comando": "Comando da banca: produza um texto dissertativo-argumentativo em prosa, na norma padrao da lingua portuguesa, abordando o tema acima. Apresente argumentos consistentes e uma proposta de intervencao.",
+    "padrao_resposta": "Expectativas da banca: o candidato deve demonstrar dominio do tema, organizar argumentos com clareza, articular logicamente as ideias e propor uma intervencao viavel. Espera-se referencia aos textos motivadores."
+  },
+
+  "questoes": [
+    {
+      "disciplina": "biologia",
+      "ordem": 1,
+      "enunciado": "Enunciado da questao 1 de biologia (pode ter varios paragrafos, dados, tabelas em texto). Item a) ... Item b) ...",
+      "padrao_resposta": "a) Resposta esperada para o item a. b) Resposta esperada para o item b. Inclua conceitos chave que a banca espera ver.",
+      "imagens": []
+    },
+    {
+      "disciplina": "biologia",
+      "ordem": 2,
+      "enunciado": "Enunciado da questao 2 de biologia.",
+      "padrao_resposta": "Resposta esperada com pontuacao por etapa."
+    },
+    {
+      "disciplina": "quimica",
+      "ordem": 1,
+      "enunciado": "Enunciado da questao 1 de quimica.",
+      "padrao_resposta": "Resposta esperada. Para calculos, mostre a equacao, substituicao numerica e resultado."
+    },
+    {
+      "disciplina": "quimica",
+      "ordem": 2,
+      "enunciado": "Enunciado da questao 2 de quimica.",
+      "padrao_resposta": "Resposta esperada."
+    }
+  ]
+}

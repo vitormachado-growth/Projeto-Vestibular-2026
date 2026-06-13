@@ -1,0 +1,362 @@
+.udp {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+.udp-loading {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  color: var(--text-muted);
+}
+
+/* ── Topbar ───────────────────────────────────────────────────────────── */
+.udp-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(14, 13, 44, 0.06);
+}
+.udp-topbar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.udp-topbar-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dc-pink, #FF1A6B);
+}
+.udp-topbar-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.udp-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+/* ── Timer ────────────────────────────────────────────────────────────── */
+.udp-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 12px;
+  background: var(--bg-main);
+  border: 1.5px solid var(--border-color);
+  min-width: 110px;
+}
+.udp-timer-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.udp-timer-value {
+  font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+.udp-timer.is-warning {
+  border-color: #f59e0b;
+}
+.udp-timer.is-warning .udp-timer-value {
+  color: #f59e0b;
+}
+.udp-timer.is-over {
+  border-color: #c92b3c;
+  background: rgba(201, 43, 60, 0.08);
+}
+.udp-timer.is-over .udp-timer-value {
+  color: #c92b3c;
+}
+
+/* ── Botões ───────────────────────────────────────────────────────────── */
+.udp-btn-primary,
+.udp-btn-ghost,
+.udp-btn-danger {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border: 1.5px solid transparent;
+}
+.udp-btn-primary {
+  background: linear-gradient(135deg, #FF1A6B 0%, #E61560 100%);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(255, 26, 107, 0.28);
+}
+.udp-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(255, 26, 107, 0.36);
+}
+.udp-btn-ghost {
+  background: transparent;
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+.udp-btn-ghost:hover {
+  border-color: var(--dc-pink, #FF1A6B);
+  color: var(--dc-pink, #FF1A6B);
+}
+.udp-btn-danger {
+  background: transparent;
+  color: #c92b3c;
+  border-color: rgba(201, 43, 60, 0.3);
+}
+.udp-btn-danger:hover {
+  background: rgba(201, 43, 60, 0.08);
+  border-color: #c92b3c;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────────────────── */
+.udp-tabs {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-end;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.udp-tab-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.udp-tab-grupo-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-left: 0.15rem;
+}
+.udp-tab-grupo-items {
+  display: flex;
+  gap: 0.35rem;
+}
+.udp-tab {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 0.75rem;
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-card);
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.udp-tab:hover {
+  border-color: var(--dc-pink, #FF1A6B);
+}
+.udp-tab.is-active {
+  background: var(--dc-pink, #FF1A6B);
+  border-color: var(--dc-pink, #FF1A6B);
+  color: #fff;
+}
+.udp-tab.is-done:not(.is-active) {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #16a34a;
+}
+.udp-tab-redacao {
+  font-size: 1.1rem;
+}
+
+/* ── Conteúdo principal ───────────────────────────────────────────────── */
+.udp-main {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 2rem;
+}
+
+.udp-questao {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.udp-questao-eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dc-pink, #FF1A6B);
+}
+.udp-redacao-tema {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+  margin: 0.5rem 0 0;
+  line-height: 1.3;
+}
+
+.udp-questao-enunciado {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+.udp-questao-enunciado p {
+  margin: 0 0 0.85rem;
+}
+.udp-questao-enunciado p:last-child { margin-bottom: 0; }
+.udp-questao-img {
+  max-width: 100%;
+  margin-top: 1rem;
+  border-radius: 8px;
+}
+
+.udp-comando {
+  background: rgba(255, 200, 61, 0.08);
+  border: 1px solid rgba(255, 200, 61, 0.35);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+.udp-comando p {
+  margin: 0.3rem 0 0;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  line-height: 1.55;
+}
+
+.udp-mini-label {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.udp-resposta-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-main);
+}
+
+.udp-resposta {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 1.1rem 1.25rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-main);
+  color: var(--text-main);
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease;
+}
+.udp-resposta:focus {
+  outline: none;
+  border-color: var(--dc-pink, #FF1A6B);
+}
+.udp-resposta-redacao {
+  min-height: 420px;
+}
+
+.udp-resposta-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ── Modais (overlays) ────────────────────────────────────────────────── */
+.udp-modal-overlay,
+.udp-paused {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 13, 44, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.udp-modal,
+.udp-paused-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 2rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+.udp-modal h2,
+.udp-paused-card strong {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+  margin: 0 0 0.65rem;
+  display: block;
+}
+.udp-modal p,
+.udp-paused-card p {
+  margin: 0 0 0.7rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.udp-modal-status {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-main);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+.udp-modal-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+.udp-paused {
+  cursor: pointer;
+}
+.udp-paused-card {
+  cursor: default;
+}

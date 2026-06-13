@@ -1,0 +1,295 @@
+.ud-list {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+.ud-list-header {
+  margin-bottom: 2.5rem;
+}
+.ud-list-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dc-pink, #FF1A6B);
+  margin-bottom: 0.75rem;
+}
+.ud-list-header h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+  margin: 0 0 0.85rem;
+}
+.ud-list-header p {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 640px;
+  line-height: 1.55;
+}
+
+/* ── Lista vazia / loading ────────────────────────────────────────────── */
+.ud-list-empty {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px dashed var(--border-color);
+  border-radius: 16px;
+}
+
+/* ── Grid de cards ────────────────────────────────────────────────────── */
+.ud-list-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.ud-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 1.5rem 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.ud-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--dc-pink, #FF1A6B);
+  box-shadow: 0 12px 32px rgba(255, 26, 107, 0.12);
+}
+
+.ud-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ud-card-ano {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--dc-pink, #FF1A6B);
+  line-height: 1;
+}
+.ud-card-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 200, 61, 0.15);
+  color: #b8860b;
+  border: 1px solid rgba(255, 200, 61, 0.4);
+}
+
+.ud-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.ud-card-disc-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.ud-card-disc-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.ud-card-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+.ud-card-pill small {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+.ud-card-disc-empty {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.ud-card-btn {
+  margin-top: auto;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #FF1A6B 0%, #E61560 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(255, 26, 107, 0.28);
+  transition: all 0.18s ease;
+}
+.ud-card-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(255, 26, 107, 0.38);
+}
+.ud-card-btn:disabled {
+  background: var(--border-color);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── Modal de seleção de disciplinas ──────────────────────────────────── */
+.ud-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 13, 44, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.ud-modal {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.3);
+}
+.ud-modal-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 1.25rem;
+  font-weight: 800;
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ud-modal-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+.ud-modal h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+  color: var(--text-main);
+}
+.ud-modal p {
+  margin: 0 0 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.ud-modal-disc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+.ud-modal-disc {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-main);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.18s ease;
+}
+.ud-modal-disc strong {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+.ud-modal-disc small {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.ud-modal-disc:hover:not(:disabled) {
+  border-color: var(--dc-pink, #FF1A6B);
+}
+.ud-modal-disc.is-active {
+  border-color: var(--dc-pink, #FF1A6B);
+  background: rgba(255, 26, 107, 0.08);
+}
+.ud-modal-disc.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ud-modal-start {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background: linear-gradient(135deg, #FF1A6B 0%, #E61560 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(255, 26, 107, 0.28);
+  transition: all 0.18s ease;
+}
+.ud-modal-start:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.ud-modal-start:disabled {
+  background: var(--border-color);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
